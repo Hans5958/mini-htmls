@@ -146,6 +146,7 @@
 			}, function (x, y) {
 				n[0] = x
 				f[0] = true
+				$(".cN.1").html(n[0])
 			}, function() {
 				$(".1").css("opacity", "0.5")
 				$(".margin").css("opacity", "0.5")
@@ -155,12 +156,14 @@
 			}, function (x, y) {
 				n[1] = x
 				f[1] = true
+				$(".cN.2").html(n[1])
 			}, function() {
 				$(".2").css("opacity", "0.5")
 				$(".margin").css("opacity", "0.5")
 			})
 		}, 2000)
-	}	
+	}
+
 	function doneTest() {
 		r2++
 		if (r2 = 2) {
