@@ -131,6 +131,9 @@
 		cID[1] = $("#cID2")[0].value
 		f[0] = false
 		f[1] = false
+		$(".1").css("opacity", "1")
+		$(".2").css("opacity", "1")
+		$(".margin").css("opacity", "1")
 	}
 	
 	function reload() {
@@ -142,7 +145,6 @@
 				doneTest()
 			}, function (x, y) {
 				n[0] = x
-				$(".1").css("opacity", "1")
 				f[0] = true
 			}, function() {
 				$(".1").css("opacity", "0.5")
@@ -152,15 +154,13 @@
 				doneTest()
 			}, function (x, y) {
 				n[1] = x
-				$(".2").css("opacity", "1")
 				f[1] = true
 			}, function() {
 				$(".2").css("opacity", "0.5")
 				$(".margin").css("opacity", "0.5")
 			})
 		}, 2000)
-	}
-	
+	}	
 	function doneTest() {
 		r2++
 		if (r2 = 2) {
