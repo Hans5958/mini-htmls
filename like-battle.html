@@ -44,7 +44,7 @@
 			})
 	}
 	
-	let interval = setInterval(function() {
+	setInterval(function() {
 		if (f[0]) {
 			getData(cID[0], null, function(x, y) {
 				d[0] = updateDiff(y - s[0], di[0])
@@ -59,7 +59,7 @@
 				updateMargin(1)
 			})
 		}
-	}, 1000)
+	}, 5000)
 	
 	function updateMargin(c) {
 		switch (c) {
@@ -253,7 +253,7 @@
 		<div class="row">
 			<div class="col-md-4 text-center">
 				<h2 class="diff 1">
-					Diff (1m)
+					Diff (5m)
 				</h2>
 				<p class="odometer diff 1">
 					0
@@ -269,7 +269,7 @@
 			</div>
 			<div class="col-md-4 text-center">
 				<h2 class="diff 2">
-					Diff (1m)
+					Diff (5m)
 				</h2>
 				<p class="odometer diff 2">
 					0
