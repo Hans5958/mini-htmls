@@ -31,7 +31,7 @@
 			.done(function(d) {
 				if (typeof d.items[0] == "object") {
 					var x = d.items[0].snippet.title
-					var y = d.items[0].statistics.dislikeCount
+					var y = d.items[0].statistics.likeCount
 					success(x, y)
 				} else {
 					fail()
@@ -232,7 +232,7 @@
 					Video 1
 				</h1>
 				<h2 class="subs 1">
-					likes
+					Likes
 				</h2>
 				<p class="odometer subs 1">
 				0
@@ -243,7 +243,7 @@
 					Video 2
 				</h1>
 				<h2 class="subs 2">
-					likes
+					Likes
 				</h2>
 				<p class="odometer subs 2">
 				0
