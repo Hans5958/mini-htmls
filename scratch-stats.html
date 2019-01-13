@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Scratch Stats - Hans5958's Mini HTMLs</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mini HTMLs">
+  <meta name="author" content="Hans5958">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/black/pace-theme-loading-bar.min.css">
+  <script src="/mini-htmls/data/require.js"></script>
+  <script>
+
+    /*
+
+    this is not scratchstats.com clone
+    i wrote this code by myself
+    this code is 100000000% better than scratchstats.com
+    trust me
+
+    world_languages watch and learn lol
+
+    */
+
+    var username, cors, profileData, proj1, proj2, page, pageDone, projDone, projN, projList, mostViewedProject, mostLovedProject, mostFavoritedProject, mostCommentedProject, mostRemixedProject, oldestProject, newestProject, dateJoined, activity, msgCount
+
+    function _log(log, error) {
+        console.log("[SS] " + log )
+        $("pre#log")[0].innerHTML = $("pre#log")[0].innerHTML + log + "\n"
+        $("pre#log")[0].scrollTop = $("pre#log")[0].scrollHeight;
+        if (typeof error === "boolean") {
+          $("#username")[0].disabled = false
+        }
+    }
+
+    function corsDetect(callback) {
+      $.getJSON("https://cors.io/?https://api.scratch.mit.edu", function () {
+        callback("https://cors.io?")
+      })
+        .fail(function () {
+          $.getJSON("https://api.codetabs.com/cors-proxy/https://api.scratch.mit.edu", function () {
+            callback("https://api.codetabs.com/cors-proxy/")
+          })
+            .fail(function () {
+              $.getJSON("https://jsonp.afeld.me/?url=https://api.scratch.mit.edu", function () {
+                callback("https://jsonp.afeld.me/?url=")
+              })
+                .fail(function () {
+                  callback(false)
+                })
+            })
+        })
+      }
+
+    function init(callback) {
+      $("#username")[0].disabled = true
+      _log("")
+      _log("Scratch Stats starting...")
+      _log("Preparing...")
+
+      stopTimer()
+      startTimer()
+
+       proj2 = []
+       page = 0
+       pageDone = 0
+       projDone = 0
+       projList = []
+       mostViewedProject = {"id": 0, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       mostLovedProject = {"id": 0, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       mostFavoritedProject = {"id": 0, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       mostCommentedProject = {"id": 0, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       mostRemixedProject = {"id": 0, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       oldestProject = {"id": 999999999999999, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       newestProject =  {"id": 0, "title": null, "stats": {"comments": 0, "favorites": 0, "loves": 0, "remixes": 0, "views": 0}}
+       totalStats = {"views": 0, "loves": 0, "favorites": 0, "comments": 0, "remixes": 0}
+       avgStats = {"views": 0, "loves": 0, "favorites": 0, "comments": 0, "remixes": 0}
+       activity = {"favorite": 0, "love": 0, "studioadd": 0, "studiofollow": 0, "userfollow": 0, "studiocurator": 0, "studiomanager": 0, "share": 0, "total": 0}
+
+      // Selecting CORS proxy.
+      _log("Selecting CORS proxy...")
+      corsDetect(function(r1) {
+        if (r1) {
+          _log("CORS proxy selected! " + r1)
+          cors = r1
+          callback()
+        } else {
+          _log("CORS proxy failed! Aborting operation.", true)
+        }
+      })
+    }
+
+      function execProfile(callback) {
+        username = $("#username")[0].value
+        _log("Username: " + username)
+        _log("Finding user...")
+        $.getJSON(cors + "https://api.scratch.mit.edu/users/" + username)
+          .done(function(data) {
+            _log("User found!")
+            profileData = data
+            console.log(data)
+            dateJoined = new Date(data.history.joined)
+            callback()
+          })
+          .fail(function() {
+            _log("User not found! Aborting operation.", true)
+          })
+      }
+
+      function execProjectList(callback) {
+        _log("Retrieving projects list...")
+        function funcCallback(p) {
+          _log("Analyzed page " + p + " of " + page + ".")
+          _log("Total projects now: " + proj2.length)
+          pageDone++
+          if (pageDone == page) {
+            callback()
+          }
+        }
+        $.get(cors + "https://scratch.mit.edu/users/" + username + "/projects/")
+          .done(function(data1) {
+            proj1 = data1.match(/project\/\d+/gm)
+            proj2 = proj2.concat(proj1)
+            lol = data1.match(/<span class="page-current/gm)
+            if (data1.match(/<span class="page-current/gm) === null) {
+              page = 1
+            } else {
+              page = data1.match(/<span class="page-current/gm).length
+            }
+            _log("Projects retrieved!")
+            _log("Analyzing " + page + " page(s)...")
+
+            // Starts the analyze process.
+            funcCallback(1)
+            if (page > 1) {
+                for (var i = 2; i < page + 1; i++) {
+                  $.get(cors + "https://scratch.mit.edu/users/" + username + "/projects/?page=" + i, function(data2) {
+                      proj1 = data2.match(/project\/\d+/gm)
+                      proj2 = proj2.concat(proj1)
+                      funcCallback(i)
+                    })
+                }
+              }
+            })
+        }
+
+      function execProjectData(callback) {
+        _log("All pages analyzed!")
+        _log("Total projects: " + proj2.length)
+        projN = proj2.length
+        _log("Analyzing " + projN + " projects...")
+        for (var i2 = 0; i2 < projN + 1; i2++) {
+          $.getJSON(cors + "https://api.scratch.mit.edu/projects/" + proj2[i2].match(/\d+/g))
+            .done(function(data) {
+              projDone++
+              _log("Obtained project's statistics " + projDone + " of " + projN + ".")
+              _log(data.id + " " + data.title)
+              console.log(data)
+              projList.push({"id": data.id, "title": data.title, "stats": data.stats})
+              if (projN == projDone) {
+                _log("All project's statistics obtained!")
+                callback()
+              }
+            })
+            .fail(function() {
+              projDone++
+              _log("Failed to obtain project's statistics " + projDone + " of " + projN + ".")
+              _log(data.id)
+
+              if (projN == projDone) {
+                callback()
+              }
+            })
+        }
+      }
+
+      function execProjectStats(callback) {
+        _log("Analyzing all projects...")
+        console.log(projList)
+        $.each(projList, function(i, v) {
+          totalStats.views += v.stats.views
+          totalStats.loves += v.stats.loves
+          totalStats.favorites += v.stats.favorites
+          totalStats.comments += v.stats.comments
+          totalStats.remixes += v.stats.remixes
+          if (mostViewedProject.stats.views < v.stats.views) {
+            mostViewedProject = v
+          }
+          if (mostLovedProject.stats.loves < v.stats.loves) {
+            mostLovedProject = v
+          }
+          if (mostFavoritedProject.stats.favorites < v.stats.favorites) {
+            mostFavoritedProject = v
+          }
+          if (mostCommentedProject.stats.comments < v.stats.comments) {
+            mostCommentedProject = v
+          }
+          if (mostRemixedProject.stats.comments < v.stats.comments) {
+            mostRemixedProject = v
+          }
+          if (oldestProject.id > v.id) {
+            oldestProject = v
+          }
+          if (newestProject.id < v.id) {
+            newestProject = v
+          }
+        })
+        avgStats.views = Math.round(totalStats.views / projList.length)
+        avgStats.loves = Math.round(totalStats.loves / projList.length)
+        avgStats.favorites = Math.round(totalStats.favorites / projList.length)
+        avgStats.comments = Math.round(totalStats.comments / projList.length)
+        avgStats.remixes = Math.round(totalStats.remixes / projList.length)
+        _log("All projects analyzed!")
+        callback()
+      }
+
+      function execActivity(callback) {
+        _log("Analyzing user activity...")
+        $.get(cors + "https://scratch.mit.edu/messages/ajax/user-activity/?user=" + username + "&max=99999", function(data) {
+            function actMatch(regex) {
+              return (data.match(regex) === null) ? 0 : data.match(regex).length
+            }
+            console.log(data)
+            activity.favorite = actMatch(/favorited/g)
+            activity.love = actMatch(/loved/g)
+            activity.studioadd = actMatch(/added/g)
+            activity.studiofollow = actMatch(/following the/g)
+            activity.userfollow = actMatch(/following (?!the)/g)
+            activity.studiocurator = actMatch(/became/g)
+            activity.studiomanager = actMatch(/promoted/g)
+            activity.share = actMatch(/shared/g)
+            activity.total = actMatch(/\/li/g)
+            _log("User activity analyzed!")
+            callback()
+          })
+      }
+
+      function execMessages(callback) {
+        _log("Obtaining message count...")
+        $.getJSON(cors + "https://api.scratch.mit.edu/proxy/users/" + username + "/activity/count", function(data) {
+          msgCount = data.msg_count
+          _log("Message count obtained!")
+          callback()
+        })
+      }
+
+      function execEnd() {
+        _log("")
+        _log("Username: " + profileData.username)
+        _log("ID: " + profileData.id)
+        _log("Join Date: " + dateJoined.toLocaleString())
+        _log("Country: " + profileData.profile.country)
+        _log("Projects Shared: " + proj2.length)
+        _log("Current Message Count: " + msgCount)
+        _log("")
+        _log("User Activity (each limited to 20)")
+        _log("Projects Loved: " + activity.love)
+        _log("Projects Favorited: " + activity.favorite)
+        _log("Projects Shared: " + activity.share)
+        _log("Users Followed: " + activity.userfollow)
+        _log("Projects Added to Studio: " + activity.studioadd)
+        _log("Studios Curated: " + activity.studiocurator)
+        _log("Studios Managed: " + activity.studiomanager)
+        _log("Total: " + activity.total)
+        _log("")
+        _log("Total Views: " + totalStats.views)
+        _log("Total Loves: " + totalStats.loves)
+        _log("Total Favorites: " + totalStats.favorites)
+        _log("Total Comments: " + totalStats.comments)
+        _log("Total Remixes: " + totalStats.remixes)
+        _log("")
+        _log("Average Views: " + avgStats.views)
+        _log("Average Loves: " + avgStats.loves)
+        _log("Average Favorites: " + avgStats.favorites)
+        _log("Average Comments: " + avgStats.comments)
+        _log("Average Remixes: " + avgStats.remixes)
+        _log("")
+        _log("Most Viewed Project: " + mostViewedProject.title + " (" + mostViewedProject.stats.views + ")")
+        _log("Most Loved Project: " + mostLovedProject.title + " (" + mostLovedProject.stats.loves + ")")
+        _log("Most Favorited Project: " + mostFavoritedProject.title + " (" + mostFavoritedProject.stats.favorites + ")")
+        _log("Most Commented Project: " + mostCommentedProject.title + " (" + mostCommentedProject.stats.comments + ")")
+        _log("Most Remixed Project: " + mostRemixedProject.title + " (" + mostRemixedProject.stats.remixes + ")")
+        _log("")
+        _log("Oldest Project: " + oldestProject.title + " (" + oldestProject.id + ")")
+        _log("Newest Project: " + newestProject.title + " (" + newestProject.id + ")")
+        stopTimer()
+        _log("")
+        _log("Operation completed in " + ms/1000 + " seconds.", true)
+      }
+
+      var ms = 0
+      var Interval
+
+      function stopTimer() {
+        clearInterval(Interval)
+      }
+
+      function startTimer() {
+        Interval = setInterval(function(){ms++}, 1);
+      }
+
+      $(function() {
+        $("input")[0].value = (window.location.hash) ? window.location.hash.slice(1):"Hans5958"
+        go()
+        $("#username").change(function() {
+          window.location.hash = $("input")[0].value
+          go()
+        })
+        window.onhashchange = function() {
+          $("input")[0].value = window.location.hash.slice(1)
+          go()
+        }
+      })
+
+      function go() {
+        if ($("#username")[0].disabled === false) {
+          init(function() {
+            execProfile(function() {
+              execProjectList(function() {
+                execProjectData(function() {
+                  execProjectStats(function() {
+                    execActivity(function() {
+                      execMessages(function() {
+                        execEnd()
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        }
+      }
+
+</script>
+</head>
+
+<body>
+  <!--
+  <div id="overlay" style="position:fixed;position:fixed;z-index:1999;top:0;right:0;bottom:0;left:0;width:100%;height:100%;background-color:#fff;"></div>
+  -->
+  <div id="content">
+    <div class="container">
+      <div class="row">
+        <form>
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" placeholder="Username" value="Hans5958">
+          </div>
+        </form>
+      </div>
+      <div class="row">
+        <!--
+        <div id="username">
+          <h2>Username</h2>
+          <p></p>
+        </div>
+        <div id="userid">
+          <h2>ID</h2>
+          <p></p>
+        </div>
+        <div id="joindate">
+          <h2>Date Joined</h2>
+          <p></p>
+        </div>
+        <div id="country">
+          <h2>Country</h2>
+          <p></p>
+        -->
+        <pre id="log" style="height:calc(100vh - 250px);width:100%;overflow:auto"></pre>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</body>
+
+</html>
