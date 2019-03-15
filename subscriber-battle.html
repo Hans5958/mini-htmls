@@ -25,7 +25,7 @@
 	di[1] = []
 	var r1 = 0
 	var r2 = 0
-	
+
 	function getData(id, replied, success, fail) {
 		$.getJSON("https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&fields=items(snippet(title),statistics(subscriberCount))&key=AIzaSyD8t66AxWreMSe3z_eVnq76kudwW3_BzO0&id=" + id)
 			.done(function(d) {
@@ -43,7 +43,7 @@
 				}
 			})
 	}
-	
+
 	setInterval(function() {
 		if (f[0]) {
 			getData(cID[0], null, function(x, y) {
@@ -60,7 +60,7 @@
 			})
 		}
 	}, 1000)
-	
+
 	function updateMargin(c) {
 		switch (c) {
 			case 0:
@@ -97,7 +97,7 @@
 			return Math.round(sumArray(a)*60/a.length)
 		}
 	}
-	
+
 	function sumArray(a) {
 		function x(y,z) {
 			return y+z
@@ -110,7 +110,7 @@
 		})
 		reload()
 	})
-	
+
 	function reset() {
 		$(".cN.1").html("Channel 1")
 		$(".cN.2").html("Channel 2")
@@ -135,7 +135,7 @@
 		$(".2").css("opacity", "1")
 		$(".margin").css("opacity", "1")
 	}
-	
+
 	function reload() {
 		$("#counter").fadeOut(500)
 		setTimeout(reset, 500)
@@ -172,34 +172,22 @@
 	}
   </script>
   <style>
-	p.subs {
-		font-size: 4rem
-	}
-	
-	h2.subs {
-		font-size: 3rem
-	}
-	
-	p.margin {
-		font-size: 3rem
-	}
-	
-	h2.margin {
-		font-size: 2rem
-	}
-	
-	p.diff {
-		font-size: 3rem
-	}
-	
-	h2.diff {
-		font-size: 2rem
-	}
-	
-	h1.cN {
-		font-size: 2.5rem
-	}
-	
+  p.subs {
+    font-size: 4rem
+  }
+
+  h2.subs, p.margin, p.diff {
+    font-size: 3rem
+  }
+
+  h2.margin, h2.diff  {
+    font-size: 2rem
+  }
+
+  h1.cN {
+    font-size: 2.5rem
+  }
+
 	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}
 	.odometer.odometer-auto-theme,.odometer.odometer-theme-default{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit,.odometer.odometer-theme-default .odometer-digit{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner{text-align:left;display:block;position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner{display:block;-webkit-backface-visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-value,.odometer.odometer-theme-default .odometer-digit .odometer-value{display:block;-webkit-transform:translateZ(0)}.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value{position:absolute}.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner{-webkit-transition:-webkit-transform 1s;-moz-transition:-moz-transform 1s;-ms-transition:-ms-transform 1s;-o-transition:-o-transform 1s;transition:transform 1s}.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner{-webkit-transition:-webkit-transform 1s;-moz-transition:-moz-transform 1s;-ms-transition:-ms-transform 1s;-o-transition:-o-transform 1s;transition:transform 1s;-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{font-family:"Helvetica Neue",sans-serif;line-height:1.1em}.odometer.odometer-auto-theme .odometer-value,.odometer.odometer-theme-default .odometer-value{text-align:center}
   </style>
