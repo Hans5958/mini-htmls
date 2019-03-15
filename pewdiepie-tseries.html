@@ -139,21 +139,17 @@
     font-size: 2.5rem
   }
 
+  p.livechat {
+    font-size: 1.5rem
+  }
+
   iframe {
     width: 100%;
-    height: 40vh
+    height: 40vmin
   }
 
-  iron-pages {
-    display: none
-  }
-
-  label-text:nth-of-type(1)::before {
-    content: "FlareTV - "
-  }
-
-  label-text:nth-of-type(2)::before {
-    content: "Social Blade - "
+  #panel-pages {
+    display: none !important
   }
 
 	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}
@@ -217,17 +213,16 @@
 			</div>
 		</div>
 		</div>
-    </div>
-    <div class="container">
       <div class="row">
         <div class="col-md-6 text-center">
+          <p class="livechat">FlareTV</p>
           <iframe src="https://www.youtube.com/live_chat?v=UVxU2HzPGug&amp;embed_domain=hans5958.github.io"></iframe>
         </div>
         <div class="col-md-6 text-center">
+          <p class="livechat">Social Blade</p>
           <iframe src="https://www.youtube.com/live_chat?v=mSQIX_G3TjU&amp;&amp;embed_domain=hans5958.github.io"></iframe>
         </div>
       </div>
-    </div>
   </div>
 </body>
 
