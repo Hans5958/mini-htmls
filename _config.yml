@@ -1,0 +1,10 @@
+title: "Hans5958's Website"
+email: ""
+description: "Ready or not, here we go! Website of Hans5958."
+baseurl: ""
+url: ""
+
+markdown: kramdown
+theme: minima
+
+exclude: ["README.md", "CODE_OF_CONDUCT.md"]
