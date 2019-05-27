@@ -93,7 +93,8 @@ description: Mini HTMLs
        "loves": {},
        "favorites": {},
        "comments": {},
-       "remixes": {}
+       "remixes": {},
+	   "id": {}
       }
       totalStats = {"views": 0, "loves": 0, "favorites": 0, "comments": 0, "remixes": 0}
       avgStats = {"views": 0, "loves": 0, "favorites": 0, "comments": 0, "remixes": 0}
@@ -265,8 +266,18 @@ description: Mini HTMLs
           })
           avgStats[v1] = Math.round(totalStats[v1] / projList.length)
         })
-        topProjects.oldest = projList[0]
-        topProjects.newest = projList[projList.length - 1]
+		
+		sortLists.id = Array.from(projList)
+		  sortLists.id.sort(function(a, b) {
+			return b.stats.id - a.stats.id;
+		  })
+		  topProjects.id = sortLists.id[0]
+		  projList.forEach(function(v2) {
+			totalStats.id += v2.stats.id
+		  })
+		  avgStats.id = Math.round(totalStats.id / projList.length)
+        topProjects.oldest = sortLists.id[0]
+        topProjects.newest = sortLists.id[projList.length - 1]
 
         _log("All projects analyzed!")
         callback()
