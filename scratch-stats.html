@@ -39,6 +39,7 @@ description: Mini HTMLs
         $("pre#log")[0].scrollTop = $("pre#log")[0].scrollHeight;
         if (typeof error === "boolean") {
           $("#username")[0].disabled = false
+          $("#mode")[0].disabled = false
         }
     }
 
@@ -66,6 +67,7 @@ description: Mini HTMLs
     // Initialization for dynamic execution.
     function init(callback) {
       $("#username")[0].disabled = true
+      $("#mode")[0].disabled = true
       _log()
       _log("Scratch Stats starting...")
       _log("Preparing...")
@@ -101,7 +103,6 @@ description: Mini HTMLs
       activity = {"favorite": 0, "love": 0, "studioadd": 0, "studiofollow": 0, "userfollow": 0, "studiocurator": 0, "studiomanager": 0, "share": 0, "total": 0}
 
       // Selecting CORS proxy.
-
       function corsDetect(callback) {
         $.getJSON("https://cors.io/?https://api.scratch.mit.edu", function () {
           callback("https://cors.io?")
@@ -151,20 +152,20 @@ description: Mini HTMLs
       }
 
     // A new method of obtaining project's data with a single API for listing projects.
-    // Due to a bug, the remixes are counted as zero. The alternative method is used instead.
     function execProject(callback) {
-
+        _log("Retrieving projects list...")
         function gallery(pg) {
-          _log("Analyzing page " + pg + "...")
+          pgPlus = pg + 1
+          _log("Analyzing page " + pgPlus + "...")
           $.getJSON(cors + "https://api.scratch.mit.edu/users/" + username + "/projects/?limit=40&offset=" + pg*40, function(data) {
-            _log("Analyzed page " + pg + ".")
-            _log("Total projects now: " + projList.length)
             if (data.length != 0) {
               data.forEach(function(v) {
                 _log(v.id + " " + v.title)
                 projList.push({"id": v.id, "title": v.title, "stats": v.stats})
               })
-              gallery(pg+1)
+              _log("Analyzed page " + pgPlus + ".")
+              _log("Total projects now: " + projList.length)
+              gallery(pgPlus)
             } else {
               _log("All pages analyzed and all project's statistics obtained!")
               callback()
@@ -267,15 +268,15 @@ description: Mini HTMLs
           avgStats[v1] = Math.round(totalStats[v1] / projList.length)
         })
 		
-		sortLists.id = Array.from(projList)
-		  sortLists.id.sort(function(a, b) {
-			return b.stats.id - a.stats.id;
-		  })
-		  topProjects.id = sortLists.id[0]
-		  projList.forEach(function(v2) {
-			totalStats.id += v2.stats.id
-		  })
-		  avgStats.id = Math.round(totalStats.id / projList.length)
+        sortLists.id = Array.from(projList)
+        sortLists.id.sort(function(a, b) {
+          return a.stats.id + b.stats.id;
+        })
+        topProjects.id = sortLists.id[0]
+        projList.forEach(function(v2) {
+          totalStats.id += v2.stats.id
+        })
+        avgStats.id = Math.round(totalStats.id / projList.length)
         topProjects.oldest = sortLists.id[0]
         topProjects.newest = sortLists.id[projList.length - 1]
 
@@ -360,10 +361,10 @@ description: Mini HTMLs
         _report()
         _report("Lists Of Stats:")
         _report()
-        _report("Projects: (id / views / loves / comments / favorites / remixes)")
-        projList.forEach(function(v, i) {
+        _report("Projects: (views / loves / comments / favorites / remixes)")
+        sortLists.id.forEach(function(v, i) {
           i++
-          _report(i + ". " + v.title + " (" + v.id + " / " + v.stats.views + " / " + v.stats.loves + " / " + v.stats.comments + " / " + v.stats.favorites + " / " + v.stats.remixes + ")")
+          _report(i + ". [" + v.id + "] " + v.title + " (" + v.stats.views + " / " + v.stats.loves + " / " + v.stats.comments + " / " + v.stats.favorites + " / " + v.stats.remixes + ")")
         })
         stats.forEach(function(v1, i) {
           _report()
@@ -384,25 +385,28 @@ description: Mini HTMLs
         _log()
 		
         stopTimer()
-		_log("Report printed!")
+		    _log("Report printed!")
         _log("Operation completed in " + ms/1000 + " seconds.", true)
       }
 
     // Execution triggers, including has for short url and edge cases.
     $(function() {
       $("input")[0].value = (window.location.hash) ? window.location.hash.slice(1):"Hans5958"
-	  window.location.hash = $("input")[0].value
+	    window.location.hash = $("input")[0].value
       go()
       $("#username").change(function() {
         go()
-		window.location.hash = $("input")[0].value
-		$("input")[0].value = window.location.hash.slice(1)
+		    window.location.hash = $("input")[0].value
+		    $("input")[0].value = window.location.hash.slice(1)
       })
       window.onhashchange = function() {
-	    go()
+	      go()
         $("input")[0].value = window.location.hash.slice(1)
-		window.location.hash = $("input")[0].value
+	    	window.location.hash = $("input")[0].value
       }
+      $("#mode").change(function() {
+        go()
+      })
     })
 
     // The execution!
@@ -410,31 +414,45 @@ description: Mini HTMLs
       if ($("#username")[0].disabled === false) {
         init(function() {
           execProfile(function() {
-            execProjectAlt(function() {
-              execProjectStats(function() {
-                execActivity(function() {
-                  execMessages(function() {
-                    execEnd()
+            execActivity(function() {
+              execMessages(function() {
+                if ($("#mode")[0].value === "main") {
+                  execProject(function() {
+                    execProjectStats(function() {
+                      execEnd()
+                    })
                   })
-                })
+                } else {
+                  execProjectAlt(function() {
+                    execProjectStats(function() {
+                      execEnd()
+                    })
+                  })
+                }
               })
             })
           })
         })
       }
     }
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.25/moment-timezone-with-data-10-year-range.js"></script>
 
     <div class="container">
       <div class="row">
-        <form>
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" placeholder="Username" value="Hans5958">
-          </div>
-        </form>
+        <div class="form-group col-md-6">
+          <label for="username">Username:</label>
+          <input type="text" class="form-control" id="username" placeholder="Username" value="Hans5958">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="mode">Mode for Fetching Projects:</label>
+          <select class="form-control" id="mode">
+            <option value="main">Main (faster, no remix count)</option>
+            <option value="alt">Alternative (slower, bug-free)</option>
+          </select>
+        </div>
       </div>
       <div class="row">
         <!--
