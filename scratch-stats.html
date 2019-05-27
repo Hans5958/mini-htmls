@@ -141,7 +141,6 @@ description: Mini HTMLs
           .done(function(data) {
             _log("User found!")
             profileData = data
-            console.log(data)
             dateJoined = new Date(data.history.joined)
             callback()
           })
@@ -227,7 +226,6 @@ description: Mini HTMLs
                 projDone++
                 _log("Obtained project's statistics " + projDone + " of " + projN + ".")
                 _log(data.id + " " + data.title)
-                console.log(data)
                 projList.push({"id": data.id, "title": data.title, "stats": data.stats})
                 if (projN == projDone) {
                   _log("All project's statistics obtained!")
@@ -282,7 +280,6 @@ description: Mini HTMLs
             function actMatch(regex) {
               return (data.match(regex) === null) ? 0 : data.match(regex).length
             }
-            console.log(data)
             activity.favorite = actMatch(/favorites/g)
             activity.love = actMatch(/loves/g)
             activity.studioadd = actMatch(/added/g)
@@ -292,6 +289,7 @@ description: Mini HTMLs
             activity.studiomanager = actMatch(/promoted/g)
             activity.share = actMatch(/shared/g)
             activity.total = actMatch(/\/li/g)
+			
             _log("User activity analyzed!")
             callback()
           })
@@ -303,6 +301,7 @@ description: Mini HTMLs
         _log("Obtaining message count...")
         $.getJSON(cors + "https://api.scratch.mit.edu/users/" + username + "/messages/count", function(data) {
           msgCount = data.count
+		  
           _log("Message count obtained!")
           callback()
         })
@@ -373,6 +372,7 @@ description: Mini HTMLs
         _log()
         _log("================================")
         _log()
+		
         stopTimer()
 		_log("Report printed!")
         _log("Operation completed in " + ms/1000 + " seconds.", true)
