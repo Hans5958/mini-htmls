@@ -192,7 +192,6 @@ description: Mini HTMLs
             .done(function(data1) {
               proj1 = data1.match(/project\/\d+/gm)
               proj2 = proj2.concat(proj1)
-              lol = data1.match(/<span class="page-current/gm)
               if (data1.match(/<span class="page-current/gm) === null) {
                 page = 1
               } else {
