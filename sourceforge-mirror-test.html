@@ -4,85 +4,92 @@ title: SourceForge Mirror Test
 description: Mini HTMLs 
 ---
 
-  <script>
-    var cors
+<script>
+  var cors
 
-    function cors1() {
-    	$.get("https://cors.io/?https://a.fsdn.com/allura/p/gnucash/icon?1523061114?&w=120", function () {
-    			cors2("https://cors.io?")
-    		})
-    		.fail(function () {
-    			$.get("https://api.codetabs.com/cors-proxy/https://a.fsdn.com/allura/p/gnucash/icon?1523061114?&w=120", function () {
-    					cors2("https://api.codetabs.com/cors-proxy/")
-    				})
-    				.fail(function () {
-    					$.get("https://jsonp.afeld.me/?url=https://a.fsdn.com/allura/p/gnucash/icon?1523061114?&w=120", function () {
-    							cors2("https://jsonp.afeld.me/?url=")
-    						})
-    						.fail(function () {
-    								errorFail()
-    						})
-    				})
-    		})
-    }
+  function cors1() {
+    $.get("https://cors.io/?https://a.fsdn.com/allura/p/gnucash/icon?1523061114?&w=120", function() {
+        cors2("https://cors.io?")
+      })
+      .fail(function() {
+        $.get("https://api.codetabs.com/cors-proxy/https://a.fsdn.com/allura/p/gnucash/icon?1523061114?&w=120",
+            function() {
+              cors2("https://api.codetabs.com/cors-proxy/")
+            })
+          .fail(function() {
+            $.get("https://jsonp.afeld.me/?url=https://a.fsdn.com/allura/p/gnucash/icon?1523061114?&w=120",
+                function() {
+                  cors2("https://jsonp.afeld.me/?url=")
+                })
+              .fail(function() {
+                errorFail()
+              })
+          })
+      })
+  }
 
-    function cors2(d) {
-      console.log(d)
-    	cors = d
-    }
+  function cors2(d) {
+    console.log(d)
+    cors = d
+  }
 
-    function go() {
-      let proj, file
-      let mirrors = []
-      $("table").toggle(false)
-      $("#batch").toggle(false)
-      let m = $("#link")[0].value.match(/https:\/\/sourceforge\.net\/projects\/(.*)\/files\/(.*)\/download/)
-      proj = m[1]
-      file = m[2]
-      $("#mirrors").html("")
-      $("#dialog").load(cors + "https://sourceforge.net/settings/mirror_choices?projectname=" + proj + "&filename=" + file + "&dialog=true", function() {
-        $("#dialog li").each(function(i,v) {
+  function go() {
+    let proj, file
+    let mirrors = []
+    $("table").toggle(false)
+    $("#batch").toggle(false)
+    let m = $("#link")[0].value.match(/https:\/\/sourceforge\.net\/projects\/(.*)\/files\/(.*)\/download/)
+    proj = m[1]
+    file = m[2]
+    $("#mirrors").html("")
+    $("#dialog").load(cors + "https://sourceforge.net/settings/mirror_choices?projectname=" + proj + "&filename=" +
+      file + "&dialog=true",
+      function() {
+        $("#dialog li").each(function(i, v) {
           if (v.id != "autoselect") {
             mirrors.push(v.id)
           }
         })
         mirrors.sort()
         mirrors.forEach(function(shrt) {
-          $("#mirrors").append("<tr><td><img src=\"assets/images/sourceforge-mirror-test/" + shrt + "-large.png\"></img></td><td><p>" + shrt + "</p></td><td><p>https://" + shrt + ".dl.sourceforge.net/project/" + proj + "/" + file + "</p></td></tr>")
-          $("#batch")[0].innerHTML += "https://" + shrt + ".dl.sourceforge.net/project/" + proj + "/" + file + "\n"
+          $("#mirrors").append("<tr><td><img src=\"assets/images/sourceforge-mirror-test/" + shrt +
+            "-large.png\"></img></td><td><p>" + shrt + "</p></td><td><p>https://" + shrt +
+            ".dl.sourceforge.net/project/" + proj + "/" + file + "</p></td></tr>")
+          $("#batch")[0].innerHTML += "https://" + shrt + ".dl.sourceforge.net/project/" + proj + "/" + file +
+            "\n"
         })
         $("table").toggle(true)
         $("#batch").toggle(true)
       })
-    }
+  }
 
-    cors1()
-  </script>
+  cors1()
+</script>
 
-  <div class="container">
-      <h1>SourceForge Mirror Test</h1>
-      <br/>
-      <h6 style="font-weight: 600">Download link:</h6>
-      <div class="input-group">
-        <input type="text" class="form-control" id="link">
-        <div class="input-group-append">
-          <button class="btn btn-success" type="submit" id="go" onclick="go()">Go</button>
-        </div>
-      </div>
-      <br/>
-      <table class="table" style="display: none;">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Short Name</th>
-            <th>Link</th>
-          </tr>
-        </thead>
-        <tbody id="mirrors">
-        </tbody>
-      </table>
-      <br/>
-      <pre id="batch" style="display: none;"></pre>
-      <div id="dialog" class="d-none"></div>
-      <br/>
+<div class="container">
+  <h1>SourceForge Mirror Test</h1>
+  <br />
+  <h6 style="font-weight: 600">Download link:</h6>
+  <div class="input-group">
+    <input type="text" class="form-control" id="link">
+    <div class="input-group-append">
+      <button class="btn btn-success" type="submit" id="go" onclick="go()">Go</button>
     </div>
+  </div>
+  <br />
+  <table class="table" style="display: none;">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Short Name</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody id="mirrors">
+    </tbody>
+  </table>
+  <br />
+  <pre id="batch" style="display: none;"></pre>
+  <div id="dialog" class="d-none"></div>
+  <br />
+</div>

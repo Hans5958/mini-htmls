@@ -4,25 +4,30 @@ title: Subscriber Battle
 description: Mini HTMLs 
 ---
 
-  <script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
-  <script>
-  var margin = 0
-  var s = []
-  var v = []
-  var d = []
-  var d1 = []
-  var r1 = 0
-  var r2 = 0
-  var di = [[], []]
-  var cID = ["UC-lHJZR3Gqxm24_Vd_AJ5Yw", "UCq-Fj5jknLsUf-MWSy4_brA"]
-  var f = [true, true]
-  var n = ["PewDiePie", "T-Series"]
+<script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
+<script>
+	var margin = 0
+	var s = []
+	var v = []
+	var d = []
+	var d1 = []
+	var r1 = 0
+	var r2 = 0
+	var di = [
+		[],
+		[]
+	]
+	var cID = ["UC-lHJZR3Gqxm24_Vd_AJ5Yw", "UCq-Fj5jknLsUf-MWSy4_brA"]
+	var f = [true, true]
+	var n = ["PewDiePie", "T-Series"]
 	var r1 = 0
 	var r2 = 0
 
 
 	function getData(id, replied, success, fail) {
-		$.getJSON("https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&fields=items(snippet(title),statistics(subscriberCount))&key=AIzaSyD8t66AxWreMSe3z_eVnq76kudwW3_BzO0&id=" + id)
+		$.getJSON(
+				"https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&fields=items(snippet(title),statistics(subscriberCount))&key=AIzaSyD8t66AxWreMSe3z_eVnq76kudwW3_BzO0&id=" +
+				id)
 			.done(function(d) {
 				if (typeof d.items[0] == "object") {
 					var x = d.items[0].snippet.title
@@ -89,19 +94,19 @@ description: Mini HTMLs
 			if (a.length > 61) {
 				a.shift()
 			}
-			return Math.round(sumArray(a)*60/a.length)
+			return Math.round(sumArray(a) * 60 / a.length)
 		}
 	}
 
 	function sumArray(a) {
-		function x(y,z) {
-			return y+z
+		function x(y, z) {
+			return y + z
 		}
 		return a.reduce(x)
 	}
 
 	function reload() {
-    $(".cN.1").html("Channel 1")
+		$(".cN.1").html("Channel 1")
 		$(".cN.2").html("Channel 2")
 		$("p").html("0")
 		$("p.diff").html("0")
@@ -114,43 +119,225 @@ description: Mini HTMLs
 			$("#counter").delay(500).fadeIn(500)
 		}
 	}
-  </script>
-  <style>
-  p.subs {
-    font-size: 4rem
-  }
+</script>
+<style>
+	p.subs {
+		font-size: 4rem
+	}
 
-  h2.subs, p.margin, p.diff {
-    font-size: 3rem
-  }
+	h2.subs,
+	p.margin,
+	p.diff {
+		font-size: 3rem
+	}
 
-  h2.margin, h2.diff  {
-    font-size: 2rem
-  }
+	h2.margin,
+	h2.diff {
+		font-size: 2rem
+	}
 
-  h1.cN {
-    font-size: 2.5rem
-  }
+	h1.cN {
+		font-size: 2.5rem
+	}
 
-  p.livechat {
-    font-size: 1.5rem
-  }
+	p.livechat {
+		font-size: 1.5rem
+	}
 
-  iframe {
-    width: 100%;
-    height: 40vh
-  }
+	iframe {
+		width: 100%;
+		height: 40vh
+	}
 
-  #panel-pages {
-    display: none !important
-  }
+	#panel-pages {
+		display: none !important
+	}
 
-	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}
-  .odometer.odometer-auto-theme,.odometer.odometer-theme-default{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit,.odometer.odometer-theme-default .odometer-digit{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner{text-align:left;display:block;position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner{display:block;-webkit-backface-visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-value,.odometer.odometer-theme-default .odometer-digit .odometer-value{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value{position:absolute}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{font-family:"Helvetica Neue",sans-serif;line-height:1.1em}.odometer.odometer-auto-theme .odometer-value,.odometer.odometer-theme-default .odometer-value{text-align:center}
+	@keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-moz-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-webkit-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-ms-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-o-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	.fadeout {
+		-webkit-animation: fadeout .5s;
+		-moz-animation: fadeout .5s;
+		-ms-animation: fadeout .5s;
+		-o-animation: fadeout .5s;
+		animation: fadeout .5s
+	}
+
+	@keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-moz-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-webkit-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-ms-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-o-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit,
+	.odometer.odometer-theme-default .odometer-digit {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
+		text-align: left;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
+		display: block
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
+		display: block;
+		-webkit-backface-visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value {
+		display: block
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
+		position: absolute
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		font-family: "Helvetica Neue", sans-serif;
+		line-height: 1.1em
+	}
+
+	.odometer.odometer-auto-theme .odometer-value,
+	.odometer.odometer-theme-default .odometer-value {
+		text-align: center
+	}
 </style>
 
-    <div class="container">
-		<div id="counter">
+<div class="container">
+	<div id="counter">
 		<div class="row">
 			<div class="col-md-6 text-center">
 				<h1 class="cN 1">
@@ -160,7 +347,7 @@ description: Mini HTMLs
 					Subscribers
 				</h2>
 				<p class="odometer subs 1">
-				0
+					0
 				</p>
 			</div>
 			<div class="col-md-6 text-center">
@@ -171,7 +358,7 @@ description: Mini HTMLs
 					Subscribers
 				</h2>
 				<p class="odometer subs 2">
-				0
+					0
 				</p>
 			</div>
 		</div>
@@ -201,15 +388,15 @@ description: Mini HTMLs
 				</p>
 			</div>
 		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 text-center">
+			<p class="livechat">FlareTV</p>
+			<iframe src="https://www.youtube.com/live_chat?v=UVxU2HzPGug&amp;embed_domain=hans5958.github.io"></iframe>
 		</div>
-      <div class="row">
-        <div class="col-md-6 text-center">
-          <p class="livechat">FlareTV</p>
-          <iframe src="https://www.youtube.com/live_chat?v=UVxU2HzPGug&amp;embed_domain=hans5958.github.io"></iframe>
-        </div>
-        <div class="col-md-6 text-center">
-          <p class="livechat">Social Blade</p>
-          <iframe src="https://www.youtube.com/live_chat?v=mSQIX_G3TjU&amp;&amp;embed_domain=hans5958.github.io"></iframe>
-        </div>
-      </div>
-  </div>
+		<div class="col-md-6 text-center">
+			<p class="livechat">Social Blade</p>
+			<iframe src="https://www.youtube.com/live_chat?v=mSQIX_G3TjU&amp;&amp;embed_domain=hans5958.github.io"></iframe>
+		</div>
+	</div>
+</div>
