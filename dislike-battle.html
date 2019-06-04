@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <title>Dislike Battle - Hans5958's Mini HTMLs</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mini HTMLs">
-  <meta name="author" content="Hans5958">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/themes/black/pace-theme-loading-bar.min.css">
-  <script src="/mini-htmls/data/require.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
-  <script>
+---
+layout: default
+title: Dislike Battle
+description: Mini HTMLs
+---
+<script>
 	var margin
 	var cID = []
 	var s = []
@@ -94,13 +85,13 @@
 			if (a.length > 61) {
 				a.shift()
 			}
-			return Math.round(sumArray(a)*60/a.length)
+			return Math.round(sumArray(a) * 60 / a.length)
 		}
 	}
 
 	function sumArray(a) {
-		function x(y,z) {
-			return y+z
+		function x(y, z) {
+			return y + z
 		}
 		return a.reduce(x)
 	}
@@ -143,7 +134,7 @@
 		setTimeout(function() {
 			getData(cID[0], function() {
 				doneTest()
-			}, function (x, y) {
+			}, function(x, y) {
 				n[0] = x
 				f[0] = true
 				$(".cN.1").html(n[0])
@@ -153,7 +144,7 @@
 			})
 			getData(cID[1], function() {
 				doneTest()
-			}, function (x, y) {
+			}, function(x, y) {
 				n[1] = x
 				f[1] = true
 				$(".cN.2").html(n[1])
@@ -170,50 +161,270 @@
 			$("#counter").delay(500).fadeIn(500)
 		}
 	}
-  </script>
-  <style>
-  p.subs {
-    font-size: 4rem
-  }
+</script>
+<style>
+	p.subs {
+		font-size: 4rem
+	}
 
-  h2.subs, p.margin, p.diff {
-    font-size: 3rem
-  }
+	h2.subs,
+	p.margin,
+	p.diff {
+		font-size: 3rem
+	}
 
-  h2.margin, h2.diff  {
-    font-size: 2rem
-  }
+	h2.margin,
+	h2.diff {
+		font-size: 2rem
+	}
 
-  h1.cN {
-    font-size: 1rem
-  }
+	h1.cN {
+		font-size: 1rem
+	}
 
-	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}
-	.odometer.odometer-auto-theme,.odometer.odometer-theme-default{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit,.odometer.odometer-theme-default .odometer-digit{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner{text-align:left;display:block;position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner{display:block;-webkit-backface-visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-value,.odometer.odometer-theme-default .odometer-digit .odometer-value{display:block;-webkit-transform:translateZ(0)}.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value{position:absolute}.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner{-webkit-transition:-webkit-transform 1s;-moz-transition:-moz-transform 1s;-ms-transition:-ms-transform 1s;-o-transition:-o-transform 1s;transition:transform 1s}.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner{-webkit-transition:-webkit-transform 1s;-moz-transition:-moz-transform 1s;-ms-transition:-ms-transform 1s;-o-transition:-o-transform 1s;transition:transform 1s;-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{font-family:"Helvetica Neue",sans-serif;line-height:1.1em}.odometer.odometer-auto-theme .odometer-value,.odometer.odometer-theme-default .odometer-value{text-align:center}
-  </style>
-</head>
+	@keyframes fadein {
+		from {
+			opacity: 0
+		}
 
-<body>
-<div id="overlay" style="position:fixed;position:fixed;z-index:1999;top:0;right:0;bottom:0;left:0;width:100%;height:100%;background-color:#fff"></div>
-  <div id="content">
-    <div class="container">
-		<form>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="form-group">
-						<label for="cID1">Video ID 1:</label>
-						<input type="text" class="form-control" id="cID1" placeholder="Video ID" value="kffacxfA7G4">
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label for="cID2">Video ID 2:</label>
-						<input type="text" class="form-control" id="cID2" placeholder="Video ID" value="YbJOTdZBX1g">
-					</div>
+		to {
+			opacity: 1
+		}
+	}
+
+	@-moz-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-webkit-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-ms-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-o-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	.fadeout {
+		-webkit-animation: fadeout .5s;
+		-moz-animation: fadeout .5s;
+		-ms-animation: fadeout .5s;
+		-o-animation: fadeout .5s;
+		animation: fadeout .5s
+	}
+
+	@keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-moz-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-webkit-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-ms-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-o-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit,
+	.odometer.odometer-theme-default .odometer-digit {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
+		text-align: left;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
+		display: block
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
+		display: block;
+		-webkit-backface-visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value {
+		display: block;
+		-webkit-transform: translateZ(0)
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
+		position: absolute
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 1s;
+		-moz-transition: -moz-transform 1s;
+		-ms-transition: -ms-transform 1s;
+		-o-transition: -o-transform 1s;
+		transition: transform 1s
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 1s;
+		-moz-transition: -moz-transform 1s;
+		-ms-transition: -ms-transform 1s;
+		-o-transition: -o-transform 1s;
+		transition: transform 1s;
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-ms-transform: translateY(0);
+		-o-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		font-family: "Helvetica Neue", sans-serif;
+		line-height: 1.1em
+	}
+
+	.odometer.odometer-auto-theme .odometer-value,
+	.odometer.odometer-theme-default .odometer-value {
+		text-align: center
+	}
+</style>
+
+<div class="container">
+	<form>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="cID1">Video ID 1:</label>
+					<input type="text" class="form-control" id="cID1" placeholder="Video ID" value="kffacxfA7G4">
 				</div>
 			</div>
-		</form>
-		<div id="counter">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="cID2">Video ID 2:</label>
+					<input type="text" class="form-control" id="cID2" placeholder="Video ID" value="YbJOTdZBX1g">
+				</div>
+			</div>
+		</div>
+	</form>
+	<div id="counter">
 		<div class="row">
 			<div class="col-md-6 text-center">
 				<h1 class="cN 1">
@@ -223,7 +434,7 @@
 					Dislikes
 				</h2>
 				<p class="odometer subs 1">
-				0
+					0
 				</p>
 			</div>
 			<div class="col-md-6 text-center">
@@ -234,7 +445,7 @@
 					Dislikes
 				</h2>
 				<p class="odometer subs 2">
-				0
+					0
 				</p>
 			</div>
 		</div>
@@ -264,9 +475,5 @@
 				</p>
 			</div>
 		</div>
-		</div>
-    </div>
-  </div>
-</body>
-
-</html>
+	</div>
+</div>
