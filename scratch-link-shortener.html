@@ -8,40 +8,55 @@ description: Scratch Link Shortener, created by Raytracing at Scratch, edited by
 <style>
 	#maindata {
 		font-family: 'Abel';
-		font-size:30px;
+		font-size: 30px;
 		text-align: center;
-		display:table-cell; 
-		vertical-align:middle;
+		display: table-cell;
+		vertical-align: middle;
 		height: calc(100vh - 160px);
 		width: 100vw;
-		border:none;
+		border: none;
 	}
-	h3, h5, .redirect {
+
+	h3,
+	h5,
+	.redirect {
 		margin: 0
 	}
+
 	p {
 		margin-top: 30px
 	}
+
+	#help {
+		font-size: 50%
+	}
+
 	body {
 		vertical-align: middle;
 		margin: 0
 	}
+
 	input {
 		font-family: 'Abel';
-		padding:35px 0px 5px;
+		padding: 35px 0px 5px;
 		width: 80vw;
-		font-size:30px;
-		border:none;
+		font-size: 30px;
+		border: none;
 		border-bottom: 2px solid #4287f5;
 	}
+
 	button:hover {
-		transition-duration:0.5s;
-		background-color:#1d6ef0;
+		transition-duration: 0.5s;
+		background-color: #1d6ef0;
 	}
+
 	button:focus {
 		outline: none;
 	}
-	input:focus {outline:none;}
+
+	input:focus {
+		outline: none;
+	}
 </style>
 
 <div id="maindata">
@@ -50,177 +65,184 @@ description: Scratch Link Shortener, created by Raytracing at Scratch, edited by
 	<button id="button">Get Link</button>
 	-->
 	<h3>Scratch Link Shortener</h3>
-	<h5>Made by <a href="https://scratch.mit.edu/users/Raytracing">Raytracing</a>, edited by Hans5958.</h5>
+	<h5><a href="https://scrc.tk">Original</a> made by <a href="https://scratch.mit.edu/users/Raytracing">Raytracing</a>, edited by Hans5958.</h5>
 	<input id="input" value="https://scratch.mit.edu/"></input>
+	<p id="help">Paste a Scratch link (users, projects, studios, forum topics, and forum posts) on the field.</p>
 	<p id="output"></p>
 </div>
 <br>
 
 <script>
+	// Preparing variables.
 
-const alpha = ["!","\"","#","$","&","\'","(",")","*","+",",","-",".","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?","@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","^","_","`","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","{","|","}","~"];
-const profilealpha = ["-","_","1","2","3","4","5","6","7","8","9","0","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
-const type = ["users", "projects", "studios", "discuss/topic", "discuss/post"]
+	const alpha = ["!", "\"", "#", "$", "&", "\'", "(", ")", "*", "+", ",", "-", ".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_", "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~"];
+	const profilealpha = ["-", "_", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+	const type = ["users", "projects", "studios", "discuss/topic", "discuss/post"]
+	//	const shortDomain = location.href.slice(location.protocol.length + 2)
+	const shortDomain = "scrc.us.to"
+	let firstTimeHelpHidden = false
 
-const inputField = document.getElementById("input")
-const outputField = document.getElementById("output")
+	const inputField = document.getElementById("input")
+	const outputField = document.getElementById("output")
 
-function redirect(x) {
-	if (x) {
-		document.getElementById("maindata").innerHTML = "<p class=\"redirect\">Redirecting to...</p><p class=\"redirect\">" + x + "</p>"
-		document.location = x
+	// This whole part is for the short URl encoding and decoding.
+	// It has been broken to several functions (or objects) for a better understanding.
+
+	const shortID = {
+		encode(array) {
+			return type.indexOf(array[0]) + array[1]
+		},
+
+		decode(value) {
+			return [type[value.toString()[0]], value.toString().slice(1)]
+		}
 	}
-}
 
-const shortID = {
-	encode(array) {
-		return type.indexOf(array[0]) + array[1]
-	},
+	const convURL = {
+		toDest(URL) {
+			var regexResult = /(?:https?:\/\/)?scratch\.mit\.edu\/(projects|studios|discuss\/topic|discuss\/post|users)\/([\d\w_-]*)(?:.*(?:post-(\d+)))?/.exec(URL)
+			console.log(typeof regexResult[3])
+			if (typeof regexResult[3] === "string") {
+				return ["discuss/post", regexResult[3]]
+			} else {
+				return [regexResult[1], regexResult[2]]
+			}
+		},
 
-	decode(value) {
-		return [type[value.toString()[0]], value.toString().slice(1)]
+		toURL(dest) {
+			if (typeof dest === "object") {
+				return "https://scratch.mit.edu/" + dest[0] + "/" + dest[1]
+			} else {
+				return "https://scratch.mit.edu/" + type[0] + "/" + dest
+			}
+		}
 	}
-}
 
-const convURL = {
-	toDest(URL) {
-		var regexResult = /(?:https?:\/\/)?scratch\.mit\.edu\/(projects|studios|discuss\/topic|discuss\/post|users)\/([\d\w_-]*)(?:.*(?:post-(\d+)))?/.exec(URL)
-		console.log(typeof regexResult[3])
-		if (typeof regexResult[3] === "string") {
-			return ["discuss/post", regexResult[3]]
+	const encode = {
+		numerical(value) {
+			var encode = "";
+			while (value > 0) {
+				encode = encode + alpha[(value % alpha.length)];
+				value = (value - value % alpha.length) / alpha.length;
+			}
+			return encode
+		},
+
+		profile(value) {
+			var userID = 0;
+			var multi = 1;
+			for (var i = 0; i < value.length; i++) {
+				userID += multi * (profilealpha.indexOf(value[i].toLowerCase()));
+				multi *= profilealpha.length;
+			}
+			var encode = "";
+			while (userID > 0) {
+				encode = encode + alpha[(userID % alpha.length)];
+				userID = (userID - userID % alpha.length) / alpha.length;
+			}
+			return encode
+		}
+
+	}
+
+	const decode = {
+		numerical(value) {
+			// decode project data
+			var decode = 0;
+			var multi = 1;
+			for (var i = 0; i < value.length; i++) {
+				decode += multi * (alpha.indexOf(value[i]));
+				multi *= alpha.length
+			}
+
+			return decode
+		},
+
+		profile(value) {
+			// decode profile data
+			var userID = 0;
+			var multi = 1;
+			for (var i = 0; i < value.length; i++) {
+				userID += (alpha.indexOf(value[i])) * multi
+				multi *= alpha.length
+			}
+			var decode = "";
+			while (userID > 0) {
+				decode += profilealpha[(userID % profilealpha.length)]
+				userID = (userID - (userID % profilealpha.length)) / profilealpha.length;
+			}
+
+			return decode
+		}
+	}
+
+	function getURL(link) {
+		outputDest = convURL.toDest(link)
+		if (outputDest[0] === "users") {
+			return shortDomain + "?" + encode.profile(outputDest[1])
 		} else {
-			return [regexResult[1], regexResult[2]]
+			outputID = shortID.encode(outputDest)
+			return shortDomain + "#" + encode.numerical(outputID)
 		}
-	},
+	}
 
-	toURL(dest) {
-		if (typeof dest === "object") {
-			return "https://scratch.mit.edu/" + dest[0] + "/" + dest[1]
+	// Redirecting when a short ID hash present.
+
+	function redirect(x) {
+		if (x) {
+			document.getElementById("maindata").innerHTML = "<p class=\"redirect\">Redirecting to...</p><p class=\"redirect\">" + x + "</p>"
+			document.location = x
+		}
+	}
+
+	var hash = decodeURIComponent(location.href.slice(location.protocol.length + location.host.length + location.pathname.length + 2))
+	if (hash[0] === "/") hash.slice(1)
+	console.log(hash)
+
+	if (hash) {
+		if (hash[0] === "#") {
+			hash = hash.slice(1)
+			redirect(convURL.toURL(shortID.decode(decode.numerical(hash))))
+		}
+		if (hash[0] === "?") {
+			hash = hash.slice(1)
+			redirect(convURL.toURL(decode.profile(hash)))
+		}
+
+	}
+
+	// window.onhashchange = () => {
+	// 	redirect(convURL.toURL(shortID.decode(decode.numerical(location.hash))))
+	// }
+
+	// Updating short URL with event listeners instead of a button.
+
+	function updateOutput(link) {
+		if (!firstTimeHelpHidden) {
+			document.getElementById("help").style.display = "none"
+		}
+		outputField.innerHTML = getURL(link)
+	}
+
+	inputField.onpaste = (e) => {
+		var clipboardData, pastedData;
+		e.stopPropagation();
+		e.preventDefault();
+		clipboardData = e.clipboardData || window.clipboardData;
+		pastedData = clipboardData.getData('Text');
+		if (pastedData.slice(0, 24) === "https://scratch.mit.edu/") {
+			inputField.value = pastedData
+			updateOutput(pastedData)
 		} else {
-			return "https://scratch.mit.edu/" + type[0] + "/" + dest
+			inputField.value += pastedData
 		}
 	}
-}
 
-const encode = {
-	numerical(value) {
-		var encode = "";
-		for (var i = 0; i < 555; i++) {
-			if (value > 0) {
-				console.log(value%alpha.length)
-				encode = encode+alpha[(value%alpha.length)];
-			}
-			value = (value-value%alpha.length)/alpha.length;
+	inputField.oninput = () => {
+		if (inputField.value.slice(0, 24) !== "https://scratch.mit.edu/") {
+			inputField.value = "https://scratch.mit.edu/"
+		} else {
+			updateOutput(inputField.value)
 		}
-		return encode
-	},
-	
-	profile(value) {
-		var userID = 0;
-		var multi = 1;
-		for (var i = 0;i<value.length;i++) {
-			userID += multi*(profilealpha.indexOf(value[i].toLowerCase()));
-			multi *= profilealpha.length;
-		}
-		var encode = "";
-		for (var i = 0; i < 15; i++) {
-			if (userID > 0 || i == 0) {
-				encode = encode+alpha[(userID%alpha.length)];
-			}
-			userID = (userID-userID%alpha.length)/alpha.length;
-		}
-		return encode
 	}
-
-}
-
-const decode = {
-	numerical(value) {
-		// decode project data
-		var decode = 0;
-		var multi = 1;
-		for (var i = 0;i<value.length;i++) {
-			decode += multi*(alpha.indexOf(value[i]));
-			multi *= alpha.length
-		}
-		
-		return decode
-	},
-
-	profile(value) {
-		// decode profile data
-		var userID = 0;
-		var multi = 1;
-		for (var i = 0;i<value.length;i++) {
-			userID += (alpha.indexOf(value[i]))*multi
-			multi *= alpha.length
-		}
-		var decode = "";
-		for (var i = 0; i < 15; i++) {
-			if (userID > 0 || i == 0) {
-				decode += profilealpha[(userID%profilealpha.length)]
-			}
-			userID = (userID-(userID%profilealpha.length))/profilealpha.length;
-		}
-		
-		return decode
-	}
-}
-
-function getURL(link) {
-	outputDest = convURL.toDest(link)
-	if (outputDest[0] === "users") {
-		return location.href.slice(location.protocol.length + 2) + "?" + encode.profile(outputDest[1])
-	} else {
-		outputID = shortID.encode(outputDest)
-		return location.href.slice(location.protocol.length + 2) + "#" + encode.numerical(outputID)
-	}
-}
-
-var hash = decodeURIComponent(location.href.slice(location.protocol.length + location.host.length + location.pathname.length + 2))
-if (hash[0] === "/") hash.slice(1)
-console.log(hash)
-
-if (hash) {
-	if (hash[0] === "#") {
-		hash = hash.slice(1)
-		redirect(convURL.toURL(shortID.decode(decode.numerical(hash))))
-	} 
-	if (hash[0] === "?") {
-		hash = hash.slice(1)
-		redirect(convURL.toURL(decode.profile(hash)))
-	}
-	
-}
-
-inputField.onpaste = (e) => {
-	var clipboardData, pastedData;
-	e.stopPropagation();
-	e.preventDefault();
-	clipboardData = e.clipboardData || window.clipboardData;
-	pastedData = clipboardData.getData('Text');
-	if (pastedData.slice(0, 24) === "https://scratch.mit.edu/") {
-		inputField.value = pastedData
-		outputField.innerHTML = getURL(pastedData)
-	} else {
-		inputField.value += pastedData
-	}
-}
-
-inputField.oninput = () => {
-	if (inputField.value.slice(0, 24) !== "https://scratch.mit.edu/") {
-		inputField.value = "https://scratch.mit.edu/"
-	} else {
-		outputField.innerHTML = getURL(inputField.value)
-	}
-}
-
-document.getElementById("button").onclick = () => {
-	outputField.innerHTML = getURL(inputField.value)
-}
-
-window.onhashchange = () => {
-	redirect(convURL.toURL(shortID.decode(decode.numerical(location.hash))))
-}
-
 </script>
