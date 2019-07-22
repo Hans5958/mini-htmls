@@ -23,8 +23,6 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 	const
 		buildDate = "22/07/2019",
 
-		// C = capitalized, P = passive
-
 		lists = ["projectsFavorited", "usersFollowing", "usersFollowers", "studiosFollowed", "studiosCurated"]
 		listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
 
@@ -97,6 +95,8 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 		$("#username")[0].disabled = true
 		$("#mode")[0].disabled = true
 		timer.start()
+
+		// C = capitalized, P = passive
 
 		stats = ["views", "loves", "favorites", "comments"]
 		statsC = ["Views", "Loves", "Favorites", "Comments"]
