@@ -21,10 +21,10 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 	// One-time preparations
 
 	const
-		buildDate = "22/07/2019",
+		buildDate = "23/07/2019",
 
 		lists = ["projectsFavorited", "usersFollowing", "usersFollowers", "studiosFollowed", "studiosCurated"]
-		listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
+	listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
 
 	let test1, test2, test3, test4, test5
 
@@ -185,7 +185,6 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 			callback()
 		} else {
 			cors = await corsDetect()
-			console.log(cors === false)
 			if (cors !== false) {
 				logEvent("CORS proxy selected! " + cors)
 				if (cors === "") {
@@ -237,8 +236,7 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 		function gallery(pg) {
 			pgPlus = pg + 1
 			logEvent("[P1] Analyzing page " + pgPlus + "...")
-			$.getJSON(cors + "https://api.scratch.mit.edu/users/" + username + "/projects/?limit=40&offset=" + pg *
-				40,
+			$.getJSON(cors + "https://api.scratch.mit.edu/users/" + username + "/projects/?limit=40&offset=" + pg * 40,
 				function(data) {
 					if (data.length != 0) {
 						data.forEach(function(v) {
@@ -277,10 +275,8 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 			function funcCallback(pageNow) {
 				logEvent("[P1] Analyzed page " + pageNow + " of " + pageTotal + ".")
 				logEvent("[P1] Total projects now: " + proj2.length)
-				console.log(pageDone, pageTotal)
 				pageDone++
 				if (pageDone === pageTotal) {
-					console.log(callback2)
 					callback2()
 				}
 			}
@@ -300,8 +296,7 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 					funcCallback(1)
 					if (pageTotal > 1) {
 						for (var i = 2; i < pageTotal + 1; i++) {
-							$.get(cors + "https://scratch.mit.edu/users/" + username +
-								"/projects/?page=" + i,
+							$.get(cors + "https://scratch.mit.edu/users/" + username + "/projects/?page=" + i,
 								function(data2) {
 									proj1 = data2.match(/project\/\d+/gm)
 									proj2 = proj2.concat(proj1)
@@ -321,9 +316,8 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 				$.getJSON(cors + "https://api.scratch.mit.edu/projects/" + proj2[i2].match(/\d+/g))
 					.done(function(data) {
 						projDone++
-						logEvent("[P1] Obtained project's statistics " + projDone + " of " + projN +
-							".")
-						logEvent(data.id + " " + data.title)
+						logEvent("[P1] Obtained project's statistics " + projDone + " of " + projN + ".")
+						logEvent("[P1] " + data.id + " " + data.title)
 						projList.push({
 							"id": data.id,
 							"title": data.title,
@@ -338,7 +332,7 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 						projDone++
 						logEvent("[P1] Failed to obtain project's statistics " + projDone + " of " +
 							projN + ".")
-						logEvent(data.id)
+						logEvent("[P1] " + data.id)
 						if (projN == projDone) {
 							logEvent("[P1] All project's statistics obtained!")
 							callback1()
@@ -649,8 +643,7 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 
 		reportEvent("Username: " + profileData.username)
 		reportEvent("ID: " + profileData.id)
-		reportEvent("Join Date: " + moment.tz(dateJoined, "GMT").tz(moment.tz.guess()).format(
-			"dddd, D MMMM YYYY, H:mm:ss z"))
+		reportEvent("Join Date: " + moment.tz(dateJoined, "GMT").tz(moment.tz.guess()).format("dddd, D MMMM YYYY, H:mm:ss z"))
 		reportEvent("Country: " + profileData.profile.country)
 		reportEvent("Projects Shared: " + projList.length)
 		reportEvent("Projects Favorited: " + list.projectsFavorited.length)
@@ -685,8 +678,7 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 		})
 		reportEvent()
 		stats.forEach(function(v, i) {
-			reportEvent("Most " + statsPC[i] + " Project: " + topProjects[v].title + " (" + topProjects[v].stats[
-				v] + ")")
+			reportEvent("Most " + statsPC[i] + " Project: " + topProjects[v].title + " (" + topProjects[v].stats[v] + ")")
 		})
 		reportEvent()
 		reportEvent("Oldest Project: " + topProjects.oldest.title + " (" + topProjects.oldest.id + ")")
@@ -700,10 +692,7 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 		reportEvent("Projects: (views / loves / comments / favorites / remixes)")
 		sortLists.id.forEach(function(v, i) {
 			i++
-			reportEvent(i + ". [" + v.id + "] " + v.title + " (" + v.stats.views + " / " + v.stats.loves + " / " +
-				v.stats
-				.comments +
-				" / " + v.stats.favorites + " / " + v.stats.remixes + ")")
+			reportEvent(i + ". [" + v.id + "] " + v.title + " (" + v.stats.views + " / " + v.stats.loves + " / " + v.stats.comments + " / " + v.stats.favorites + " / " + v.stats.remixes + ")")
 		})
 		stats.forEach(function(v1, i) {
 			reportEvent()
@@ -721,7 +710,6 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 				reportEvent(listsName[i] + ":")
 				list[v1].forEach(function(v2, i) {
 					i++
-					console.log(typeof v2)
 					if (typeof v2 === "object") {
 						reportEvent(i + ". [" + v2[0] + "] " + v2[1])
 					} else {
@@ -810,7 +798,8 @@ description: See statistics of a Scratcher with this tool. Totally not a clone o
 			<label for="mode">Mode for Fetching Projects:</label>
 			<select class="form-control" id="mode">
 				<option value="main">Main (faster, no remix count)</option>
-				<option value="alt">Alternative (slower, bug-free)</option>
+				<option value="alt">Alternative (slower, with remix count)</option>
+				<option value="ext">Extended (more details, requires CORS)</option>
 			</select>
 		</div>
 	</div>
