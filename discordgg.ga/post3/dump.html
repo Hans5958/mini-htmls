@@ -1,0 +1,51 @@
+<html>
+<!--
+ Page saved with SingleFile 
+ url: https://web.archive.org/web/20190719022024/https://discordgg.ga/dump 
+ saved date: Sun Sep 29 2019 09:45:32 GMT+0700 (Western Indonesia Time)
+-->
+<meta charset=utf-8>
+<title>Post-Analysis and Dump by R0Y4LTY</title>
+<style>
+	@import url('https://fonts.googleapis.com/css?family=Rajdhani&display=swap');	
+    
+    body {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 400
+    }
+    
+    .content {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-align: center
+    }
+</style>
+</head>
+
+<body>
+    <div class=content>
+        <h2>Information (moral: prevent CSRF on login endpoint):</h2>
+        <p>Well, it looks like we made a right mockery out of Discord and its idiotic users... How stupid do you have to be to fall for an obvious phishing website in 2019?
+            <br>
+            <br> This was no virus, worm or malware of any sort - it was simple old phishing site that utilized Discord's own moronic API to hijack these accounts. I hope this was a lesson for all of you folks...
+            <br>
+            <br>
+        </p>
+        <h2>How did it work, and how Discord should've responded:</h2>
+        <p>In simple terms, all requests were proxied to Discord's own site, and then obfuscated JS was injected into the response. This JS took over the login form, and submitted its own API call to the login endpoint (to bypass Discord's IP detection), and the response was sent back to our server (including the session token used for valid API calls).
+            <br>
+            <br> We then had an automated bot change the email and password of these accounts using Discord's own well-documented API endpoint, which simply required the aforementioned session token. This API call then provided us with a new session token, which we could later use to send out the phishing link via DMs.
+            <br>
+            <br> Discord decided to block our server's IP address from accessing their site, which stopped us for a good 10 minutes before we realised and proxied these requests via another server. Instead, Discord should've prevented CSRF on the API login endpoint, which would've stopped us in our tracks.
+        </p>
+        <h2>What did we collect:</h2> As you can guess, many people tried to submit fake logins, over 200,000 of them. These were quickly filtered through, due to these not being proxied, or invalid tokens were being submitted.
+        <br>
+        <br> All in all, a modest 2,522 valid logins were collected and 949 of them were then hijacked, and here's the dump:
+        <br>
+        <br>
+
+        <h1><a href=../dump.html>SQL DUMP</a></h1>
+    </div>
