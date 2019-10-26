@@ -1,0 +1,391 @@
+---
+layout: default
+title: #TeamTrees Live Counter
+description: Mini HTMLs
+---
+
+<script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
+<script>
+	var margin
+	var s = 0
+	var v = 0
+	var d = 0
+	var di = []
+	var f = false
+	var cors 
+	parser = new DOMParser()
+
+	const corsDetect = () => new Promise(callback => {
+			$.get("https://teamtrees.org/")
+				.done(function() {
+					callback("")
+				})
+				.fail(function() {
+					$.get("https://glen-hydrofoil.glitch.me/https://teamtrees.org/")
+						.done(function() {
+							callback("https://glen-hydrofoil.glitch.me/")
+						})
+						.fail(function() {
+							callback(false)
+						})
+				})
+		})
+
+	function getData(replied, success, fail) {
+		$.get(cors + "https://teamtrees.org/")
+			.done(function(d) {
+				var parsed = parser.parseFromString(d, "text/html")
+				var y = parsed.querySelector("#totalTrees").dataset.count 
+				if (y) {
+					success(null, y)
+				} else {
+					fail()
+				}
+			})
+			.always(function() {
+				if (typeof replied === "function") {
+					replied()
+				}
+			})
+	}
+
+	setInterval(function() {
+		if (f) {
+			getData(null, function(x, y) {
+				d = updateDiff(y - s, di)
+				s = y
+				updateMargin()
+			})
+		}
+	}, 5000)
+
+	function updateMargin() {
+		$("p.subs.1").html(s)
+		$("p.diff.1").html(d)
+	}
+
+	function updateDiff(n, a) {
+		if (!isNaN(n)) {
+			a.push(n)
+			if (a.length > 61) {
+				a.shift()
+			}
+			return Math.round(sumArray(a) * 60 / a.length)
+		}
+	}
+
+	function sumArray(a) {
+		function x(y, z) {
+			return y + z
+		}
+		return a.reduce(x)
+	}
+
+	$(async function() {
+		cors = await corsDetect()
+		reload()
+	})
+
+	function reset() {
+		$("p").html("0")
+		$("p.diff").html("0")
+		$("p.margin").html("0")
+		margin = 0
+		s = 0
+		v = 0
+		d = 0
+		di = []
+		f = false
+		$(".1").css("opacity", "1")
+		$(".margin").css("opacity", "1")
+	}
+
+	function reload() {
+		$("#counter").fadeOut(500)
+		setTimeout(reset, 500)
+		setTimeout(reset, 1000)
+		setTimeout(function() {
+			getData(doneTest,
+			function(x, y) {
+				s = y
+				f = true
+			})
+		}, 2000)
+	}
+
+	function doneTest() {
+		$("#counter").delay(500).fadeIn(500)
+	}
+</script>
+<style>
+	p.subs {
+		font-size: 4rem
+	}
+
+	h2.subs,
+	p.margin,
+	p.diff {
+		font-size: 3rem
+	}
+
+	h2.margin,
+	h2.diff {
+		font-size: 2rem
+	}
+
+	h1.cN {
+		font-size: 2.5rem
+	}
+
+	@keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-moz-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-webkit-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-ms-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-o-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	.fadeout {
+		-webkit-animation: fadeout .5s;
+		-moz-animation: fadeout .5s;
+		-ms-animation: fadeout .5s;
+		-o-animation: fadeout .5s;
+		animation: fadeout .5s
+	}
+
+	@keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-moz-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-webkit-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-ms-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-o-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit,
+	.odometer.odometer-theme-default .odometer-digit {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
+		text-align: left;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
+		display: block
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
+		display: block;
+		-webkit-backface-visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value {
+		display: block;
+		-webkit-transform: translateZ(0)
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
+		position: absolute
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 1s;
+		-moz-transition: -moz-transform 1s;
+		-ms-transition: -ms-transform 1s;
+		-o-transition: -o-transform 1s;
+		transition: transform 1s
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 1s;
+		-moz-transition: -moz-transform 1s;
+		-ms-transition: -ms-transform 1s;
+		-o-transition: -o-transform 1s;
+		transition: transform 1s;
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-ms-transform: translateY(0);
+		-o-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		font-family: "Helvetica Neue", sans-serif;
+		line-height: 1.1em
+	}
+
+	.odometer.odometer-auto-theme .odometer-value,
+	.odometer.odometer-theme-default .odometer-value {
+		text-align: center
+	}
+</style>
+
+<div class="container">
+	<div id="counter">
+		<div class="row">
+			<div class="col-sm-12 text-center">
+				<h1 class="cN 1">
+					#TeamTrees 🌲
+				</h1>
+				<h2 class="subs 1">
+					Raised
+				</h2>
+				<p class="odometer subs 1">
+					0
+				</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12 text-center">
+				<h2 class="diff 1">
+					Diff (5m)
+				</h2>
+				<p class="odometer diff 1">
+					0
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
