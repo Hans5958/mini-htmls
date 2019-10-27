@@ -4,7 +4,10 @@ title: "#TeamTrees Live Counter"
 description: "This is the #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
 ---
 
-<script src="https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+<script src="https://cdn.rawgit.com/hilios/jQuery.countdown/2.2.0/dist/jquery.countdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.26/moment-timezone-with-data.min.js"></script>
 <script>
 	var margin
 	var s = 0
@@ -13,7 +16,7 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 	var di = []
 	var f = false
 	var cors 
-	parser = new DOMParser()
+	var parser = new DOMParser()
 
 	const corsDetect = () => new Promise(callback => {
 			$.get("https://teamtrees.org/")
@@ -34,10 +37,8 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 	function getData(replied, success, fail) {
 		$.get(cors + "https://teamtrees.org/")
 			.done(function(d) {
-				var parsed = parser.parseFromString(d, "text/html")
-				var y = parsed.querySelector("#totalTrees").dataset.count 
-				if (y) {
-					success(null, y)
+				if (d) {
+					success(d)
 				} else {
 					fail()
 				}
@@ -51,10 +52,31 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 
 	setInterval(function() {
 		if (f) {
-			getData(null, function(x, y) {
+			getData(null, function(response) {
+				var parsed = parser.parseFromString(response, "text/html")
+				var y = parsed.querySelector("#totalTrees").dataset.count 
 				d = updateDiff(y - s, di)
 				s = y
 				updateMargin()
+				$("#recentDonations")[0].innerHTML = ""
+				var recentDonations = parsed.querySelectorAll("#recent-donations .media p")
+				for (var i in recentDonations) {
+					if (i == 5) {
+						break
+					}
+					var value = recentDonations[i]
+					var tr = document.createElement("tr")
+					var td1 = document.createElement("td")
+					var td2 = document.createElement("td")
+					var td3 = document.createElement("td")
+					td1.innerHTML = value.children[0].innerHTML
+					td2.innerHTML = "$" + value.children[1].innerHTML.split(" ")[0]
+					td3.innerHTML = moment(value.children[2].innerHTML).format("D/M/YYYY, H:mm:ss")
+					tr.appendChild(td1)
+					tr.appendChild(td2)
+					tr.appendChild(td3)
+					$("#recentDonations")[0].prepend(tr)
+				}
 			})
 		}
 	}, 5000)
@@ -81,11 +103,6 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		return a.reduce(x)
 	}
 
-	$(async function() {
-		cors = await corsDetect()
-		reload()
-	})
-
 	function reset() {
 		$("p").html("0")
 		$("p.diff").html("0")
@@ -106,7 +123,9 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		setTimeout(reset, 1000)
 		setTimeout(function() {
 			getData(doneTest,
-			function(x, y) {
+			function(d) {
+				var parsed = parser.parseFromString(d, "text/html")
+				var y = parsed.querySelector("#totalTrees").dataset.count 
 				s = y
 				f = true
 			})
@@ -116,6 +135,17 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 	function doneTest() {
 		$("#counter").delay(500).fadeIn(500)
 	}
+
+	$(async function() {
+		var time = moment.tz("2020-01-01 00:00", "GMT")
+		var $clock = $('#clock')
+		$clock.countdown(time.toDate(), function (event) {
+			$(this).html(event.strftime('%D:%H:%M:%S'))
+		})
+		cors = await corsDetect()
+		reload()
+	})
+
 </script>
 <style>
 	p.subs {
@@ -137,235 +167,21 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		font-size: 2.5rem
 	}
 
-	@keyframes fadein {
-		from {
-			opacity: 0
-		}
-
-		to {
-			opacity: 1
-		}
+	h2.time {
+		margin-bottom: 0
 	}
 
-	@-moz-keyframes fadein {
-		from {
-			opacity: 0
-		}
-
-		to {
-			opacity: 1
-		}
+	p.time {
+		font-size: 2.5rem
 	}
 
-	@-webkit-keyframes fadein {
-		from {
-			opacity: 0
-		}
-
-		to {
-			opacity: 1
-		}
-	}
-
-	@-ms-keyframes fadein {
-		from {
-			opacity: 0
-		}
-
-		to {
-			opacity: 1
-		}
-	}
-
-	@-o-keyframes fadein {
-		from {
-			opacity: 0
-		}
-
-		to {
-			opacity: 1
-		}
-	}
-
-	.fadeout {
-		-webkit-animation: fadeout .5s;
-		-moz-animation: fadeout .5s;
-		-ms-animation: fadeout .5s;
-		-o-animation: fadeout .5s;
-		animation: fadeout .5s
-	}
-
-	@keyframes fadeout {
-		from {
-			opacity: 1
-		}
-
-		to {
-			opacity: 0
-		}
-	}
-
-	@-moz-keyframes fadeout {
-		from {
-			opacity: 1
-		}
-
-		to {
-			opacity: 0
-		}
-	}
-
-	@-webkit-keyframes fadeout {
-		from {
-			opacity: 1
-		}
-
-		to {
-			opacity: 0
-		}
-	}
-
-	@-ms-keyframes fadeout {
-		from {
-			opacity: 1
-		}
-
-		to {
-			opacity: 0
-		}
-	}
-
-	@-o-keyframes fadeout {
-		from {
-			opacity: 1
-		}
-
-		to {
-			opacity: 0
-		}
-	}
-
-	.odometer.odometer-auto-theme,
-	.odometer.odometer-theme-default {
-		display: inline-block;
-		vertical-align: middle;
-		*vertical-align: auto;
-		*zoom: 1;
-		*display: inline;
-		position: relative
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit,
-	.odometer.odometer-theme-default .odometer-digit {
-		display: inline-block;
-		vertical-align: middle;
-		*vertical-align: auto;
-		*zoom: 1;
-		*display: inline;
-		position: relative
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
-	.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
-		display: inline-block;
-		vertical-align: middle;
-		*vertical-align: auto;
-		*zoom: 1;
-		*display: inline;
-		visibility: hidden
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
-	.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
-		text-align: left;
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		overflow: hidden
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
-	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
-		display: block
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
-	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
-		display: block;
-		-webkit-backface-visibility: hidden
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit .odometer-value,
-	.odometer.odometer-theme-default .odometer-digit .odometer-value {
-		display: block;
-		-webkit-transform: translateZ(0)
-	}
-
-	.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
-	.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
-		position: absolute
-	}
-
-	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 2.5s;
-		-moz-transition: -moz-transform 2.5s;
-		-ms-transition: -ms-transform 2.5s;
-		-o-transition: -o-transform 2.5s;
-		transition: transform 2.5s
-	}
-
-	.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
-		-webkit-transform: translateY(-100%);
-		-moz-transform: translateY(-100%);
-		-ms-transform: translateY(-100%);
-		-o-transform: translateY(-100%);
-		transform: translateY(-100%)
-	}
-
-	.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner {
-		-webkit-transform: translateY(-100%);
-		-moz-transform: translateY(-100%);
-		-ms-transform: translateY(-100%);
-		-o-transform: translateY(-100%);
-		transform: translateY(-100%)
-	}
-
-	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 2.5s;
-		-moz-transition: -moz-transform 2.5s;
-		-ms-transition: -ms-transform 2.5s;
-		-o-transition: -o-transform 2.5s;
-		transition: transform 2.5s;
-		-webkit-transform: translateY(0);
-		-moz-transform: translateY(0);
-		-ms-transform: translateY(0);
-		-o-transform: translateY(0);
-		transform: translateY(0)
-	}
-
-	.odometer.odometer-auto-theme,
-	.odometer.odometer-theme-default {
-		font-family: "Helvetica Neue", sans-serif;
-		line-height: 1.1em
-	}
-
-	.odometer.odometer-auto-theme .odometer-value,
-	.odometer.odometer-theme-default .odometer-value {
-		text-align: center
-	}
+	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit,.odometer.odometer-theme-default .odometer-digit{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner{text-align:left;display:block;position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner{display:block;-webkit-backface-visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-value,.odometer.odometer-theme-default .odometer-digit .odometer-value{display:block;-webkit-transform:translateZ(0)}.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value{position:absolute}.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner{-webkit-transition:-webkit-transform 2.5s;-moz-transition:-moz-transform 2.5s;-ms-transition:-ms-transform 2.5s;-o-transition:-o-transform 2.5s;transition:transform 2.5s}.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner{-webkit-transition:-webkit-transform 2.5s;-moz-transition:-moz-transform 2.5s;-ms-transition:-ms-transform 2.5s;-o-transition:-o-transform 2.5s;transition:transform 2.5s;-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{font-family:"Helvetica Neue",sans-serif;line-height:1.1em}.odometer.odometer-auto-theme .odometer-value,.odometer.odometer-theme-default .odometer-value{text-align:center}
 </style>
 
 <div class="container">
 	<div id="counter">
 		<div class="row">
-			<div class="col-sm-12 text-center">
+			<div class="col-sm-12 col-lg-6 text-center">
 				<h1 class="cN 1">
 					#TeamTrees 🌲
 				</h1>
@@ -375,16 +191,29 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 				<p class="odometer subs 1">
 					0
 				</p>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12 text-center">
 				<h2 class="diff 1">
 					Diff (5m)
 				</h2>
 				<p class="odometer diff 1">
 					0
 				</p>
+			</div>
+			<div class="col-sm-12 col-lg-6 text-center">
+				<h2 class="time">Time Left</h2>
+				<p class="time" id="clock"></p>
+				<h2>Recent</h2>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Amount</th>
+							<th>Time</th>
+						</tr>
+					</thead>
+					<tbody id="recentDonations">
+
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
