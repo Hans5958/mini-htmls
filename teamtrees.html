@@ -9,12 +9,11 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.26/moment-timezone-with-data.min.js"></script>
 <script>
-	var margin
-	var s = 0
-	var v = 0
-	var d = 0
-	var di = []
-	var f = false
+	var currentCount = 0
+	var diffAvg = 0
+	var diffReal = 0
+	var timer = 100
+	var diffArray = []
 	var cors 
 	var parser = new DOMParser()
 
@@ -34,11 +33,11 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 				})
 		})
 
-	function getData(replied, success, fail) {
+	const getData = (replied, success, fail) => {
 		$.get(cors + "https://teamtrees.org/")
-			.done(function(d) {
-				if (d) {
-					success(d)
+			.done(function(response) {
+				if (response) {
+					success(response)
 				} else {
 					fail()
 				}
@@ -50,49 +49,41 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 			})
 	}
 
-	setInterval(function() {
-		if (f) {
-			getData(null, function(response) {
-				var parsed = parser.parseFromString(response, "text/html")
-				var y = parsed.querySelector("#totalTrees").dataset.count 
-				d = updateDiff(y - s, di)
-				s = y
-				updateMargin()
-				$("#recentDonations")[0].innerHTML = ""
-				var recentDonations = parsed.querySelectorAll("#recent-donations .media p")
-				for (var i in recentDonations) {
-					if (i == 5) {
-						break
-					}
-					var value = recentDonations[i]
-					var tr = document.createElement("tr")
-					var td1 = document.createElement("td")
-					var td2 = document.createElement("td")
-					var td3 = document.createElement("td")
-					td1.innerHTML = value.children[0].innerHTML
-					td2.innerHTML = "$" + value.children[1].innerHTML.split(" ")[0]
-					td3.innerHTML = moment(value.children[2].innerHTML).format("D/M/YYYY, H:mm:ss")
-					tr.appendChild(td1)
-					tr.appendChild(td2)
-					tr.appendChild(td3)
-					$("#recentDonations")[0].prepend(tr)
-				}
-			})
-		}
-	}, 5000)
-
 	function updateMargin() {
-		$("p.subs.1").html(s)
-		$("p.diff.1").html(d)
+		$("#main p").html(currentCount)
+		$("#diff p").html(diffAvg)
+		$("#diffReal p").html(diffReal)
 	}
 
-	function updateDiff(n, a) {
-		if (!isNaN(n)) {
-			a.push(n)
-			if (a.length > 61) {
-				a.shift()
+	function updateDiff(number, array) {
+		if (!isNaN(number)) {
+			array.push(number)
+			if (array.length > 61) {
+				array.shift()
 			}
-			return Math.round(sumArray(a) * 60 / a.length)
+			return Math.round(sumArray(array) * 60 / array.length)
+		}
+	}
+	
+	function updateStats(parsed) {
+		$("#recentDonations")[0].innerHTML = ""
+		var recentDonations = parsed.querySelectorAll("#recent-donations .media p")
+		for (var i in recentDonations) {
+			if (i == 5) {
+				break
+			}
+			var value = recentDonations[i]
+			var tr = document.createElement("tr")
+			var td1 = document.createElement("td")
+			var td2 = document.createElement("td")
+			var td3 = document.createElement("td")
+			td1.innerHTML = value.children[0].innerHTML
+			td2.innerHTML = "$" + value.children[1].innerHTML.split(" ")[0]
+			td3.innerHTML = moment(value.children[2].innerHTML).format("D/M/YYYY, H:mm:ss")
+			tr.appendChild(td1)
+			tr.appendChild(td2)
+			tr.appendChild(td3)
+			$("#recentDonations")[0].append(tr)
 		}
 	}
 
@@ -107,33 +98,44 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		$("p").html("0")
 		$("p.diff").html("0")
 		$("p.margin").html("0")
-		margin = 0
-		s = 0
-		v = 0
-		d = 0
-		di = []
+		currentCount = 0
+		diffAvg = 0
+		diffArray = []
 		f = false
 		$(".1").css("opacity", "1")
 		$(".margin").css("opacity", "1")
 	}
 
-	function reload() {
-		$("#counter").fadeOut(500)
-		setTimeout(reset, 500)
-		setTimeout(reset, 1000)
-		setTimeout(function() {
-			getData(doneTest,
-			function(d) {
-				var parsed = parser.parseFromString(d, "text/html")
-				var y = parsed.querySelector("#totalTrees").dataset.count 
-				s = y
-				f = true
-			})
-		}, 2000)
+	function afterGet(response, firstRun = false) {
+		var parsed = parser.parseFromString(response, "text/html")
+		var countUpdate = parsed.querySelector("#totalTrees").dataset.count 
+		if (!firstRun) {
+			diffAvg = updateDiff(countUpdate - currentCount, diffArray)
+			diffReal = countUpdate - currentCount
+		}
+		currentCount = countUpdate
+		updateMargin()
+		updateStats(parsed)
 	}
 
-	function doneTest() {
-		$("#counter").delay(500).fadeIn(500)
+	async function reload() {
+		await $("#counter").fadeOut(250)
+		await reset()
+		getData(null,
+		function(response) {
+			$("#counter").delay(500).fadeIn(500)
+			afterGet(response, true)
+			setInterval(function() {
+				timer--
+				$("#update").html("Update: " + timer/10 + "s")
+				if (!timer){
+					timer = 100
+					getData(null, function(response) {
+						afterGet(response)
+					})
+				}
+			}, 100)
+		})
 	}
 
 	$(async function() {
@@ -145,34 +147,37 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		cors = await corsDetect()
 		reload()
 	})
-
 </script>
 <style>
-	p.subs {
+	#main p {
 		font-size: 4rem
 	}
 
-	h2.subs,
-	p.margin,
-	p.diff {
+	#main h2,
+	#diff p,
+	#diffReal p {
 		font-size: 3rem
 	}
 
-	h2.margin,
-	h2.diff {
+	#diff h2,
+	#diffReal h2 {
 		font-size: 2rem
 	}
 
-	h1.cN {
+	#main h1 {
 		font-size: 2.5rem
 	}
 
-	h2.time {
+	#countdown h2 {
 		margin-bottom: 0
 	}
 
-	p.time {
+	#countdown p {
 		font-size: 2.5rem
+	}
+
+	#update {
+		font-size: 1.5rem
 	}
 
 	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit,.odometer.odometer-theme-default .odometer-digit{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner{text-align:left;display:block;position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner{display:block;-webkit-backface-visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-value,.odometer.odometer-theme-default .odometer-digit .odometer-value{display:block;-webkit-transform:translateZ(0)}.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value{position:absolute}.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner{-webkit-transition:-webkit-transform 2.5s;-moz-transition:-moz-transform 2.5s;-ms-transition:-ms-transform 2.5s;-o-transition:-o-transform 2.5s;transition:transform 2.5s}.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner{-webkit-transition:-webkit-transform 2.5s;-moz-transition:-moz-transform 2.5s;-ms-transition:-ms-transform 2.5s;-o-transition:-o-transform 2.5s;transition:transform 2.5s;-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{font-family:"Helvetica Neue",sans-serif;line-height:1.1em}.odometer.odometer-auto-theme .odometer-value,.odometer.odometer-theme-default .odometer-value{text-align:center}
@@ -182,25 +187,28 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 	<div id="counter">
 		<div class="row">
 			<div class="col-sm-12 col-lg-6 text-center">
-				<h1 class="cN 1">
-					#TeamTrees 🌲
-				</h1>
-				<h2 class="subs 1">
-					Raised
-				</h2>
-				<p class="odometer subs 1">
-					0
-				</p>
-				<h2 class="diff 1">
-					Diff (5m)
-				</h2>
-				<p class="odometer diff 1">
-					0
-				</p>
+				<div id="main">
+						<h1 class="name 1">#TeamTrees 🌲</h1>
+						<h2 class="num 1">Raised</h2>
+						<p class="odometer num 1">0</p>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 col-lg-6 text-center" id="diffReal">
+						<h2>Diff (10s)</h2>
+						<p class="odometer">0</p>
+					</div>
+					<div class="col-sm-12 col-lg-6 text-center" id="diff">
+						<h2>Diff (10m)</h2>
+						<p class="odometer">0</p>
+					</div>
+				</div>
+				<p class="time text-left" id="update"></p>
 			</div>
 			<div class="col-sm-12 col-lg-6 text-center">
-				<h2 class="time">Time Left</h2>
-				<p class="time" id="clock"></p>
+				<div id="countdown">
+					<h2 class="time">Time Left</h2>
+					<p class="time" id="clock"></p>
+				</div>
 				<h2>Recent</h2>
 				<table class="table table-hover">
 					<thead>
