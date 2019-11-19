@@ -1,0 +1,129 @@
+---
+layout: default
+title: Musescore Downloader
+description: Download Musescore downloads without login, and free.
+---
+
+<script>
+	let cors, inputButton, inputField
+	const parser = new DOMParser()
+	const result = {"mscz": "", "pdf": "", "mxl": "", "mid": "", "mp3": ""}
+	
+	const corsDetect = () => new Promise(callback => {
+			$.get("https://musescore.com/")
+				.done(function() {
+					callback("")
+				})
+				.fail(function() {
+					$.get("https://glen-hydrofoil.glitch.me/https://musescore.com/")
+						.done(function() {
+							callback("https://glen-hydrofoil.glitch.me/")
+						})
+						.fail(function() {
+							callback(false)
+						})
+				})
+		})
+
+	const getData = (url, replied, success, fail) => {
+		$.get(cors + url)
+			.done(function(response) {
+				if (response) {
+					success(response)
+				} else {
+					fail()
+				}
+			})
+			.always(function() {
+				if (typeof replied === "function") {
+					replied()
+				}
+			})
+	}
+
+	const execute = value => {
+		$("#download").fadeOut(250)
+		getData(value, void 0, response => {
+			const parsed = parser.parseFromString(response, "text/html")
+
+			const scriptTags = parsed.querySelectorAll("script")
+			for (var i in scriptTags) {
+				console.log(i)
+				console.log(scriptTags[i].innerHTML)
+				if (scriptTags[i].innerHTML.startsWith("\n    window.UGAPP")) {
+					eval(scriptTags[i].innerHTML)
+					break
+				}
+			}
+
+			let sample = parsed.querySelector("img").src
+			const change = (filename) => {
+				let temp = sample.split("/")
+				temp[temp.length - 1] = filename
+				return temp.join("/")
+			}
+			result.pdf = change("score_full.pdf")
+			result.mxl = change("score.mxl")
+			result.mid = change("score.mid")
+			result.mp3 = change("score.mp3")
+			
+			let temp = sample.split("/")
+			temp[temp.length - 1] = "score_" + UGAPP.store.page.data.score.revision_id + "_" + temp[temp.length - 2] + ".mscz"
+			temp.splice(2, 5, "s3.ultimate-guitar.com", "musescore.scoredata", "score")
+			temp.splice(temp.length - 2, 1)
+			console.log(temp.join("/"))
+			result.mscz = temp.join("/")
+
+			document.querySelector("#download-mscz").href = result.mscz
+			document.querySelector("#download-pdf").href = result.pdf
+			document.querySelector("#download-mxl").href = result.mxl
+			document.querySelector("#download-mid").href = result.mid
+			document.querySelector("#download-mp3").href = result.mp3
+
+			document.querySelector("#title").innerHTML = UGAPP.store.page.data.score.title + " <small>by " + UGAPP.store.page.data.score.user.name + "</small>"
+
+			$("#download").fadeIn(250)
+
+		})
+	}
+
+	$(async () => {
+		inputButton = document.getElementById("go")
+		inputField = document.getElementById("link")
+
+		inputButton.onclick = () => {
+			execute(inputField.value)
+		}
+
+		cors = await corsDetect()
+	})
+</script>
+
+<style>
+</style>
+
+<div class="container">
+	<h1>Musescore Downloader</h1>
+	<br />
+	<h6 style="font-weight: 600">Link to song:</h6>
+	<div class="input-group">
+		<input type="text" class="form-control" id="link" value="https://musescore.com/user/12461571/scores/3291706">
+		<div class="input-group-append">
+			<button class="btn btn-success" type="submit" id="go">Go</button>
+		</div>
+	</div>
+	<br />
+	<div id="download" style="display:none">
+		<h3 id="title">Title</h3>
+		<p>Download one of the versions.</p>
+		<a class="btn btn-primary" role="button" id="download-mscz">Musescore</a>
+		<a class="btn btn-secondary" role="button" id="download-pdf">PDF</a>
+		<a class="btn btn-secondary" role="button" id="download-mxl">MusicXML</a>
+		<a class="btn btn-secondary" role="button" id="download-mid">MIDI</a>
+		<a class="btn btn-secondary" role="button" id="download-mp3">MP3</a>
+	</div>
+	<br />
+	<pre id="batch" style="display: none;"></pre>
+	<div id="dialog" class="d-none"></div>
+	<br />
+</div>

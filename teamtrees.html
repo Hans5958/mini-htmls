@@ -49,13 +49,13 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 			})
 	}
 
-	function updateMargin() {
+	const updateMargin = () => {
 		$("#main p").html(currentCount)
 		$("#diff p").html(diffAvg)
 		$("#diffReal p").html(diffReal)
 	}
 
-	function updateDiff(number, array) {
+	const updateDiff = (number, array) => {
 		if (!isNaN(number)) {
 			array.push(number)
 			if (array.length > 61) {
@@ -65,7 +65,7 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		}
 	}
 	
-	function updateStats(parsed) {
+	const updateStats = parsed => {
 		$("#recentDonations")[0].innerHTML = ""
 		var recentDonations = parsed.querySelectorAll("#recent-donations .media p")
 		for (var i in recentDonations) {
@@ -87,14 +87,11 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		}
 	}
 
-	function sumArray(a) {
-		function x(y, z) {
-			return y + z
-		}
-		return a.reduce(x)
+	const sumArray = a => {
+		return a.reduce((y, z) => y + z)
 	}
 
-	function reset() {
+	const reset = () => {
 		$("p").html("0")
 		$("p.diff").html("0")
 		$("p.margin").html("0")
@@ -106,7 +103,7 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		$(".margin").css("opacity", "1")
 	}
 
-	function afterGet(response, firstRun = false) {
+	const afterGet = (response, firstRun = false) => {
 		var parsed = parser.parseFromString(response, "text/html")
 		var countUpdate = parsed.querySelector("#totalTrees").dataset.count 
 		if (!firstRun) {
@@ -118,11 +115,11 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		updateStats(parsed)
 	}
 
-	async function reload() {
+	const reload = async () => {
 		await $("#counter").fadeOut(250)
 		await reset()
 		getData(null,
-		function(response) {
+		response => {
 			$("#counter").delay(500).fadeIn(500)
 			afterGet(response, true)
 			setInterval(function() {
@@ -138,7 +135,7 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		})
 	}
 
-	$(async function() {
+	$(async () => {
 		var time = moment.tz("2020-01-01 00:00", "GMT")
 		var $clock = $('#clock')
 		$clock.countdown(time.toDate(), function (event) {
