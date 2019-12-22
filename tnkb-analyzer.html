@@ -58,13 +58,13 @@ description: TNKB Analyzer
 	<h3>TNKB Analyzer</h3>
 	<input id="input"></input>
 	<p id="help">TODO</p>
-	<div id="output">
-		<div id="tingkat1">
+	<div id="output" class="row">
+		<div id="tingkat1" div class="col-sm-12 col-lg-6">
 			<h3>Daerah Tingkat 1</h3>
 			<p class="result"></p>
 			<p class="details"></p>
 		</div>
-		<div id="tingkat2">
+		<div id="tingkat2" div class="col-sm-12 col-lg-6">
 			<h3>Daerah Tingkat 2</h3>
 			<p class="result"></p>
 			<p class="details"></p>
@@ -1980,6 +1980,7 @@ description: TNKB Analyzer
 			document.getElementById("help").style.display = "none"
 		}
 		document.querySelectorAll("#output p").forEach(e => e.textContent = "")
+		document.querySelector("#output").style.display = "none"
 		const [kodeWilayah, nomorPolisi, kodeAkhir] = formattedTNKB
 		const [wilayah1, wilayah2] = analyzeTNKB(kodeWilayah, nomorPolisi, kodeAkhir)
 		const setOutput = (element, value) => {
@@ -1993,6 +1994,7 @@ description: TNKB Analyzer
 		}
 		setOutput("#tingkat1", wilayah1)
 		setOutput("#tingkat2", wilayah2)
+		document.querySelector("#output").style.display = ""
 	}
 
 	var analyzeTNKB = (kodeWilayah, nomorPolisi, kodeAkhir) => {
@@ -2002,6 +2004,7 @@ description: TNKB Analyzer
 			if (typeof kodeAkhir === "string") {
 				if (dict.tingkat2[kodeWilayah].from === "start") wilayah2 = dict.tingkat2[kodeWilayah].values[kodeAkhir[0]]
 				else if (dict.tingkat2[kodeWilayah].from === "end") wilayah2 = dict.tingkat2[kodeWilayah].values[kodeAkhir[kodeAkhir.length - 1]]
+				else if (dict.tingkat2[kodeWilayah].from === "single") wilayah2 = dict.tingkat2[kodeWilayah].values
 				else if (dict.tingkat2[kodeWilayah].from === "function") wilayah2 = dict.tingkat2[kodeWilayah].values()
 				else if (dict.tingkat2[kodeWilayah].from === null) wilayah2 = ""
 			} else {
