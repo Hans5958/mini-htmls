@@ -1,0 +1,35 @@
+- name: SourceForge Mirror Test
+  link: sourceforge-mirror-test
+
+- name: Subscriber Battle
+  link: subscriber-battle
+
+- name: Like Battle
+  link: like-battle
+
+- name: Dislike Battle
+  link: dislike-battle
+
+- name: Scratch Stats
+  link: scratch-stats
+  desc: See statistics of a Scratcher with this tool. Totally not a clone of ScratchStats.com by @World_Languages. Really.
+
+- name: Scratch Link Shortener
+  link: scratch-link-shortener
+  desc: Scratch Link Shortener, created by Raytracing at Scratch, edited by Hans5958.
+
+- name: discordgg.ga Website Snapshots
+  link: discordgg.ga
+  desc: "A page that archives discordgg.ga in forms of snapshot from web.archive.org."
+
+- name: "#TeamTrees Live Counter"
+  link: teamtrees
+  desc: "The #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
+
+- name: MuseScore Downloader
+  link: musescore-downloader
+  desc: Download Musescore downloads without login, and free.
+
+- name: TNKB Analyzer
+  link: tnkb-analyzer
+  desc: A tool to analyze vehicle registration plate number (plate number) from Indonesia.

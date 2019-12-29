@@ -1,7 +1,7 @@
 ---
 layout: default
 title: TNKB Analyzer
-description: TNKB Analyzer
+description: This is a tool to analyze vehicle registration plate number (plate number) from Indonesia.
 ---
 
 <style>
@@ -119,7 +119,7 @@ description: TNKB Analyzer
 
 	let dict
 
-	$.getJSON("../assets/other/tnkb-analyzer/dictMerged.json", json => {
+	$.getJSON("/../assets/other/tnkb-analyzer/dictMerged.json", json => {
 		dict = json
 		inputField.disabled = false
 		dictCallback()

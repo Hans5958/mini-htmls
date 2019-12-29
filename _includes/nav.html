@@ -12,46 +12,13 @@
           Pages
         </a>
         <ul class="dropdown-menu" aria-labelledby="navDrop">
+          {% for page in site.data.pages %}
           <li>
-            <a class="dropdown-item" href="/mini-htmls/sourceforge-mirror-test">
-              SourceForge Mirror Test
+            <a class="dropdown-item" href="/mini-htmls/{{ page.link }}">
+              {{ page.name }}
             </a>
           </li>
-          <li>
-            <a class="dropdown-item" href="/mini-htmls/subscriber-battle">
-              Subscriber Battle
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="/mini-htmls/like-battle">
-              Like Battle
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="/mini-htmls/dislike-battle">
-              Dislike Battle
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="/mini-htmls/scratch-stats">
-              Scratch Stats
-            </a>
-          </li>
-		  <li>
-            <a class="dropdown-item" href="/mini-htmls/scratch-link-shortener">
-              Scratch Link Shortener
-            </a>
-          </li>
-		  <li>
-            <a class="dropdown-item" href="/mini-htmls/discordgg.ga">
-              discordgg.ga Website Snapshots
-            </a>
-          </li>
-		  <li>
-            <a class="dropdown-item" href="/mini-htmls/teamtrees">
-              #TeamTrees Live Counter
-            </a>
-          </li>
+          {% endfor %}
         </ul>
       </li>
       <li class="nav-item">

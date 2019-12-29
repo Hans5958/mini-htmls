@@ -7,6 +7,47 @@ description: Welcome! Please use the navigation bar to open my HTMLs
 <div class="container">
 	<div class="jumbotron">
 		<h1>Hans5958's Mini HTMLs</h1>
-		<p>Welcome! Please use the navigation bar to open my HTMLs</p>
+		<p>Welcome to my collection of pages where I do some random stuff using HTML5, CSS, and JS! Please click one of the buttons below, or use the navbar on the top.</p>
 	</div>
+	
+	{% for page in site.data.pages %}
+		{% cycle "toptag": '<div class="row">', "" %}
+			<div class="col-sm-12 col-lg-6">
+				<a class="grid-item btn btn-light" href="/mini-htmls/{{ page.link }}">
+					<p class="name">{{ page.name }}</p>
+					{% if page.desc %}
+						<p class="desc">{{ page.desc }}</p>
+					{% else %}
+						<p class="desc" style="font-style:italic">No description provided.</p>
+					{% endif %}
+				</a>
+			</div>	
+		{% cycle "bottomtag": "", "</div>" %}
+	{% endfor %}
 </div>
+
+<style>
+	.grid-item {
+		/* color: black;
+		border:1px solid black ; */
+		text-align: center;
+		display: block;
+		margin: 2px;
+		padding: 1rem 0.5rem;
+	}
+
+	.grid-item:hover {
+		text-decoration: none;
+		/* color: black;
+		background-color: #f8f9fa */
+	}
+
+	.grid-item .name {
+		font-weight: bold;
+		font-size: 1rem;
+	}
+
+	.grid-item .desc {
+		margin: 0;
+	}
+</style>
