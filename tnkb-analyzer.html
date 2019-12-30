@@ -86,20 +86,6 @@ description: This is a tool to analyze vehicle registration plate number (plate 
 	const inputField = document.getElementById("input")
 	const outputField = document.getElementById("output")
 
-	// inputField.onpaste = (e) => {
-	// 	var clipboardData, pastedData;
-	// 	e.stopPropagation();
-	// 	e.preventDefault();
-	// 	clipboardData = e.clipboardData || window.clipboardData;
-	// 	pastedData = clipboardData.getData('Text');
-	// 	if (pastedData.slice(0, 24) === "https://scratch.mit.edu/") {
-	// 		inputField.value = pastedData
-	// 		updateOutput(pastedData)
-	// 	} else {
-	// 		inputField.value += pastedData
-	// 	}
-	// }
-
 	inputField.oninput = (e) => {
 		inputField.value = inputField.value.toUpperCase()
 		updateOutput(formatTNKB(inputField.value))
@@ -119,7 +105,7 @@ description: This is a tool to analyze vehicle registration plate number (plate 
 
 	let dict
 
-	$.getJSON("/../assets/other/tnkb-analyzer/dictMerged.json", json => {
+	$.getJSON("assets/other/tnkb-analyzer/dictMerged.json", json => {
 		dict = json
 		inputField.disabled = false
 		dictCallback()
