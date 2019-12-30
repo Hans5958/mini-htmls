@@ -46,22 +46,17 @@ description: Download Musescore downloads without login, and free.
 		getData(value, void 0, response => {
 			const parsed = parser.parseFromString(response, "text/html")
 
-			const scriptTags = parsed.querySelectorAll("script")
-			for (var i in scriptTags) {
-				console.log(i)
-				console.log(scriptTags[i].innerHTML)
-				if (scriptTags[i].innerHTML.startsWith("\n    window.UGAPP")) {
-					eval(scriptTags[i].innerHTML)
-					break
-				}
-			}
-
-			let sample = parsed.querySelector("img").src
+			scriptTags = parsed.querySelector("div[data-content]")
+			const UGAPP = JSON.parse(scriptTags.getAttribute("data-content"))
+			console.log(UGAPP)
+			
+			let sample = parsed.querySelector("meta[property='og:image']").content
 			const change = (filename) => {
 				let temp = sample.split("/")
 				temp[temp.length - 1] = filename
 				return temp.join("/")
-			}
+			}			
+
 			result.pdf = change("score_full.pdf")
 			result.mxl = change("score.mxl")
 			result.mid = change("score.mid")
@@ -71,7 +66,6 @@ description: Download Musescore downloads without login, and free.
 			temp[temp.length - 1] = "score_" + UGAPP.store.page.data.score.revision_id + "_" + temp[temp.length - 2] + ".mscz"
 			temp.splice(2, 5, "s3.ultimate-guitar.com", "musescore.scoredata", "score")
 			temp.splice(temp.length - 2, 1)
-			console.log(temp.join("/"))
 			result.mscz = temp.join("/")
 
 			document.querySelector("#download-mscz").href = result.mscz
