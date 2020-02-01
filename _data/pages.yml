@@ -33,3 +33,7 @@
 - name: TNKB Analyzer
   link: tnkb-analyzer
   desc: A tool to analyze vehicle registration plate number (plate number) from Indonesia.
+
+- name: "#StopTheFire Live Counter"
+  link: stopthefire
+  desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
