@@ -7,4 +7,4 @@ url: ""
 markdown: kramdown
 theme: minima
 
-exclude: ["README.md", "CODE_OF_CONDUCT.md"]
+exclude: ["README.md", "CODE_OF_CONDUCT.md", "excluded"]

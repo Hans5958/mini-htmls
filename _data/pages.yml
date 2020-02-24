@@ -1,14 +1,14 @@
 - name: SourceForge Mirror Test
   link: sourceforge-mirror-test
 
-- name: Subscriber Battle
-  link: subscriber-battle
+# - name: Subscriber Battle
+#   link: subscriber-battle
 
-- name: Like Battle
-  link: like-battle
+# - name: Like Battle
+#   link: like-battle
 
-- name: Dislike Battle
-  link: dislike-battle
+# - name: Dislike Battle
+#   link: dislike-battle
 
 - name: Scratch Stats
   link: scratch-stats
