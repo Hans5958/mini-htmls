@@ -1,0 +1,433 @@
+---
+layout: default
+title: Covid Counter
+description: Mini HTMLs
+---
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/dayjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/plugin/relativeTime.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/plugin/customParseFormat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/plugin/utc.js"></script>
+<script src="/assets/js/covid-counter.js"></script>
+<style>
+	.section .counter-main {
+		font-size: 4rem
+	}
+
+	.section .title {
+		font-size: 2rem
+	}
+
+	.section .counter-active {
+		font-size: 2rem;
+		color: blue
+	}
+
+	.section .counter-deaths {
+		font-size: 2rem;
+		color: red
+	}
+
+	.section .counter-recovered {
+		font-size: 2rem;
+		color: green
+	}
+</style>
+<style>
+	@keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-moz-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-webkit-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-ms-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-o-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	.fadeout {
+		-webkit-animation: fadeout .5s;
+		-moz-animation: fadeout .5s;
+		-ms-animation: fadeout .5s;
+		-o-animation: fadeout .5s;
+		animation: fadeout .5s
+	}
+
+	@keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-moz-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-webkit-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-ms-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-o-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit,
+	.odometer.odometer-theme-default .odometer-digit {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
+		text-align: left;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
+		display: block
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
+		display: block;
+		-webkit-backface-visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value {
+		display: block;
+		-webkit-transform: translateZ(0)
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
+		position: absolute
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 5s;
+		-moz-transition: -moz-transform 5s;
+		-ms-transition: -ms-transform 5s;
+		-o-transition: -o-transform 5s;
+		transition: transform 5s
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 5s;
+		-moz-transition: -moz-transform 5s;
+		-ms-transition: -ms-transform 5s;
+		-o-transition: -o-transform 5s;
+		transition: transform 5s;
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-ms-transform: translateY(0);
+		-o-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		font-family: "Helvetica Neue", sans-serif;
+		line-height: 1.1em
+	}
+
+	.odometer.odometer-auto-theme .odometer-value,
+	.odometer.odometer-theme-default .odometer-value {
+		text-align: center
+	}
+</style>
+<div class="container-fluid">
+    <!-- <div class="row section" id="thevirustracker">
+        <div class="col-md-3">
+			<h2 class="title">TheVirusTracker</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div> -->
+    <div class="row section" id="who">
+        <div class="col-md-3">
+            <h2 class="title">WHO</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+        </div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row section" id="johnshopkins">
+        <div class="col-md-3">
+            <h2 class="title">JHU CSSE</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+        </div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+    </div>
+	<div class="row section" id="worldometers">
+        <div class="col-md-3">
+            <h2 class="title">worldometers.info</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row section" id="wikipedia">
+        <div class="col-md-3">
+            <h2 class="title">Wikipedia</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+        </div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+    </div>
+    <div class="row section" id="indonesia">
+        <div class="col-md-3">
+            <h2 class="title">Indonesia</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+        </div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row" id="status">
+		<p style="text-align: center; width: 100%; margin-bottom: 0"> </p>
+		<div class="progress" style="width: 100%">	
+			<div class="progress-bar" role="progressbar" style="width: 0"></div>
+		</div>
+	</div>
+</div>
