@@ -37,3 +37,7 @@
 - name: "#StopTheFire Live Counter"
   link: stopthefire
   desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
+
+- name: COVID Counter
+  link: covid-counter
+  desc: View the number of cases of COVID-19 from multiple sources.

@@ -1,14 +1,13 @@
 ---
 layout: default
-title: Covid Counter
-description: Mini HTMLs
+title: COVID Counter
+description: View the number of cases of COVID-19 from multiple sources.
 ---
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/dayjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/plugin/relativeTime.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/plugin/customParseFormat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.8.23/plugin/utc.js"></script>
 <script src="/assets/js/covid-counter.js"></script>
 <style>
 	.section .counter-main {
@@ -32,6 +31,22 @@ description: Mini HTMLs
 	.section .counter-recovered {
 		font-size: 2rem;
 		color: green
+	}
+
+	#source p {
+		margin-bottom: 0 !important
+	}	
+</style>
+<style id="odometer-style">
+	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner  {
+		-webkit-transition: -webkit-transform 5s;
+		-moz-transition: -moz-transform 5s;
+		-ms-transition: -ms-transform 5s;
+		-o-transition: -o-transform 5s;
+		transition: transform 5s;
 	}
 </style>
 <style>
@@ -207,15 +222,6 @@ description: Mini HTMLs
 		position: absolute
 	}
 
-	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 5s;
-		-moz-transition: -moz-transform 5s;
-		-ms-transition: -ms-transform 5s;
-		-o-transition: -o-transform 5s;
-		transition: transform 5s
-	}
-
 	.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
 	.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
 		-webkit-transform: translateY(-100%);
@@ -236,11 +242,6 @@ description: Mini HTMLs
 
 	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
 	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 5s;
-		-moz-transition: -moz-transform 5s;
-		-ms-transition: -ms-transform 5s;
-		-o-transition: -o-transform 5s;
-		transition: transform 5s;
 		-webkit-transform: translateY(0);
 		-moz-transform: translateY(0);
 		-ms-transform: translateY(0);
@@ -341,9 +342,36 @@ description: Mini HTMLs
 			</div>
 		</div>
     </div>
+	<div class="row section" id="ihme">
+        <div class="col-md-3">
+            <h2 class="title">IHME</h2>
+			<p class="lastupdated">Last updated: </p>
+        </div>
+        <div class="col-md-3">
+            <p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
 	<div class="row section" id="worldometers">
         <div class="col-md-3">
-            <h2 class="title">worldometers.info</h2>
+            <h2 class="title">Worldometer</h2>
 			<p class="lastupdated">Last updated: </p>
         </div>
         <div class="col-md-3">
@@ -424,10 +452,61 @@ description: Mini HTMLs
 	</div>
 </div>
 <div class="container">
-	<div class="row" id="status">
+	<div id="status">
 		<p style="text-align: center; width: 100%; margin-bottom: 0"> </p>
 		<div class="progress" style="width: 100%">	
 			<div class="progress-bar" role="progressbar" style="width: 0"></div>
+		</div>
+	</div>
+	<hr />
+	<div id="source">
+		<h2>Sources</h2>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>WHO</h3>
+				<p>👨‍🔬 World Health Organization</p>
+				<p>📝 <a href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports">WHO Situation Reports</a></p>
+				<p>📝 <a href="https://who.maps.arcgis.com/apps/opsdashboard/index.html#/bf48be9799364068be4706c56b1916f5">ArcGIS Operation Dashboard (who.maps)</a></p>
+				<p>🖥 ArcGIS Feature Layer</p>
+			</div>
+			<div class="col-md-4">
+				<h3>JHU CSSE</h3>
+				<p>👨‍🔬 Johns Hopkins University Center for Systems Science and Engineering</p>
+				<p>📝 <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">ArcGIS Operations Dashboard (gisanddata)</a></p>
+				<p>📝 <a href="https://github.com/CSSEGISandData/COVID-19/">GitHub repository (CSSEGISandData/COVID19)</a></p>
+				<p>🖥 ArcGIS Feature Layer</p>
+			</div>
+			<div class="col-md-4">
+				<h3>IHME</h3>
+				<p>👨‍🔬 Outbreak and Pandemic Preparedness team at the Institute for Health Metrics and Evaluation, University of Washington</p>
+				<p>📝 <a href="https://github.com/beoutbreakprepared/nCoV2019">GitHub repository (beoutbreakprepared/nCoV2019)</a></p>
+				<p>📝 <a href="https://healthmap.org/covid-19/">Dashboard</a></p>
+				<p>🖥 API from the dashboard</p>
+				<p>⚠️ Cross-origin request is not allowed from this source. Allow it by using add-ons/extensions. (CORS Everywhere, Allow CORS, etc)</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>Worldometer</h3>
+				<p>👨‍🔬 Worldometer</p>
+				<p>📝 <a href="https://www.worldometers.info/coronavirus/">Coronavirus page</a></p>
+				<p>🖥 <a href="https://www.worldometers.info/coronavirus/">Coronavirus page</a></p>
+				<p>🖥 <a href="https://corona.lmao.ninja">API by NovelCOVID</a> (<a href="https://github.com/NovelCOVID/API">repo</a>) (initial date and alternative, allows CORS)</p>
+			</div>
+			<div class="col-md-4">
+				<h3>Wikipedia</h3>
+				<p>👨‍🔬 Contributors on the Wikipedia page "Template:2019–20 coronavirus pandemic data"</p>
+				<p>📝 <a href="https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data">Template:2019–20 coronavirus pandemic data</a></p>
+				<p>🖥 MediaWiki API</p>
+				<p>⚠️ Cross-origin request is not allowed from this source. Allow it by using add-ons/extensions. (CORS Everywhere, Allow CORS, etc)</p>
+			</div>
+			<div class="col-md-4">
+				<h3>Indonesia</h3> 
+				<p>👨‍🔬 Gugus Tugas Percepatan Penanganan COVID-19</p>
+				<p>📝 <a href="https://www.covid19.go.id/">Covid19.go.id</a></p>
+				<p>📝 <a href="https://inacovid19.maps.arcgis.com/apps/opsdashboard/index.html#/4411f5e9c69d4ca4be31ac805a0267be">ArcGIS Operations Dashboard (inacovid19)</a></p>
+				<p>🖥 ArcGIS Feature Layer</p>
+			</div>
 		</div>
 	</div>
 </div>

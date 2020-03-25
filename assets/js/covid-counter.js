@@ -277,12 +277,17 @@ var Wikipedia = new Counter("Wikipedia", "wikipedia", {
 var Indonesia = new Counter("Indonesia", "indonesia", {
 	url: "https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/Statistik_Perkembangan_COVID19_Indonesia/FeatureServer/0/query?f=json&where=(Jumlah_Kasus_Kumulatif%20%3C%3E%20null)&outFields=%22Jumlah_Kasus_Kumulatif,Jumlah_Pasien_Meninggal,Jumlah_Pasien_Sembuh,Tanggal%22&returnGeometry=false&orderByFields=Jumlah_Kasus_Kumulatif",
 	doneCallback: (data) => {
-		return {
-			"currentConfirmed": data.features[data.features.length-1].attributes.Jumlah_Kasus_Kumulatif,
-			"currentDeaths": data.features[data.features.length-1].attributes.Jumlah_Pasien_Meninggal,
-			"currentRecovered": data.features[data.features.length-1].attributes.Jumlah_Pasien_Sembuh,
-			"lastUpdated": new Date(data.features[data.features.length-1].attributes.Tanggal)
-		}
+		if (Indonesia.values === {} ? false : Indonesia.values.currentConfirmed === data.features[data.features.length-1].attributes.Jumlah_Kasus_Kumulatif) {
+			return Indonesia.values
+		} else {
+			return {
+				"currentConfirmed": data.features[data.features.length-1].attributes.Jumlah_Kasus_Kumulatif,
+				"currentDeaths": data.features[data.features.length-1].attributes.Jumlah_Pasien_Meninggal,
+				"currentRecovered": data.features[data.features.length-1].attributes.Jumlah_Pasien_Sembuh,
+				"lastUpdated": new Date()
+			}
+		}	
+	
 	},
 	applyCallback: () => {
 		getData("https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/Statistik_Perkembangan_COVID19_Indonesia/FeatureServer/0?f=json", "json", (data) => {
@@ -293,12 +298,31 @@ var Indonesia = new Counter("Indonesia", "indonesia", {
 	}
 })
 
-
-
+var IHME = new Counter("IHME", "ihme", {
+	url: "https://healthmap.org/covid-19/latestCounts.json",
+	doneCallback: (data) => {
+		if (IHME.values === {} ? false : IHME.values.currentConfirmed === parseInt(data[0].caseCount.split(",").join(""))) {
+			return IHME.values
+		} else {
+			return {
+				"currentConfirmed": parseInt(data[0].caseCount.split(",").join("")),
+				"currentDeaths": 0,
+				"currentRecovered": 0,
+				"lastUpdated": new Date()
+			}
+		}	
+	},
+	applyCallback: () => {
+		getData("https://api.github.com/repos/beoutbreakprepared/nCoV2019/commits", "json", (data) => {
+			IHME.values.lastUpdated = new Date(data[0].commit.committer.date)
+			IHME.applyCallback = () => {}
+			IHME.apply()
+		})
+	}
+})
 
 dayjs.extend(dayjs_plugin_relativeTime)
 dayjs.extend(dayjs_plugin_customParseFormat)
-dayjs.extend(dayjs_plugin_utc)
 
 $(document).ready(async () => {
 	document.querySelector("#status p").textContent = "Testing for cross-origin request ability... (If this text won't disappear, please refresh.)"
@@ -317,6 +341,8 @@ $(document).ready(async () => {
 	}, () => {
 		Wikipedia.detach()
 		document.querySelector("#wikipedia").style.display = "none"
+		IHME.detach()
+		document.querySelector("#ihme").style.display = "none"
 		worldometers.url = "https://corona.lmao.ninja/all"
 		worldometers.doneCallback = (data, urlToFetch) => {
 			return {
@@ -345,6 +371,11 @@ $(document).ready(async () => {
 				} 
 			}, 10
 		)
+		odometerStyle = document.querySelector("#odometer-style").textContent
+		document.querySelector("#odometer-style").textContent = ""
+		setTimeout(() => {
+			document.querySelector("#odometer-style").textContent = odometerStyle
+		}, 10000)
 	})
 })
 
