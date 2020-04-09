@@ -259,13 +259,13 @@ var WHO = new Counter("WHO", "who", {
 })
 
 var Wikipedia = new Counter("Wikipedia", "wikipedia", {
-	url: "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Template:2019%E2%80%9320_coronavirus_pandemic_data&rvprop=content|timestamp&formatversion=2&rvslots=*&format=json",
+	url: "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Template:Cases_in_2019%E2%80%9320_coronavirus_pandemic&rvprop=content|timestamp&formatversion=2&rvslots=*&format=json",
 	doneCallback: (data) => {
-		var numberData = [...data.query.pages[0].revisions[0].slots.main.content.matchAll(/! class="covid-total-row" style="padding-left:3px;" scope="row" \| '''(.+)'''/g)]
+		var numberData = [...data.query.pages[0].revisions[0].slots.main.content.matchAll(/(\d{1,3},\d{3}(?:,\d{3})?)/g)]
 		return {
 			"currentConfirmed": parseInt(numberData[0][1].split(",").join("")),
-			"currentDeaths": parseInt(numberData[1][1].split(",").join("")),
-			"currentRecovered": parseInt(numberData[2][1].split(",").join("")),
+			"currentDeaths": parseInt(numberData[2][1].split(",").join("")),
+			"currentRecovered": parseInt(numberData[4][1].split(",").join("")),
 			"lastUpdated": new Date(data.query.pages[0].revisions[0].timestamp)
 		}
 	}
