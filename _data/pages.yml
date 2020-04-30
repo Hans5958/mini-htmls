@@ -41,3 +41,7 @@
 - name: COVID Counter
   link: covid-counter
   desc: View the number of cases of COVID-19 from multiple sources.
+
+- name: PreMiD Presence Stats
+  link: premid-presence-stats
+  desc: View all PreMiD-related statistics derived from the PreMiD API in various ways.

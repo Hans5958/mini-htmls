@@ -1,0 +1,421 @@
+---
+layout: default
+title: PreMiD Presence Stats
+description: View all PreMiD-related statistics derived from the PreMiD API in various ways.
+---
+
+<script src="/assets/js/premid-presence-stats.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/css/dataTables.bootstrap4.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" />
+<style>
+	h2,
+	h3,
+	h4,
+	p {
+		text-align: center;
+	}
+
+	p.count {
+		font-size: 3rem;
+	}
+
+	.table-slim td,
+	.table-slim th {
+		padding: 0;
+	}
+
+	.toc-h1 {
+		display: none;
+	}
+
+	.toc-h2 {
+		margin-left: 0;
+	}
+
+	.toc-h3 {
+		margin-left: 1em;
+	}
+
+	.toc-h4 {
+		margin-left: 2em;
+	}
+
+	#title * {
+		text-align: left;
+	}
+</style>
+
+<div class="container">
+	<div id="opening">
+		<div id="title" class="jumbotron">
+			<h1>PreMiD Presence Stats</h1>
+			<p>Welcome! This page shows all PreMiD-related statistics derived from the PreMiD API in various ways.</p>
+			<hr />
+			<p class="status">Fetching data...</p>
+			<div class="progress" style"width: 100%">
+				<div class="progress-bar" role="progressbar" style="width: 0; transition:width .25s ease"></div>
+			</div>
+			<div id="toc" hidden>
+				<hr />
+				<h2 class="toc-ignore">Table of contents
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#toc-collapse" aria-expanded="false" aria-controls="toc-collapse">
+						Toggle
+					</button>
+				</h2>
+				<div class="collapse show" id="toc-collapse">
+					<div class="card card-body">
+						<div class="row">
+							<div class="col-md-6">
+							</div>
+							<div class="col-md-6">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="main" hidden>
+		<div id="presence">
+			<h2>Presence</h2>
+			<div id="presence-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6" id="presence-1-1">
+						<h4>Total presences</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-6" id="presence-1-2">
+						<h4>Total users</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div id="presence-2">
+						<div class="row">
+							<div class="col-12">
+								<h3>Top 10 presences</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<table class="table table-slim">
+									<thead>
+										<tr>
+											<th>Presence</th>
+											<th>Users</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div id="presence-3">
+						<div class="row">
+							<div class="col-12">
+								<h3>Top 10 presences, excluding 5 pre-installed</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<table class="table table-slim">
+									<thead>
+										<tr>
+											<th>Presence</th>
+											<th>Users</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="presence-4">
+				<div class="row">
+					<div class="col-12">
+						<h3>Line graph</h3>
+						<select class="form-control">
+							<option value="100">Top 100</option>
+							<option value="105">Top 105</option>
+							<option value="105no5">5-105</option>
+							<option value="all">All</option>
+							<option value="allno5">All except top 5</option>
+							<option value="200">101-200</option>
+							<option value="300">201-300</option>
+							<option value="400">301-400</option>
+							<option value="500">401-500</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<canvas></canvas>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="category">
+			<div class="row">
+				<div class="col-12">
+					<h2>Category</h2>
+				</div>
+			</div>
+			<div id="category-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4" id="category-1-1">
+						<h4>Total categories</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="category-1-2">
+						<h4>Presence to category average</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="category-1-3">
+						<h4>Users to category average</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div id="category-2">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top categories, presence count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Presences</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="category-3">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top categories, user count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Users</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="category-4">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top categories, users to presence average</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Average</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="author">
+			<h2>Developer/Author</h2>
+			<div id="author-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4" id="author-1-1">
+						<h4>Total developers</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="author-1-2">
+						<h4>Presence to developer average</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="author-1-3">
+						<h4>Users to developer average</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div id="author-2">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 developers, presence count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Author</th>
+									<th>Presences</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="author-3">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 developers, user count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Author</th>
+									<th>Users</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="author-4">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 developers, user to presence average</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Author</th>
+									<th>Average</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="author-5">
+				<div class="row">
+					<div class="col-12">
+						<h3>Line graph</h3>
+						<select class="form-control">
+							<option value="presence">Presence count</option>
+							<option value="presencenotop">Presence count, excluding top 1</option>
+							<option value="user">User count</option>
+							<option value="usernotop">User count, excluding top 2</option>
+							<option value="average">Users to presence average</option>
+							<option value="averagenotop">Users to presence average, excluding top 2</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<canvas></canvas>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<h2>List of presences</h2>
+		<table class="table" id="presence">
+			<thead>
+				<tr>
+					<th>Presence</th>
+					<th>Category</th>
+					<th>Author</th>
+					<th>Users</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<hr />
+		<h2>List of presence categories</h2>
+		<table class="table" id="category">
+			<thead>
+				<tr>
+					<th>Category</th>
+					<th>Presences</th>
+					<th>Users</th>
+					<th>Average Users</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<hr />
+		<h2>List of presence developers</h2>
+		<table class="table" id="author">
+			<thead>
+				<tr>
+					<th>Author</th>
+					<th>ID</th>
+					<th>Presences</th>
+					<th>Users</th>
+					<th>Average Users</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+</div>
