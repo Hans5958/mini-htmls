@@ -2,7 +2,7 @@ let varsToCheck = [], varsChecked = 0, timer = 0, statusProgressBar = "fetch"
 
 var parseToHTML = (raw) => (new DOMParser()).parseFromString(raw, 'text/html')
 
-const getData = (url, type, done = () => {}, fail = () => {}, replied = () => {}) => {
+const getData = (url, type, done = () => { }, fail = () => { }, replied = () => { }) => {
 	if (type === "json") {
 		$.getJSON(url)
 			.done(response => done(response))
@@ -17,7 +17,7 @@ const getData = (url, type, done = () => {}, fail = () => {}, replied = () => {}
 }
 
 class Counter {
-	constructor(name, elementID, {url, doneCallback = () => {}, failCallback = () => {}, repliedCallback = () => {}, applyCallback = () => {}, resetCallback = () => {}}) {
+	constructor(name, elementID, { url, doneCallback = () => { }, failCallback = () => { }, repliedCallback = () => { }, applyCallback = () => { }, resetCallback = () => { } }) {
 		this.name = name
 		this.elementID = elementID
 		this.url = url
@@ -33,9 +33,9 @@ class Counter {
 	apply() {
 		this.applyCallback()
 		document.querySelector(`#${this.elementID}.section .counter-main`).textContent = this.values.currentConfirmed
-		document.querySelector(`#${this.elementID}.section .progress-active`).style.width = `${((this.values.currentConfirmed - this.values.currentDeaths - this.values.currentRecovered)/this.values.currentConfirmed)*100}%`
-		document.querySelector(`#${this.elementID}.section .progress-deaths`).style.width = `${(this.values.currentDeaths/this.values.currentConfirmed)*100}%`
-		document.querySelector(`#${this.elementID}.section .progress-recovered`).style.width = `${(this.values.currentRecovered/this.values.currentConfirmed)*100}%`
+		document.querySelector(`#${this.elementID}.section .progress-active`).style.width = `${((this.values.currentConfirmed - this.values.currentDeaths - this.values.currentRecovered) / this.values.currentConfirmed) * 100}%`
+		document.querySelector(`#${this.elementID}.section .progress-deaths`).style.width = `${(this.values.currentDeaths / this.values.currentConfirmed) * 100}%`
+		document.querySelector(`#${this.elementID}.section .progress-recovered`).style.width = `${(this.values.currentRecovered / this.values.currentConfirmed) * 100}%`
 		document.querySelector(`#${this.elementID}.section .counter-active`).textContent = this.values.currentConfirmed - this.values.currentDeaths - this.values.currentRecovered
 		document.querySelector(`#${this.elementID}.section .counter-deaths`).textContent = this.values.currentDeaths
 		document.querySelector(`#${this.elementID}.section .counter-recovered`).textContent = this.values.currentRecovered
@@ -49,7 +49,7 @@ class Counter {
 	}
 
 	async fetch() {
-		return new Promise (async callback => {
+		return new Promise(async callback => {
 			if (Array.isArray(this.url)) {
 				var urlToFetch = this.url[~~(this.url.length * Math.random())]
 			} else {
@@ -59,7 +59,7 @@ class Counter {
 				urlToFetch = [urlToFetch, "json"]
 			}
 			getData(
-				urlToFetch[0], 
+				urlToFetch[0],
 				urlToFetch[1],
 				async (data) => {
 					var newValues = this.doneCallback(data, urlToFetch[0])
@@ -68,7 +68,7 @@ class Counter {
 							this.values[key] = newValues[key]
 						}
 					})
-				}, 
+				},
 				this.failCallback,
 				() => {
 					this.repliedCallback()
@@ -105,7 +105,7 @@ class Counter {
 				await window[value].fetch()
 				varsChecked++
 				document.querySelector("#status p").textContent = `Fetching data... (${varsChecked}/${varsToCheck.length})`
-				document.querySelector("#status .progress-bar").style.width = `${(varsChecked/varsToCheck.length)*100}%`
+				document.querySelector("#status .progress-bar").style.width = `${(varsChecked / varsToCheck.length) * 100}%`
 				if (varsChecked === varsToCheck.length) {
 					varsChecked = 0
 					document.querySelector("#status p").textContent = "All data fetched!"
@@ -115,7 +115,7 @@ class Counter {
 					}, 1000)
 					callback()
 				}
-			})    
+			})
 		})
 	}
 
@@ -169,9 +169,9 @@ var worldometers = new Counter("worldometers", "worldometers", {
 		}
 	},
 	applyCallback: () => {
-		getData("https://corona.lmao.ninja/all", "json", (data) => {
+		getData("https://corona.lmao.ninja/v2/all", "json", (data) => {
 			worldometers.values.lastUpdated = new Date(data.updated)
-			worldometers.applyCallback = () => {}
+			worldometers.applyCallback = () => { }
 			worldometers.apply()
 		})
 	}
@@ -235,64 +235,64 @@ var JohnsHopkins = new Counter("JohnsHopkins", "johnshopkins", {
 })
 
 
-var WHO = new Counter("WHO", "who", {
-	url: "https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/Cases_by_country_pt_V3/FeatureServer/0/query?f=json&where=1=1&outFields=*&outStatistics=[{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22cum_conf%22,%22outStatisticFieldName%22:%22confirmed%22},{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22cum_death%22,%22outStatisticFieldName%22:%22deaths%22}]",
-	doneCallback: (data) => {
-		if (WHO.values === {} ? false : WHO.values.currentConfirmed === data.features[0].attributes.confirmed) {
-			return WHO.values
-		} else {
-			return {
-				"currentConfirmed": data.features[0].attributes.confirmed,
-				"currentDeaths": data.features[0].attributes.deaths,
-				"currentRecovered": 0,
-				"lastUpdated": new Date()
-			}
-		}
-	},
-	applyCallback: () => {
-		getData("https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/nCoV_dashboard_time_stamp/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&outFields=*&resultOffset=0&resultRecordCount=1", "json", (data) => {
-			WHO.values.lastUpdated = dayjs(`${data.features[0].attributes.Last_Updated_at__}+01:00`,  "DD/MM/YYYY HH:mmZ").$d
-			WHO.applyCallback = () => {}
-			WHO.apply()
-		})
-	}
-})
+// var WHO = new Counter("WHO", "who", {
+// 	url: "https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/Cases_by_country_pt_V3/FeatureServer/0/query?f=json&where=1=1&outFields=*&outStatistics=[{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22cum_conf%22,%22outStatisticFieldName%22:%22confirmed%22},{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22cum_death%22,%22outStatisticFieldName%22:%22deaths%22}]",
+// 	doneCallback: (data) => {
+// 		if (WHO.values === {} ? false : WHO.values.currentConfirmed === data.features[0].attributes.confirmed) {
+// 			return WHO.values
+// 		} else {
+// 			return {
+// 				"currentConfirmed": data.features[0].attributes.confirmed,
+// 				"currentDeaths": data.features[0].attributes.deaths,
+// 				"currentRecovered": 0,
+// 				"lastUpdated": new Date()
+// 			}
+// 		}
+// 	},
+// 	applyCallback: () => {
+// 		getData("https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/nCoV_dashboard_time_stamp/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&outFields=*&resultOffset=0&resultRecordCount=1", "json", (data) => {
+// 			WHO.values.lastUpdated = dayjs(`${data.features[0].attributes.Last_Updated_at__}+01:00`, "DD/MM/YYYY HH:mmZ").$d
+// 			WHO.applyCallback = () => { }
+// 			WHO.apply()
+// 		})
+// 	}
+// })
 
-var Wikipedia = new Counter("Wikipedia", "wikipedia", {
-	url: "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Template:Cases_in_2019%E2%80%9320_coronavirus_pandemic&rvprop=content|timestamp&formatversion=2&rvslots=*&format=json",
-	doneCallback: (data) => {
-		var numberData = [...data.query.pages[0].revisions[0].slots.main.content.matchAll(/(\d{1,3},\d{3}(?:,\d{3})?)/g)]
-		return {
-			"currentConfirmed": parseInt(numberData[0][1].split(",").join("")),
-			"currentDeaths": parseInt(numberData[2][1].split(",").join("")),
-			"currentRecovered": parseInt(numberData[4][1].split(",").join("")),
-			"lastUpdated": new Date(data.query.pages[0].revisions[0].timestamp)
-		}
-	}
-	// Google: https://google.org/crisisresponse/covid19-map
-	// Bing: https://www.bing.com/covid/data (requires CORS)
-})
+// var Wikipedia = new Counter("Wikipedia", "wikipedia", {
+// 	url: "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Template:Cases_in_2019%E2%80%9320_coronavirus_pandemic&rvprop=content|timestamp&formatversion=2&rvslots=*&format=json",
+// 	doneCallback: (data) => {
+// 		var numberData = [...data.query.pages[0].revisions[0].slots.main.content.matchAll(/(\d{1,3},\d{3}(?:,\d{3})?)/g)]
+// 		return {
+// 			"currentConfirmed": parseInt(numberData[0][1].split(",").join("")),
+// 			"currentDeaths": parseInt(numberData[2][1].split(",").join("")),
+// 			"currentRecovered": parseInt(numberData[4][1].split(",").join("")),
+// 			"lastUpdated": new Date(data.query.pages[0].revisions[0].timestamp)
+// 		}
+// 	}
+// 	// Google: https://google.org/crisisresponse/covid19-map
+// 	// Bing: https://www.bing.com/covid/data (requires CORS)
+// })
 
 
 var Indonesia = new Counter("Indonesia", "indonesia", {
 	url: "https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/Statistik_Perkembangan_COVID19_Indonesia/FeatureServer/0/query?f=json&where=(Jumlah_Kasus_Kumulatif%20%3C%3E%20null)&outFields=%22Jumlah_Kasus_Kumulatif,Jumlah_Pasien_Meninggal,Jumlah_Pasien_Sembuh,Tanggal%22&returnGeometry=false&orderByFields=Jumlah_Kasus_Kumulatif",
 	doneCallback: (data) => {
-		if (Indonesia.values === {} ? false : Indonesia.values.currentConfirmed === data.features[data.features.length-1].attributes.Jumlah_Kasus_Kumulatif) {
+		if (Indonesia.values === {} ? false : Indonesia.values.currentConfirmed === data.features[data.features.length - 1].attributes.Jumlah_Kasus_Kumulatif) {
 			return Indonesia.values
 		} else {
 			return {
-				"currentConfirmed": data.features[data.features.length-1].attributes.Jumlah_Kasus_Kumulatif,
-				"currentDeaths": data.features[data.features.length-1].attributes.Jumlah_Pasien_Meninggal,
-				"currentRecovered": data.features[data.features.length-1].attributes.Jumlah_Pasien_Sembuh,
+				"currentConfirmed": data.features[data.features.length - 1].attributes.Jumlah_Kasus_Kumulatif,
+				"currentDeaths": data.features[data.features.length - 1].attributes.Jumlah_Pasien_Meninggal,
+				"currentRecovered": data.features[data.features.length - 1].attributes.Jumlah_Pasien_Sembuh,
 				"lastUpdated": new Date()
 			}
-		}	
-	
+		}
+
 	},
 	applyCallback: () => {
 		getData("https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/Statistik_Perkembangan_COVID19_Indonesia/FeatureServer/0?f=json", "json", (data) => {
 			Indonesia.values.lastUpdated = new Date(data.editingInfo.lastEditDate)
-			Indonesia.applyCallback = () => {}
+			Indonesia.applyCallback = () => { }
 			Indonesia.apply()
 		})
 	}
@@ -310,12 +310,12 @@ var IHME = new Counter("IHME", "ihme", {
 				"currentRecovered": 0,
 				"lastUpdated": new Date()
 			}
-		}	
+		}
 	},
 	applyCallback: () => {
 		getData("https://api.github.com/repos/beoutbreakprepared/nCoV2019/commits", "json", (data) => {
 			IHME.values.lastUpdated = new Date(data[0].commit.committer.date)
-			IHME.applyCallback = () => {}
+			IHME.applyCallback = () => { }
 			IHME.apply()
 		})
 	}
@@ -343,14 +343,14 @@ $(document).ready(async () => {
 		document.querySelector("#wikipedia").style.display = "none"
 		IHME.detach()
 		document.querySelector("#ihme").style.display = "none"
-		worldometers.url = "https://corona.lmao.ninja/all"
+		worldometers.url = "https://corona.lmao.ninja/v2/all"
 		worldometers.doneCallback = (data, urlToFetch) => {
 			return {
 				"currentConfirmed": data.cases,
 				"currentDeaths": data.deaths,
 				"currentRecovered": data.recovered,
 				"lastUpdated": new Date(data.updated)
-			} 
+			}
 		}
 	}, () => {
 		Counter.resetAll()
@@ -359,8 +359,8 @@ $(document).ready(async () => {
 			() => {
 				timer++
 				if (statusProgressBar === "timer") {
-					document.querySelector("#status p").textContent = `Waiting... (${((1000-timer)/100).toFixed(2)}s)`
-					document.querySelector("#status .progress-bar").style.width = `${(timer/1000)*100}%`
+					document.querySelector("#status p").textContent = `Waiting... (${((1000 - timer) / 100).toFixed(2)}s)`
+					document.querySelector("#status .progress-bar").style.width = `${(timer / 1000) * 100}%`
 				}
 				if (timer === 1000) {
 					statusProgressBar = "fetch"
@@ -368,7 +368,7 @@ $(document).ready(async () => {
 					document.querySelector("#status .progress-bar").style.width = "0"
 					timer = 0
 					execute()
-				} 
+				}
 			}, 10
 		)
 		odometerStyle = document.querySelector("#odometer-style").textContent
