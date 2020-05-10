@@ -1,0 +1,39 @@
+<li class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle" href="#" id="navDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		dropdown
+	</a>
+	<ul class="dropdown-menu" aria-labelledby="navDrop">
+		<li>
+			<a class="dropdown-item" href="#">1</a>
+		</li>
+		<li>
+			<a class="dropdown-item" href="#">2</a>
+		</li>
+		<li>
+			<a class="dropdown-item dropdown-toggle">
+				dropdown
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a class="dropdown-item dropdown-toggle">
+						another one
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a class="dropdown-item dropdown-toggle">
+								another one
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a class="dropdown-item">
+										okay enough
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</li>

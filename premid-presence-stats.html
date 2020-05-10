@@ -22,7 +22,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 
 	p.count {
 		font-size: 3rem;
-		margin-bottom: 0
+		margin-bottom: 0;
 	}
 
 	.table-slim td,
@@ -56,7 +56,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 	}
 
 	.child-info p {
-		margin: 0
+		margin: 0;
 	}
 </style>
 
@@ -67,12 +67,13 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 			<p>Welcome! This page shows all PreMiD-related statistics derived from the PreMiD API in various ways.</p>
 			<hr />
 			<p class="status">Preparing...</p>
-			<div class="progress" style="width: 100%; background: white">
-				<div class="progress-bar" role="progressbar" style="width: 0; transition:width .25s ease"></div>
+			<div class="progress" style="width: 100%; background: white;">
+				<div class="progress-bar" role="progressbar" style="width: 0; transition: width 0.25s ease;"></div>
 			</div>
 			<div id="toc" hidden>
 				<hr />
-				<h2 class="toc-ignore">Table of contents
+				<h2 class="toc-ignore">
+					Table of contents
 					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#toc-collapse" aria-expanded="false" aria-controls="toc-collapse">
 						Toggle
 					</button>
@@ -80,10 +81,8 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 				<div class="collapse show" id="toc-collapse">
 					<div class="card card-body">
 						<div class="row">
-							<div class="col-md-6">
-							</div>
-							<div class="col-md-6">
-							</div>
+							<div class="col-md-6"></div>
+							<div class="col-md-6"></div>
 						</div>
 					</div>
 				</div>
@@ -142,7 +141,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					<div id="presence-3">
 						<div class="row">
 							<div class="col-12">
-								<h3>Top 10 presences, excluding 5 pre-installed</h3>
+								<h3>Top 10 presences, excluding 6 pre-installed</h3>
 							</div>
 						</div>
 						<div class="row">
@@ -167,10 +166,10 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 						<h3>Line graph</h3>
 						<select class="form-control">
 							<option value="100">Top 100</option>
-							<option value="105">Top 105</option>
-							<option value="105no5">5-105</option>
+							<option value="106">Top 106</option>
+							<option value="106no6">6-106</option>
 							<option value="all">All</option>
-							<option value="allno5">All except top 5</option>
+							<option value="allno6">All except top 6</option>
 							<option value="200">101-200</option>
 							<option value="300">201-300</option>
 							<option value="400">301-400</option>

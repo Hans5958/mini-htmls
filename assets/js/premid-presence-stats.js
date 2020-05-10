@@ -1,9 +1,9 @@
 var data = {
-	presence: {},
-	category: {},
-	author: {},
-	lang: {}
-},
+		presence: {},
+		category: {},
+		author: {},
+		lang: {}
+	},
 	tables = {},
 	tableData = {},
 	tableSettings = {
@@ -314,7 +314,7 @@ const processData = () => {
 
 	let presenceTop = Object.values(data.presence).map(v => [v.name, v.users]).sort((a, b) => b[1] - a[1])
 	$("#presence-2 div div table").DataTable(miniTableSettings).rows.add(presenceTop.slice(0, 10)).draw()
-	$("#presence-3 div div table").DataTable(miniTableSettings).rows.add(presenceTop.slice(5, 15)).draw()
+	$("#presence-3 div div table").DataTable(miniTableSettings).rows.add(presenceTop.slice(6, 16)).draw()
 
 	initChart("presence", "#presence-4 canvas", "Users")
 	chartData.presence.datasets[0].backgroundColor = ctx => data.presence[ctx.chart.data.labels[ctx.dataIndex]].metadata.color
@@ -325,25 +325,25 @@ const processData = () => {
 		charts.presence.update()
 	}
 
-	updatePresenceChart([5, 105])
-	document.querySelector("#presence-4 div select").value = "105no5"
+	updatePresenceChart([6, 106])
+	document.querySelector("#presence-4 div select").value = "106no"
 
 	document.querySelector("#presence-4 div select").onchange = () => {
 		switch (document.querySelector("#presence-4 div select").value) {
 			case '100':
 				updatePresenceChart([0, 100])
 				break
-			case '105':
-				updatePresenceChart([0, 105])
+			case '106':
+				updatePresenceChart([0, 106])
 				break
-			case '105no5':
-				updatePresenceChart([5, 105])
+			case '106no5':
+				updatePresenceChart([6, 106])
 				break
 			case 'all':
 				updatePresenceChart([0, undefined])
 				break
-			case 'allno5':
-				updatePresenceChart([5, undefined])
+			case 'allno6':
+				updatePresenceChart([6, undefined])
 				break
 			case '200':
 				updatePresenceChart([100, 200])

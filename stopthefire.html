@@ -14,20 +14,21 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 	var diffReal = 0
 	var timer = 100
 	var diffArray = []
-	var cors 
+	var cors
 	var parser = new DOMParser()
 
-	const corsDetect = () => new Promise(callback => {
+	const corsDetect = () =>
+		new Promise(callback => {
 			$.get("https://app.softgiving.com/api/aussie-fires/campaign")
-				.done(function() {
+				.done(function () {
 					callback("")
 				})
-				.fail(function() {
+				.fail(function () {
 					$.get("https://glen-hydrofoil.glitch.me/https://app.softgiving.com/api/aussie-fires/campaign")
-						.done(function() {
+						.done(function () {
 							callback("https://glen-hydrofoil.glitch.me/")
 						})
-						.fail(function() {
+						.fail(function () {
 							callback(false)
 						})
 				})
@@ -35,14 +36,14 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 
 	const getData = (url, replied, success, fail) => {
 		$.get(cors + url)
-			.done(function(response) {
+			.done(function (response) {
 				if (response) {
 					success(response)
 				} else {
 					fail()
 				}
 			})
-			.always(function() {
+			.always(function () {
 				if (typeof replied === "function") {
 					replied()
 				}
@@ -61,10 +62,10 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 			if (array.length > 61) {
 				array.shift()
 			}
-			return Math.round(sumArray(array) * 60 / array.length)
+			return Math.round((sumArray(array) * 60) / array.length)
 		}
 	}
-	
+
 	const updateStats = parsed => {
 		$("#recentDonations")[0].innerHTML = ""
 		var recentDonations = parsed.lb.most_recent_donors
@@ -78,7 +79,7 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 			var td2 = document.createElement("td")
 			var td3 = document.createElement("td")
 			td1.innerHTML = value.stream_handle
-			td2.innerHTML = "$" + value.amount_cents/100
+			td2.innerHTML = "$" + value.amount_cents / 100
 			td3.innerHTML = moment(value.created_at).format("D/M/YYYY, H:mm:ss")
 			tr.appendChild(td1)
 			tr.appendChild(td2)
@@ -105,7 +106,7 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 
 	const afterGet = (response, firstRun = false) => {
 		console.log(response)
-		var countUpdate = response.campaign.initiative.total_donation_amount_cents/100
+		var countUpdate = response.campaign.initiative.total_donation_amount_cents / 100
 		if (!firstRun) {
 			diffAvg = updateDiff(countUpdate - currentCount, diffArray)
 			diffReal = countUpdate - currentCount
@@ -124,11 +125,11 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 				count++
 				if (count === 2) callback()
 			}
-			getData('https://app.softgiving.com/api/aussie-fires/campaign', null, response => {
+			getData("https://app.softgiving.com/api/aussie-fires/campaign", null, response => {
 				finalResponse.campaign = response
 				funcCallback()
 			})
-			getData('https://app.softgiving.com/api/aussie-fires/leader-boards', null, response => {
+			getData("https://app.softgiving.com/api/aussie-fires/leader-boards", null, response => {
 				finalResponse.lb = response
 				funcCallback()
 			})
@@ -139,8 +140,8 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 			afterGet(finalResponse, true)
 			setInterval(async () => {
 				timer--
-				$("#update").html("Update: " + timer/10 + "s")
-				if (!timer){
+				$("#update").html("Update: " + timer / 10 + "s")
+				if (!timer) {
 					timer = 100
 					finalResponse.fetch(() => {
 						afterGet(finalResponse)
@@ -148,7 +149,6 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 				}
 			}, 100)
 		})
-			
 	}
 
 	$(async () => {
@@ -163,34 +163,34 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 </script>
 <style>
 	#main p {
-		font-size: 4rem
+		font-size: 4rem;
 	}
 
 	#main h2,
 	#diff p,
 	#diffReal p {
-		font-size: 3rem
+		font-size: 3rem;
 	}
 
 	#diff h2,
 	#diffReal h2 {
-		font-size: 2rem
+		font-size: 2rem;
 	}
 
 	#main h1 {
-		font-size: 2.5rem
+		font-size: 2.5rem;
 	}
 
 	#countdown h2 {
-		margin-bottom: 0
+		margin-bottom: 0;
 	}
 
 	#countdown p {
-		font-size: 2.5rem
+		font-size: 2.5rem;
 	}
 
 	#update {
-		font-size: 1.5rem
+		font-size: 1.5rem;
 	}
 
 	@keyframes fadein{from{opacity:0}to{opacity:1}}@-moz-keyframes fadein{from{opacity:0}to{opacity:1}}@-webkit-keyframes fadein{from{opacity:0}to{opacity:1}}@-ms-keyframes fadein{from{opacity:0}to{opacity:1}}@-o-keyframes fadein{from{opacity:0}to{opacity:1}}.fadeout{-webkit-animation:fadeout .5s;-moz-animation:fadeout .5s;-ms-animation:fadeout .5s;-o-animation:fadeout .5s;animation:fadeout .5s}@keyframes fadeout{from{opacity:1}to{opacity:0}}@-moz-keyframes fadeout{from{opacity:1}to{opacity:0}}@-webkit-keyframes fadeout{from{opacity:1}to{opacity:0}}@-ms-keyframes fadeout{from{opacity:1}to{opacity:0}}@-o-keyframes fadeout{from{opacity:1}to{opacity:0}}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit,.odometer.odometer-theme-default .odometer-digit{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;position:relative}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer{display:inline-block;vertical-align:middle;*vertical-align:auto;*zoom:1;*display:inline;visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner{text-align:left;display:block;position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon{display:block}.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner{display:block;-webkit-backface-visibility:hidden}.odometer.odometer-auto-theme .odometer-digit .odometer-value,.odometer.odometer-theme-default .odometer-digit .odometer-value{display:block;-webkit-transform:translateZ(0)}.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value{position:absolute}.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner{-webkit-transition:-webkit-transform 2.5s;-moz-transition:-moz-transform 2.5s;-ms-transition:-ms-transform 2.5s;-o-transition:-o-transform 2.5s;transition:transform 2.5s}.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner{-webkit-transition:-webkit-transform 2.5s;-moz-transition:-moz-transform 2.5s;-ms-transition:-ms-transform 2.5s;-o-transition:-o-transform 2.5s;transition:transform 2.5s;-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.odometer.odometer-auto-theme,.odometer.odometer-theme-default{font-family:"Helvetica Neue",sans-serif;line-height:1.1em}.odometer.odometer-auto-theme .odometer-value,.odometer.odometer-theme-default .odometer-value{text-align:center}
@@ -201,9 +201,9 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 		<div class="row">
 			<div class="col-sm-12 col-lg-6 text-center">
 				<div id="main">
-						<h1 class="name 1">#StopTheFire 🚒</h1>
-						<h2 class="num 1">Raised</h2>
-						<p class="odometer num 1">0</p>
+					<h1 class="name 1">#StopTheFire 🚒</h1>
+					<h2 class="num 1">Raised</h2>
+					<p class="odometer num 1">0</p>
 				</div>
 				<div class="row">
 					<div class="col-sm-12 col-lg-6 text-center" id="diffReal">
@@ -231,9 +231,7 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 							<th>Time</th>
 						</tr>
 					</thead>
-					<tbody id="recentDonations">
-
-					</tbody>
+					<tbody id="recentDonations"></tbody>
 				</table>
 			</div>
 		</div>
