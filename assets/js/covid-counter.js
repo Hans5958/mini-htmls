@@ -339,8 +339,8 @@ $(document).ready(async () => {
 
 	getData("https://en.wikipedia.org/w/api.php", "html", () => {
 	}, () => {
-		Wikipedia.detach()
-		document.querySelector("#wikipedia").style.display = "none"
+		// Wikipedia.detach()
+		// document.querySelector("#wikipedia").style.display = "none"
 		IHME.detach()
 		document.querySelector("#ihme").style.display = "none"
 		worldometers.url = "https://corona.lmao.ninja/v2/all"

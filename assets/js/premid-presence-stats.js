@@ -208,6 +208,7 @@ const processData = () => {
 		const row = tables.presence.row(tr)
 		const format = row => {
 			const presenceName = row[1]
+			const presenceNameClass = presenceName.toLowerCase.replace(" ", "-")
 
 			let presenceInfo = []
 			presenceInfo.push(`<p><strong>Service</strong>: ${presenceName}</p>`)
@@ -231,8 +232,8 @@ const processData = () => {
 			presenceInfo.push(`<p><strong>Using iFrame?</strong>: ${data.presence[presenceName].metadata.iframe ? "Yes" : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using settings?</strong>: ${data.presence[presenceName].metadata.settings ? "Yes" : "No"}</p>`)
 
-			langTabs = []
-			langCards = []
+			let langTabs = []
+			let langCards = []
 			Object.keys(data.presence[presenceName].metadata.description).forEach((lang, index) => {
 				if (index !== 0) {
 					langTabs.push(`<li class="nav-item"><a href="#card-${lang}" class="nav-link" id="tab-${lang}" data-toggle="tab" role="tab" aria-controls="card-${lang}" aria-selected="true">${lang}</a></li>`)
@@ -242,6 +243,7 @@ const processData = () => {
 					langCards.push(`<div class="tab-pane show active" id="card-${lang}" role="tabpanel" aria-labelledby="tab-${lang}">${data.presence[presenceName].metadata.description[lang]}</div>`)
 				}
 			})
+
 			return `
 				<div class="child-info">
 					<div class="row">
@@ -269,19 +271,19 @@ const processData = () => {
 								<div class="card-header">
 									<ul class="nav nav-tabs card-header-tabs" id="card-tab" role="tablist">
 										<li class="nav-item">
-											<a href="#card-logo" class="nav-link active" id="tab-logo" data-toggle="tab" role="tab" aria-controls="card-logo" aria-selected="true">Logo</a>
+											<a href="#card-logo-${presenceNameClass}" class="nav-link active" id="tab-logo-${presenceNameClass}" data-toggle="tab" role="tab" aria-controls="card-logo-${presenceNameClass}" aria-selected="true">Logo</a>
 										</li>
 										<li class="nav-item">
-											<a href="#card-thumbnail" class="nav-link" id="tab-thumbnail" data-toggle="tab" role="tab" aria-controls="card-thumbnail" aria-selected="false">Thumbnail</a>
+											<a href="#card-thumbnail-${presenceNameClass}" class="nav-link" id="tab-thumbnail-${presenceNameClass}" data-toggle="tab" role="tab" aria-controls="card-thumbnail-${presenceNameClass}" aria-selected="false">Thumbnail</a>
 										</li>
 									</ul>
 								</div>
 								<div class="card-body" style="background:gray">
 									<div class="tab-content" id="card-content">
-										<div class="tab-pane show active" id="card-logo" role="tabpanel" aria-labelledby="tab-logo">
+										<div class="tab-pane show active" id="card-logo-${presenceNameClass}" role="tabpanel" aria-labelledby="tab-logo-${presenceNameClass}">
 											<img src="${data.presence[presenceName].metadata.logo}" alt="${data.presence[presenceName].metadata.logo}" style="max-height: 256px; width:100%; object-fit: contain;">
 										</div>
-										<div class="tab-pane" id="card-thumbnail" role="tabpanel" aria-labelledby="tab-thumbnail">
+										<div class="tab-pane" id="card-thumbnail-${presenceNameClass}" role="tabpanel" aria-labelledby="tab-thumbnail-${presenceNameClass}">
 											<img src="${data.presence[presenceName].metadata.thumbnail}" alt="${data.presence[presenceName].metadata.thumbnail}" style="max-height: 256px; width:100%; object-fit: contain;">
 										</div>
 									</div>
