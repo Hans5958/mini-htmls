@@ -23,9 +23,9 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 					callback("")
 				})
 				.fail(function() {
-					$.get("https://glen-hydrofoil.glitch.me/https://teamtrees.org/")
+					$.get("https://cf-cors.hans5958.workers.dev/?url=https://teamtrees.org/")
 						.done(function() {
-							callback("https://glen-hydrofoil.glitch.me/")
+							callback("https://cf-cors.hans5958.workers.dev/?url=")
 						})
 						.fail(function() {
 							callback(false)

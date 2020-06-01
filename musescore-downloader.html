@@ -16,9 +16,9 @@ description: Download Musescore downloads without login, and free.
 					callback("")
 				})
 				.fail(function () {
-					$.get("https://glen-hydrofoil.glitch.me/https://musescore.com/")
+					$.get("https://cf-cors.hans5958.workers.dev/?url=https://musescore.com/")
 						.done(function () {
-							callback("https://glen-hydrofoil.glitch.me/")
+							callback("https://cf-cors.hans5958.workers.dev/?url=")
 						})
 						.fail(function () {
 							callback(false)

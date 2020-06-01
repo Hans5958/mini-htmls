@@ -162,8 +162,8 @@ const init = () => new Promise(async callback => {
                 callback2("")
             })
             .fail(function() {
-                $.getJSON("https://glen-hydrofoil.glitch.me/https://api.scratch.mit.edu", function() {
-                        callback2("https://glen-hydrofoil.glitch.me/")
+                $.getJSON("https://cf-cors.hans5958.workers.dev/?url=https://api.scratch.mit.edu", function() {
+                        callback2("https://cf-cors.hans5958.workers.dev/?url=")
                     })
                     .fail(function() {
                         callback2(false)

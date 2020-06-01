@@ -24,9 +24,9 @@ description: "This is the #StopTheFire (stopthefire.gg) live counter of the mone
 					callback("")
 				})
 				.fail(function () {
-					$.get("https://glen-hydrofoil.glitch.me/https://app.softgiving.com/api/aussie-fires/campaign")
+					$.get("https://cf-cors.hans5958.workers.dev/?url=https://app.softgiving.com/api/aussie-fires/campaign")
 						.done(function () {
-							callback("https://glen-hydrofoil.glitch.me/")
+							callback("https://cf-cors.hans5958.workers.dev/?url=")
 						})
 						.fail(function () {
 							callback(false)
