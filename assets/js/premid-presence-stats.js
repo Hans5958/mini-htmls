@@ -208,7 +208,7 @@ const processData = () => {
 		const row = tables.presence.row(tr)
 		const format = row => {
 			const presenceName = row[1]
-			const presenceNameClass = presenceName.toLowerCase.replace(" ", "-")
+			const presenceNameClass = presenceName.toLowerCase().replace(" ", "-")
 
 			let presenceInfo = []
 			presenceInfo.push(`<p><strong>Service</strong>: ${presenceName}</p>`)
@@ -359,6 +359,9 @@ const processData = () => {
 			case '500':
 				updatePresenceChart([400, 500])
 				break
+			case '600':
+				updatePresenceChart([400, 500])
+				break	
 		}
 	}
 
