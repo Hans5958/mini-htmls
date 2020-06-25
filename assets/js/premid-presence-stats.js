@@ -241,7 +241,6 @@ const processData = () => {
 			}
 			presenceInfo.push(`<p><strong>Version</strong>: ${data.presence[presenceName].metadata.version}</p>`)
 			presenceInfo.push(`<p><strong>Users</strong>: ${data.presence[presenceName].users} (${Math.round(data.presence[presenceName].additional.userPercentage * 100)/100}%${data.presence[presenceName].additional.hot ? ", 🔥" : ""})</p>`)
-			presenceInfo.push(`<p><strong>User Percentage</strong>: </p>`)
 			presenceInfo.push(`<p><strong>Category</strong>: ${data.presence[presenceName].metadata.category}`)
 			presenceInfo.push(`<p><strong>Tags</strong>: ${data.presence[presenceName].metadata.tags.join(", ")}`)
 			let urlVal = data.presence[presenceName].metadata.url
@@ -681,7 +680,7 @@ const processData = () => {
 	document.querySelectorAll("#implementation-5 p")[1].textContent = `${Math.round((implementation5 / presenceCount) * 100)}% (${implementation5}/${presenceCount})`
 	document.querySelectorAll("#implementation-6 p")[1].textContent = `${Math.round((implementation6 / presenceCount) * 100)}% (${implementation6}/${presenceCount})`
 	document.querySelectorAll("#implementation-7 p")[1].textContent = `${Math.round((implementation7 / presenceCount) * 100)}% (${implementation7}/${presenceCount})`
-	document.querySelectorAll("#implementation-8 p")[1].textContent = `${Math.round((implementation5 / presenceCount) * 100)}% (${implementation8}/${presenceCount})`
+	document.querySelectorAll("#implementation-8 p")[1].textContent = `${Math.round((implementation8 / presenceCount) * 100)}% (${implementation8}/${presenceCount})`
 
 	/*
 	================================================================
