@@ -1,8 +1,9 @@
-var data = {
+let data = {
 		presence: {},
 		category: {},
 		author: {},
-		lang: {}
+		lang: {},
+		partner: []
 	},
 	tables = {},
 	tableData = {},
@@ -29,9 +30,10 @@ var data = {
 	charts = {},
 	chartData = {},
 	step = 0,
-	totalSteps = 4,
+	totalSteps = 6,
 	locale = {},
-	imgurAllow = false;
+	imgurAllow = false,
+	totalUsers = 0
 
 /**
  * Simple $.getJSON wrapper.
@@ -186,15 +188,29 @@ const updateProgressBar = (details, increment = true) => {
 const processData = () => {
 
 	forEveryPresence((presence, name) => {
-		if (presence.name === undefined) delete data.presence[name]
-		if (presence.users === undefined) delete data.presence[name]
+		if (presence.name === undefined || presence.users === undefined) delete data.presence[name]
+		else {
+			data.presence[name].additional = {}
+			data.presence[name].additional.userPercentage = presence.users/totalUsers * 100
+			data.presence[name].additional.hot = (data.presence[name].additional.userPercentage > 5) ? true : false
+			data.presence[name].additional.partner = (data.partner.indexOf(name) + 1) ? true : false	
+		}
 	})
 
 	if (imgurAllow) forEveryPresence((presence, name) => {
-		step++
 		if (presence.metadata.logo.startsWith("https://proxy.duckduckgo.com/iu/?u=")) data.presence[name].metadata.logo = presence.metadata.logo.substring(35)
 		if (presence.metadata.thumbnail.startsWith("https://proxy.duckduckgo.com/iu/?u=")) data.presence[name].metadata.thumbnail = presence.metadata.logo.substring(35)
 	})
+
+	/*
+	================================================================
+	Statistics for usage
+	================================================================
+	*/
+
+	document.querySelector("#usage-1-1 p").textContent = totalUsers
+	document.querySelector("#usage-1-2 p").textContent = Math.round(totalUsers * 0.05)
+
 
 	/*
 	================================================================
@@ -224,7 +240,8 @@ const processData = () => {
 				presenceInfo.push(`<p><strong>Contributors</strong>: ${data.presence[presenceName].metadata.contributors.map(contributor => `<a href="https://premid.app/users/${contributor.id}">${contributor.name}</a>`).join(", ")}</p>`)
 			}
 			presenceInfo.push(`<p><strong>Version</strong>: ${data.presence[presenceName].metadata.version}</p>`)
-			presenceInfo.push(`<p><strong>Users</strong>: ${data.presence[presenceName].users}</p>`)
+			presenceInfo.push(`<p><strong>Users</strong>: ${data.presence[presenceName].users} (${Math.round(data.presence[presenceName].additional.userPercentage * 100)/100}%${data.presence[presenceName].additional.hot ? ", 🔥" : ""})</p>`)
+			presenceInfo.push(`<p><strong>User Percentage</strong>: </p>`)
 			presenceInfo.push(`<p><strong>Category</strong>: ${data.presence[presenceName].metadata.category}`)
 			presenceInfo.push(`<p><strong>Tags</strong>: ${data.presence[presenceName].metadata.tags.join(", ")}`)
 			let urlVal = data.presence[presenceName].metadata.url
@@ -236,9 +253,10 @@ const processData = () => {
 			presenceInfo.push(`<p style="display:inline-block"><strong>Color</strong>: ${data.presence[presenceName].metadata.color}</p>`)
 			presenceInfo.push(`<div style="margin-left:4px;width:.9rem;height:.9rem;background:${data.presence[presenceName].metadata.color};border:.1rem solid #bbb;display:inline-block" />`)
 			presenceInfo.push(`<p><strong>Alternative Name</strong>: ${data.presence[presenceName].metadata.altnames ? data.presence[presenceName].metadata.altnames.join(", ") : "None"}</p>`)
-			presenceInfo.push(`<p><strong>Using RegEx?</strong>: ${data.presence[presenceName].metadata.regExp ? `Yes (<code>${data.presence[presenceName].metadata.regExp}</code>)` : "No"}</p>`)
+			presenceInfo.push(`<p><strong>Using regex?</strong>: ${data.presence[presenceName].metadata.regExp ? `Yes (<code>${data.presence[presenceName].metadata.regExp}</code>)` : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using iFrame?</strong>: ${data.presence[presenceName].metadata.iframe ? "Yes" : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using settings?</strong>: ${data.presence[presenceName].metadata.settings ? "Yes" : "No"}</p>`)
+			presenceInfo.push(`<p><strong>Partner?</strong>: ${data.presence[presenceName].partner ? "Yes" : "No"}</p>`)
 
 			let langTabs = []
 			let langCards = []
@@ -632,7 +650,10 @@ const processData = () => {
 		implementation2 = 0,
 		implementation3 = 0,
 		implementation4 = 0,
-		implementation5 = 0
+		implementation5 = 0,
+		implementation6 = 0,
+		implementation7 = 0,
+		implementation8 = 0
 
 	forEveryPresence(presence => {
 		if (typeof presence.metadata.iframe !== "undefined") implementation1++
@@ -640,18 +661,27 @@ const processData = () => {
 		if (typeof presence.metadata.settings !== "undefined") implementation3++
 		if (typeof presence.metadata.regExp !== "undefined") implementation4++
 		if (Object.keys(presence.metadata.description).length !== 1 && typeof presence.metadata.description === "object") implementation5++
+		if (presence.additional.partner) implementation6++
+		if (presence.additional.hot) implementation7++
+		if (typeof presence.metadata.altnames !== "undefined") implementation8++
 	})
 
-	document.querySelectorAll("#implementation-1 p")[0].textContent = implementation1
-	document.querySelectorAll("#implementation-2 p")[0].textContent = implementation2
-	document.querySelectorAll("#implementation-3 p")[0].textContent = implementation3
-	document.querySelectorAll("#implementation-4 p")[0].textContent = implementation4
-	document.querySelectorAll("#implementation-5 p")[0].textContent = implementation5
+	document.querySelector("#implementation-1 p").textContent = implementation1
+	document.querySelector("#implementation-2 p").textContent = implementation2
+	document.querySelector("#implementation-3 p").textContent = implementation3
+	document.querySelector("#implementation-4 p").textContent = implementation4
+	document.querySelector("#implementation-5 p").textContent = implementation5
+	document.querySelector("#implementation-6 p").textContent = implementation6
+	document.querySelector("#implementation-7 p").textContent = implementation7
+	document.querySelector("#implementation-8 p").textContent = implementation8
 	document.querySelectorAll("#implementation-1 p")[1].textContent = `${Math.round((implementation1 / presenceCount) * 100)}% (${implementation1}/${presenceCount})`
 	document.querySelectorAll("#implementation-2 p")[1].textContent = `${Math.round((implementation2 / presenceCount) * 100)}% (${implementation2}/${presenceCount})`
 	document.querySelectorAll("#implementation-3 p")[1].textContent = `${Math.round((implementation3 / presenceCount) * 100)}% (${implementation3}/${presenceCount})`
 	document.querySelectorAll("#implementation-4 p")[1].textContent = `${Math.round((implementation4 / presenceCount) * 100)}% (${implementation4}/${presenceCount})`
 	document.querySelectorAll("#implementation-5 p")[1].textContent = `${Math.round((implementation5 / presenceCount) * 100)}% (${implementation5}/${presenceCount})`
+	document.querySelectorAll("#implementation-6 p")[1].textContent = `${Math.round((implementation6 / presenceCount) * 100)}% (${implementation6}/${presenceCount})`
+	document.querySelectorAll("#implementation-7 p")[1].textContent = `${Math.round((implementation7 / presenceCount) * 100)}% (${implementation7}/${presenceCount})`
+	document.querySelectorAll("#implementation-8 p")[1].textContent = `${Math.round((implementation5 / presenceCount) * 100)}% (${implementation8}/${presenceCount})`
 
 	/*
 	================================================================
@@ -786,7 +816,7 @@ document.addEventListener("DOMContentLoaded", event => {
 			 * Callback for all ``getData()``.
 			 */
 			const getDataCallback = () => {
-				updateProgressBar(`Fetching data... (${step - 1}/2)`)
+				updateProgressBar(`Fetching data... (${step - 1}/4)`)
 				if (step === totalSteps) {
 					document.querySelector("#title .status").textContent = `All data fetched! Fetched on ${(new Date()).toString()}`
 					document.querySelector("#main-stats").removeAttribute("hidden")
@@ -813,6 +843,16 @@ document.addEventListener("DOMContentLoaded", event => {
 					if (typeof data.presence[name] === "undefined") data.presence[name] = {}
 					data.presence[name].users = response[name]
 				})
+				getDataCallback()
+			})
+
+			getData("https://api.premid.app/v2/usage", response => {
+				totalUsers = response.users
+				getDataCallback()
+			})
+
+			getData("https://api.premid.app/v2/partners", response => {
+				data.partner = response.map(value => value.storeName)
 				getDataCallback()
 			})
 
