@@ -16,7 +16,9 @@ var data = {
 			"className": 'details-control',
 			"orderable": false
 		}],
-		"order": [[1, 'asc']]
+		"order": [
+			[1, 'asc']
+		]
 	},
 	miniTableSettings = {
 		paging: false,
@@ -38,7 +40,7 @@ var data = {
  * @param {function} fail 
  * @param {function} replied 
  */
-const getData = (url, done = () => { }, fail = () => { }, replied = () => { }) => {
+const getData = (url, done = () => {}, fail = () => {}, replied = () => {}) => {
 	$.getJSON(url)
 		.done(response => done(response))
 		.fail(response => fail(response))
@@ -200,13 +202,18 @@ const processData = () => {
 	================================================================
 	*/
 
-	tableData.presence = new List(["Presence", "Category", "Author", "Users"], Object.values(data.presence).map(presence => ([presence.name, presence.metadata.category, presence.metadata.author.name, presence.users])))
-	tables.presence = $("table#presence").DataTable(tableSettings).rows.add(tableData.presence.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([[4, "des"]]).draw()
+	tableData.presence = new List(["Presence", "Category", "Author", "Users", "Search Tags"], Object.values(data.presence).map(presence => ([presence.name, presence.metadata.category, presence.metadata.author.name, presence.users, presence.metadata.tags.join(" ")])))
+	tableData.presence.data.forEach(row => {
+		if (data.presence[row[0]].metadata.altnames) row[4] += ` ${data.presence[row[0]].metadata.altnames.join(" ")}`
+	})
+	tables.presence = $("table#presence").DataTable(tableSettings).column(5).visible(false).rows.add(tableData.presence.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([[4, "des"]]).draw()
 
 	$('table#presence tbody').on('click', 'td.details-control', (event) => {
+
 		const tr = $(event.target).closest('tr')
 		const row = tables.presence.row(tr)
 		const format = row => {
+
 			const presenceName = row[1]
 			const presenceNameClass = presenceName.toLowerCase().replace(" ", "-")
 
@@ -228,6 +235,7 @@ const processData = () => {
 			}
 			presenceInfo.push(`<p style="display:inline-block"><strong>Color</strong>: ${data.presence[presenceName].metadata.color}</p>`)
 			presenceInfo.push(`<div style="margin-left:4px;width:.9rem;height:.9rem;background:${data.presence[presenceName].metadata.color};border:.1rem solid #bbb;display:inline-block" />`)
+			presenceInfo.push(`<p><strong>Alternative Name</strong>: ${data.presence[presenceName].metadata.altnames ? data.presence[presenceName].metadata.altnames.join(", ") : "None"}</p>`)
 			presenceInfo.push(`<p><strong>Using RegEx?</strong>: ${data.presence[presenceName].metadata.regExp ? `Yes (<code>${data.presence[presenceName].metadata.regExp}</code>)` : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using iFrame?</strong>: ${data.presence[presenceName].metadata.iframe ? "Yes" : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using settings?</strong>: ${data.presence[presenceName].metadata.settings ? "Yes" : "No"}</p>`)
@@ -293,16 +301,17 @@ const processData = () => {
 					</div>
 				</div>`
 		}
+
 		if (row.child.isShown()) {
 			row.child.hide();
 			tr.removeClass('shown')
 			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
-		}
-		else {
+		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
 			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
 		}
+
 	})
 
 	const presenceCount = Object.keys(data.presence).length
@@ -328,7 +337,7 @@ const processData = () => {
 	}
 
 	updatePresenceChart([6, 106])
-	document.querySelector("#presence-4 div select").value = "106no"
+	document.querySelector("#presence-4 div select").value = "106no6"
 
 	document.querySelector("#presence-4 div select").onchange = () => {
 		switch (document.querySelector("#presence-4 div select").value) {
@@ -338,7 +347,7 @@ const processData = () => {
 			case '106':
 				updatePresenceChart([0, 106])
 				break
-			case '106no5':
+			case '106no6':
 				updatePresenceChart([6, 106])
 				break
 			case 'all':
@@ -361,7 +370,7 @@ const processData = () => {
 				break
 			case '600':
 				updatePresenceChart([400, 500])
-				break	
+				break
 		}
 	}
 
@@ -388,12 +397,15 @@ const processData = () => {
 	})
 
 	tableData.category = new List(["Category", "Presences", "Users", "Average"], Object.values(data.category).map(value => [value.category, value.presences.length, value.users, value.average]))
-	tables.category = $("table#category").DataTable(tableSettings).rows.add(tableData.category.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([[2, "des"]]).draw()
+	tables.category = $("table#category").DataTable(tableSettings).rows.add(tableData.category.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([
+		[2, "des"]
+	]).draw()
 
 	$('table#category tbody').on('click', 'td.details-control', (event) => {
 		const tr = $(event.target).closest('tr')
 		const row = tables.category.row(tr)
 		const format = row => {
+
 			const categoryName = row[1]
 
 			const categoryInfo = []
@@ -417,14 +429,14 @@ const processData = () => {
 						</div>
 					</div>
 				</div>`
+
 		}
 
 		if (row.child.isShown()) {
 			row.child.hide();
 			tr.removeClass('shown')
 			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
-		}
-		else {
+		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
 			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
@@ -527,8 +539,7 @@ const processData = () => {
 			row.child.hide();
 			tr.removeClass('shown')
 			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
-		}
-		else {
+		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
 			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
@@ -690,9 +701,9 @@ const processData = () => {
 				chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a).slice(1)
 				break
 			// case 'no2':
-			// 	chartData.lang3.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(2).map(v => v[0])
-			// 	chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a).slice(2)
-			// 	break
+				// 	chartData.lang3.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(2).map(v => v[0])
+				// 	chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a).slice(2)
+				// 	break
 		}
 		charts.lang3.update()
 	}
@@ -738,8 +749,7 @@ const processData = () => {
 			row.child.hide();
 			tr.removeClass('shown')
 			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
-		}
-		else {
+		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
 			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
