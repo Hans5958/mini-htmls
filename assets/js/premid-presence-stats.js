@@ -222,7 +222,7 @@ const processData = () => {
 	tableData.presence.data.forEach(row => {
 		if (data.presence[row[0]].metadata.altnames) row[4] += ` ${data.presence[row[0]].metadata.altnames.join(" ")}`
 	})
-	tables.presence = $("table#presence").DataTable(tableSettings).column(5).visible(false).rows.add(tableData.presence.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([[4, "des"]]).draw()
+	tables.presence = $("table#presence").DataTable(tableSettings).column(5).visible(false).rows.add(tableData.presence.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[4, "des"]]).draw()
 
 	$('table#presence tbody').on('click', 'td.details-control', (event) => {
 
@@ -320,13 +320,13 @@ const processData = () => {
 		}
 
 		if (row.child.isShown()) {
-			row.child.hide();
+			row.child.hide()
 			tr.removeClass('shown')
-			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>'
 		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
-			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
 		}
 
 	})
@@ -414,7 +414,7 @@ const processData = () => {
 	})
 
 	tableData.category = new List(["Category", "Presences", "Users", "Average"], Object.values(data.category).map(value => [value.category, value.presences.length, value.users, value.average]))
-	tables.category = $("table#category").DataTable(tableSettings).rows.add(tableData.category.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([
+	tables.category = $("table#category").DataTable(tableSettings).rows.add(tableData.category.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([
 		[2, "des"]
 	]).draw()
 
@@ -452,11 +452,11 @@ const processData = () => {
 		if (row.child.isShown()) {
 			row.child.hide();
 			tr.removeClass('shown')
-			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>'
 		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
-			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
 		}
 	})
 
@@ -521,7 +521,7 @@ const processData = () => {
 	})
 
 	tableData.author = new List(["Author", "ID", "Presences", "Users"], Object.values(data.author).map(value => [value.author, value.id, value.presences.length, value.users, value.average]))
-	tables.author = $("table#author").DataTable(tableSettings).rows.add(tableData.author.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([[3, "des"]]).draw()
+	tables.author = $("table#author").DataTable(tableSettings).rows.add(tableData.author.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[3, "des"]]).draw()
 
 	$('table#author tbody').on('click', 'td.details-control', (event) => {
 		const tr = $(event.target).closest('tr')
@@ -555,11 +555,11 @@ const processData = () => {
 		if (row.child.isShown()) {
 			row.child.hide();
 			tr.removeClass('shown')
-			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>'
 		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
-			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
 		}
 	})
 
@@ -717,7 +717,7 @@ const processData = () => {
 	charts.lang2.update()
 
 	tableData.lang = new List(["Language", "Tag", "Presences"], Object.values(data.lang).map(value => [value.language, value.tag, value.presences.length]))
-	tables.lang = $("table#lang").DataTable(tableSettings).rows.add(tableData.lang.data.map(data => ['<span class="material-icons">add_circle_outline</span>', ...data])).order([[3, "des"]]).draw()
+	tables.lang = $("table#lang").DataTable(tableSettings).rows.add(tableData.lang.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[3, "des"]]).draw()
 
 	document.querySelector("#lang-3 select").onchange = () => {
 		switch (document.querySelector("#lang-3 select").value) {
@@ -777,11 +777,11 @@ const processData = () => {
 		if (row.child.isShown()) {
 			row.child.hide();
 			tr.removeClass('shown')
-			event.target.innerHTML = '<span class="material-icons">add_circle_outline</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>'
 		} else {
 			row.child(format(row.data())).show()
 			tr.addClass('shown')
-			event.target.innerHTML = '<span class="material-icons">remove_circle</span>'
+			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
 		}
 	})
 
