@@ -199,7 +199,7 @@ const processData = () => {
 
 	if (imgurAllow) forEveryPresence((presence, name) => {
 		if (presence.metadata.logo.startsWith("https://proxy.duckduckgo.com/iu/?u=")) data.presence[name].metadata.logo = presence.metadata.logo.substring(35)
-		if (presence.metadata.thumbnail.startsWith("https://proxy.duckduckgo.com/iu/?u=")) data.presence[name].metadata.thumbnail = presence.metadata.logo.substring(35)
+		if (presence.metadata.thumbnail.startsWith("https://proxy.duckduckgo.com/iu/?u=")) data.presence[name].metadata.thumbnail = presence.metadata.thumbnail.substring(35)
 	})
 
 	/*
@@ -255,7 +255,7 @@ const processData = () => {
 			presenceInfo.push(`<p><strong>Using regex?</strong>: ${data.presence[presenceName].metadata.regExp ? `Yes (<code>${data.presence[presenceName].metadata.regExp}</code>)` : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using iFrame?</strong>: ${data.presence[presenceName].metadata.iframe ? "Yes" : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using settings?</strong>: ${data.presence[presenceName].metadata.settings ? "Yes" : "No"}</p>`)
-			presenceInfo.push(`<p><strong>Partner?</strong>: ${data.presence[presenceName].partner ? "Yes" : "No"}</p>`)
+			presenceInfo.push(`<p><strong>Partner?</strong>: ${data.presence[presenceName].additional.partner ? "Yes" : "No"}</p>`)
 
 			let langTabs = []
 			let langCards = []
