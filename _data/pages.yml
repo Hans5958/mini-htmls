@@ -1,47 +1,47 @@
 - name: SourceForge Mirror Test
-  link: sourceforge-mirror-test
+  link: /sourceforge-mirror-test
 
 # - name: Subscriber Battle
-#   link: subscriber-battle
+#   link: /subscriber-battle
 
 # - name: Like Battle
-#   link: like-battle
+#   link: /like-battle
 
 # - name: Dislike Battle
-#   link: dislike-battle
+#   link: /dislike-battle
 
 - name: Scratch Stats
-  link: scratch-stats
+  link: /scratch-stats
   desc: See statistics of a Scratcher with this tool. Totally not a clone of ScratchStats.com by @World_Languages. Really.
 
 - name: Scratch Link Shortener
-  link: scratch-link-shortener
+  link: /scratch-link-shortener
   desc: Scratch Link Shortener, created by Raytracing at Scratch, edited by Hans5958.
 
 - name: discordgg.ga Website Snapshots
-  link: discordgg.ga
+  link: /discordgg.ga
   desc: "A page that archives discordgg.ga in forms of snapshot from web.archive.org."
 
 - name: "#TeamTrees Live Counter"
-  link: teamtrees
+  link: /teamtrees
   desc: "The #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
 
 - name: MuseScore Downloader
-  link: musescore-downloader
+  link: /musescore-downloader
   desc: Download Musescore downloads without login, and free.
 
 - name: TNKB Analyzer
-  link: tnkb-analyzer
+  link: /tnkb-analyzer
   desc: A tool to analyze vehicle registration plate number (plate number) from Indonesia.
 
 - name: "#StopTheFire Live Counter"
-  link: stopthefire
+  link: /stopthefire
   desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
 
 - name: COVID Counter
-  link: covid-counter
+  link: /covid-counter
   desc: View the number of cases of COVID-19 from multiple sources.
 
 - name: PreMiD Presence Stats
-  link: premid-presence-stats
+  link: /premid-presence-stats
   desc: View all PreMiD-related statistics derived from the PreMiD API in various ways.

@@ -1,5 +1,5 @@
 <header><nav class="navbar navbar-expand-md bg-dark navbar-dark">
-	<a class="navbar-brand" href="index.html">
+	<a class="navbar-brand" href="{{ "/" | relative_url }}">
 		Hans5958's Mini HTMLs
 	</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -14,7 +14,7 @@
 				<ul class="dropdown-menu" aria-labelledby="navDrop">
 					{% for page in site.data.pages %}
 					<li>
-						<a class="dropdown-item" href="/{{ page.link }}">
+						<a class="dropdown-item" href="{{ page.link | relative_url }}">
 							{{ page.name }}
 						</a>
 					</li>

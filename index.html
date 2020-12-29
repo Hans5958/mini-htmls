@@ -13,7 +13,7 @@ description: Welcome to my collection of pages where I do some random stuff usin
 	{% for page in site.data.pages %}
 		{% cycle "toptag": '<div class="row">', "" %}
 			<div class="col-sm-12 col-lg-6">
-				<a class="grid-item btn btn-light" href="/{{ page.link }}">
+				<a class="grid-item btn btn-light" href="{{ page.link | relative_url }}">
 					<p class="name">{{ page.name }}</p>
 					{% if page.desc %}
 						<p class="desc">{{ page.desc }}</p>
