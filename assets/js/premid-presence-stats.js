@@ -120,8 +120,8 @@ const forEveryPresence = callback => {
 
 // https://stackoverflow.com/a/41085566
 
-document.addEventListener("DOMContentLoaded", event => {
-	const toc = document.querySelector("#toc div div div");
+document.addEventListener("DOMContentLoaded", () => {
+	const toc = document.querySelector("#toc div div div")
 	const headings = [].slice.call(document.querySelectorAll('h2:not(.toc-ignore), h3:not(.toc-ignore), h4:not(.toc-ignore), h5:not(.toc-ignore), h6:not(.toc-ignore)'))
 	headings.forEach((heading, index) => {
 		let ref = "toc-" + (index + 1)
@@ -386,9 +386,15 @@ const processData = () => {
 				updatePresenceChart([400, 500])
 				break
 			case '600':
-				updatePresenceChart([400, 500])
+				updatePresenceChart([500, 600])
+				break	
+			case '600':
+				updatePresenceChart([600, 700])
 				break
-		}
+			case '700':
+				updatePresenceChart([700, 800])
+				break
+			}
 	}
 
 	/*
@@ -621,8 +627,8 @@ const processData = () => {
 				chartData.author5.datasets[0].label = "Users"
 				break
 			case 'usernotop':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(2)
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.users).sort((a, b) => b - a).slice(2)
+				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(3)
+				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.users).sort((a, b) => b - a).slice(3)
 				chartData.author5.datasets[0].label = "Users"
 				break
 			case 'average':
@@ -631,8 +637,8 @@ const processData = () => {
 				chartData.author5.datasets[0].label = "Average"
 				break
 			case 'averagenotop':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(2)
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.average).sort((a, b) => b - a).slice(2)
+				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(1)
+				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.average).sort((a, b) => b - a).slice(1)
 				chartData.author5.datasets[0].label = "Average"
 				break
 		}
@@ -645,42 +651,27 @@ const processData = () => {
 	================================================================
 	*/
 
-	let implementation1 = 0,
-		implementation2 = 0,
-		implementation3 = 0,
-		implementation4 = 0,
-		implementation5 = 0,
-		implementation6 = 0,
-		implementation7 = 0,
-		implementation8 = 0
+	let implementations = 9
+	let implementation = Array(implementations + 1).fill(0)
 
 	forEveryPresence(presence => {
-		if (typeof presence.metadata.iframe !== "undefined") implementation1++
-		if (typeof presence.metadata.contributors !== "undefined") implementation2++
-		if (typeof presence.metadata.settings !== "undefined") implementation3++
-		if (typeof presence.metadata.regExp !== "undefined") implementation4++
-		if (Object.keys(presence.metadata.description).length !== 1 && typeof presence.metadata.description === "object") implementation5++
-		if (presence.additional.partner) implementation6++
-		if (presence.additional.hot) implementation7++
-		if (typeof presence.metadata.altnames !== "undefined") implementation8++
+		if (typeof presence.metadata.iframe !== "undefined") implementation[1]++
+		if (typeof presence.metadata.contributors !== "undefined") implementation[2]++
+		if (typeof presence.metadata.regExp !== "undefined") implementation[4]++
+		if (Object.keys(presence.metadata.description).length !== 1 && typeof presence.metadata.description === "object") implementation[5]++
+		if (presence.additional.partner) implementation[6]++
+		if (presence.additional.hot) implementation[7]++
+		if (typeof presence.metadata.altnames !== "undefined") implementation[8]++
+		if (typeof presence.metadata.settings !== "undefined") {
+			implementation[3]++
+			if (presence.metadata.settings.filter(setting => setting.multiLanguage).length !== 0) implementation[9]++
+		}
 	})
 
-	document.querySelector("#implementation-1 p").textContent = implementation1
-	document.querySelector("#implementation-2 p").textContent = implementation2
-	document.querySelector("#implementation-3 p").textContent = implementation3
-	document.querySelector("#implementation-4 p").textContent = implementation4
-	document.querySelector("#implementation-5 p").textContent = implementation5
-	document.querySelector("#implementation-6 p").textContent = implementation6
-	document.querySelector("#implementation-7 p").textContent = implementation7
-	document.querySelector("#implementation-8 p").textContent = implementation8
-	document.querySelectorAll("#implementation-1 p")[1].textContent = `${Math.round((implementation1 / presenceCount) * 100)}% (${implementation1}/${presenceCount})`
-	document.querySelectorAll("#implementation-2 p")[1].textContent = `${Math.round((implementation2 / presenceCount) * 100)}% (${implementation2}/${presenceCount})`
-	document.querySelectorAll("#implementation-3 p")[1].textContent = `${Math.round((implementation3 / presenceCount) * 100)}% (${implementation3}/${presenceCount})`
-	document.querySelectorAll("#implementation-4 p")[1].textContent = `${Math.round((implementation4 / presenceCount) * 100)}% (${implementation4}/${presenceCount})`
-	document.querySelectorAll("#implementation-5 p")[1].textContent = `${Math.round((implementation5 / presenceCount) * 100)}% (${implementation5}/${presenceCount})`
-	document.querySelectorAll("#implementation-6 p")[1].textContent = `${Math.round((implementation6 / presenceCount) * 100)}% (${implementation6}/${presenceCount})`
-	document.querySelectorAll("#implementation-7 p")[1].textContent = `${Math.round((implementation7 / presenceCount) * 100)}% (${implementation7}/${presenceCount})`
-	document.querySelectorAll("#implementation-8 p")[1].textContent = `${Math.round((implementation8 / presenceCount) * 100)}% (${implementation8}/${presenceCount})`
+	for (var i = 1; i < implementations + 1; i++) {
+		document.querySelector(`#implementation-${i} p`).textContent = implementation[i]
+		document.querySelectorAll(`#implementation-${i} p`)[1].textContent = `${Math.round((implementation[i] / presenceCount) * 100)}% (${implementation[i]}/${presenceCount})`
+	}
 
 	/*
 	================================================================
@@ -706,7 +697,7 @@ const processData = () => {
 		}
 	})
 
-	document.querySelector("#lang-1-1 p").textContent = implementation5
+	document.querySelector("#lang-1-1 p").textContent = implementation[5]
 	document.querySelector("#lang-1-2 p").textContent = Object.keys(data.lang).length
 
 	$("#lang-2 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
@@ -822,7 +813,7 @@ document.addEventListener("DOMContentLoaded", event => {
 					document.querySelector("#main-tables").removeAttribute("hidden")
 					document.querySelector("#toc").removeAttribute("hidden")
 					if (document.readyState === "complete" || document.readyState === "interactive") processData()
-					else document.addEventListener("DOMContentLoaded", event => processData())
+					else document.addEventListener("DOMContentLoaded", () => processData())
 				}
 				callback()
 			}
