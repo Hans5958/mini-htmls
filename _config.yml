@@ -1,10 +1,10 @@
 title: "Hans5958's Website"
 email: ""
 description: "Ready or not, here we go! Website of Hans5958."
-baseurl: ""
-# baseurl: "/mini-htmls"
-url: "mini.hans5958.me"
-# url: "hans5958.github.io"
+# baseurl: ""
+baseurl: "/mini-htmls"
+# url: "mini.hans5958.me"
+url: "hans5958.github.io"
 
 markdown: kramdown
 theme: minima
