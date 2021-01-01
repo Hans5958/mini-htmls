@@ -1,14 +1,14 @@
-title: "Hans5958's Website"
+title: Hans5958's Mini HTMLs
 email: ""
-description: "Ready or not, here we go! Website of Hans5958."
-# baseurl: ""
-baseurl: "/mini-htmls"
-# url: "mini.hans5958.me"
-url: "hans5958.github.io"
+description: Ready or not, here we go! Website of Hans5958.
+baseurl: /mini-htmls
+url: https://hans5958.github.io
+
+author: Hans5958
+twitter: "@Hans5958"
+copyright_year: 2021
+repository: https://github.com/Hans5958/mini-htmls
 
 markdown: kramdown
-theme: minima
-
-exclude: ["README.md", "CODE_OF_CONDUCT.md", "excluded", ".github"]
-
+exclude: ["README.md", "CODE_OF_CONDUCT.md"]
 livereload: true

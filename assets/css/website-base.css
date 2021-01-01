@@ -22,22 +22,22 @@ https://github.com/bootstrapthemesco/bootstrap-4-multi-dropdown-navbar
 	transform: rotate(-90deg);
 }
 
-/* Design */
+/* Structure */
 
-html {
-	position: relative;
-	min-height: 100%;
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	margin: 0;
 }
 
 main {
-	margin: 1.5rem 0 4.5rem 0
+	padding: 1.5rem 0;
+	flex: 1 0 auto
 }
 
-footer {
-	margin-top: 100px;
-	position: absolute;
-	bottom: 0;
-	width: 100%;
+header, footer {
+	flex-shrink: 0;
 	background-color: #f5f5f5;
 }
 

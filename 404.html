@@ -1,0 +1,21 @@
+---
+layout: default
+title: 404
+description: Wait, it's just a 404 page? Always has been.
+no-analytics: true
+---
+
+<div class="container">
+	<div class="jumbotron text-center">
+		<h1 class="display-2">404</h1>
+		<h2>Page not found</h2>
+		<br />
+		<p>It seems I can't find the page that you're looking for or it's just doesn't exist.</p>
+		<a href="javascript:window.history.back()" class="btn btn-info" role="button">Go back</a>
+		<a href="{{ '/' | relative_url }}" class="btn btn-info" role="button">Homepage</a>
+	</div>
+</div>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49890594-3"></script>
+<script>window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments)}; gtag("js", new Date); gtag("config", "UA-49890594-3", {page_path: "/404"}); gtag("event", "404", {"event_category": "404", "event_label": "Page", value: document.location.pathname});
+</script>
