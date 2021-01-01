@@ -793,7 +793,7 @@ document.addEventListener("DOMContentLoaded", event => {
 					})
 			}))(),
 			(() => new Promise(callback => {
-				getData("/assets/other/premid-presence-stats/locale.json", response => {
+				getData(jsonData.locale, response => {
 					locale = response
 					updateProgressBar(`Preparing... (${step + 1}/2)`)
 					callback()
@@ -846,7 +846,7 @@ document.addEventListener("DOMContentLoaded", event => {
 				getDataCallback()
 			})
 
-			// getData("/assets/other/premid-presence-stats/static-data.json", response => {
+			// getData(jsonData.staticData, response => {
 			// 	data.presence = response
 			// 	forEveryPresence((presence, name) => {
 			// 		if (presence.name === undefined) delete data.presence[name]

@@ -4,6 +4,12 @@ title: PreMiD Presence Stats
 description: View all PreMiD-related statistics derived from the PreMiD API in various ways.
 ---
 
+<script>
+	let jsonData = {
+		locale: "{{ '/assets/other/premid-presence-stats/locale.json' | relative_url }}",
+		// staticData: "{{ '/assets/other/premid-presence-stats/static-data.json' | relative_url }}"
+	}
+</script>
 <script src="{{ '/assets/js/premid-presence-stats.js' | relative_url }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
