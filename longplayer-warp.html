@@ -1,0 +1,121 @@
+---
+layout: default
+title: Longplayer Warp
+description: View Longplayer's current score and stats, with time warping abilities (see future score and stats).
+---
+
+<!--
+
+Part of the content is made by the Longplayer Trust, and is licensed under 
+the terms of Creative Commons Attribution-NonCommercial 4.0 International License.
+
+-->
+
+<script>
+	let jsonData = {
+		themeDirectory: "{{ '/assets/img/longplayer-warp' | relative_url }}",
+	}
+</script>
+<script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1.10.4,npm/dayjs@1.10.4/plugin/utc.min.js,npm/dayjs@1.10.4/plugin/arraySupport.min.js,npm/js-datepicker@5.18.0"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/js-datepicker@5.18.0/dist/datepicker.min.css">
+<script src="{{ '/assets/js/longplayer-warp.js' | relative_url }}"></script>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-xl-6 col">
+			<h1>Longplayer Warp</h1>
+			<div id="score-container" style="max-width: 500px;" class="mx-auto"></div>
+			<h2>Score</h2>
+			<p>First section is the innermost circle. Last section is the outermost circle. Yellow rectangles represent the current segment playing.</p>
+			<p>Part of the content is made by The Longplayer Trust, and is licensed under the terms of <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>
+
+		</div>
+		<div class="col-md-6 col-xl-6 col">
+			<div id="current-date" class="text-center">
+				<p class="mb-0" id="current-date-1"></p>
+				<p id="current-date-2"></p>
+			</div>
+			<input type="text" id="datepicker" class="m-0" style="width: 1px; height: 1px; position: absolute; top: 0; left: 0; visibility: hidden">
+			
+			<input type="range" min="946684800" max="32503680000" value="946684800" class="slider w-100" step="1" id="settings-timestamp-range" class="">
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" value="" id="settings-real-time" data-setting-key="realTime" checked="true">
+				<label class="form-check-label" for="settings-real-time">Real time simulation</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" value="" id="setting-accuracy" data-setting-key="accuracy" checked="false">
+				<label class="form-check-label" for="setting-accuracy">Use accurate numbers <span title="Activating this setting lets the script use the accurate numbers instead of the numbers supplied on the Longplayer sites. Numbers changed are the start date and the segment increment." data-toggle="tooltip" data-placement="right"><span class="iconify" data-icon="bi:question-circle-fill" data-inline="false"></span></span></label>
+			</div>
+
+			<hr />
+			<table class="table table-sm">
+				<tbody>
+					<tr>
+						<th scope="row">Percentage</th>
+						<td id="stats-percentage"></td>
+					</tr>
+					<tr>
+						<th scope="row">Increments</th>
+						<td id="stats-increment"></td>
+					</tr>
+					<tr>
+						<th scope="row">Increment Duration</th>
+						<td id="stats-increment-duration"></td>
+					</tr>
+					<tr>
+						<th scope="row">Increment Percentage</th>
+						<td id="stats-increment-percentage"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 1 Angle</th>
+						<td id="stats-angle-1"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 2 Angle</th>
+						<td id="stats-angle-2"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 3 Angle</th>
+						<td id="stats-angle-3"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 4 Angle</th>
+						<td id="stats-angle-4"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 5 Angle</th>
+						<td id="stats-angle-5"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 6 Angle</th>
+						<td id="stats-angle-6"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 1 Revolutions</th>
+						<td id="stats-revolution-1"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 2 Revolutions<s/th>
+						<td id="stats-revolution-2"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 3 Revolutions</th>
+						<td id="stats-revolution-3"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 4 Revolutions</th>
+						<td id="stats-revolution-4"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 5 Revolutions</th>
+						<td id="stats-revolution-5"></td>
+					</tr>
+					<tr>
+						<th scope="row">Section 6 Revolutions</th>
+						<td id="stats-revolution-6"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

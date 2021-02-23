@@ -45,3 +45,7 @@
 - name: PreMiD Presence Stats
   link: /premid-presence-stats
   desc: View all PreMiD-related statistics derived from the PreMiD API in various ways.
+
+- name: Longplayer Warp
+  link: /longplayer-warp
+  desc: View Longplayer's current score and stats, with time warping abilities (see future score and stats).
