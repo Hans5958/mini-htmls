@@ -45,7 +45,7 @@ description: Mini HTMLs
 			})
 			mirrors.sort()
 			mirrors.forEach(function (shrt) {
-				$("#mirrors").append('<tr><td><img src="assets/img/sourceforge-mirror-test/' + shrt + '-large.png"></img></td><td><p>' + shrt + "</p></td><td><p>https://" + shrt + ".dl.sourceforge.net/project/" + proj + "/" + file + "</p></td></tr>")
+				$("#mirrors").append('<tr><td><img src="./img/' + shrt + '-large.png"></img></td><td><p>' + shrt + "</p></td><td><p>https://" + shrt + ".dl.sourceforge.net/project/" + proj + "/" + file + "</p></td></tr>")
 				$("#batch")[0].innerHTML += "https://" + shrt + ".dl.sourceforge.net/project/" + proj + "/" + file + "\n"
 			})
 			$("table").toggle(true)
