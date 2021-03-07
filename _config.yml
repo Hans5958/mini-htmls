@@ -12,3 +12,5 @@ repository: https://github.com/Hans5958/mini-htmls
 markdown: kramdown
 exclude: ["README.md", "CODE_OF_CONDUCT.md"]
 livereload: true
+
+source: site
