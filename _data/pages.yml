@@ -11,41 +11,45 @@
 #   link: /dislike-battle
 
 - name: Scratch Stats
-  link: /scratch-stats
   desc: See statistics of a Scratcher with this tool. Totally not a clone of ScratchStats.com by @World_Languages. Really.
+  link: /scratch-stats
 
 - name: Scratch Link Shortener
-  link: /scratch-link-shortener
   desc: Scratch Link Shortener, created by Raytracing at Scratch, edited by Hans5958.
+  link: /scratch-link-shortener
 
 - name: discordgg.ga Website Snapshots
-  link: /discordgg.ga
   desc: "A page that archives discordgg.ga in forms of snapshot from web.archive.org."
+  link: /discordgg.ga
 
 - name: "#TeamTrees Live Counter"
-  link: /teamtrees
   desc: "The #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
+  link: /teamtrees
 
 - name: MuseScore Downloader
-  link: /musescore-downloader
   desc: Download Musescore downloads without login, and free.
+  link: /musescore-downloader
 
 - name: TNKB Analyzer
-  link: /tnkb-analyzer
   desc: A tool to analyze vehicle registration plate number (plate number) from Indonesia.
+  link: /tnkb-analyzer
 
 - name: "#StopTheFire Live Counter"
-  link: /stopthefire
   desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
+  link: /stopthefire
 
 - name: COVID Counter
-  link: /covid-counter
   desc: View the number of cases of COVID-19 from multiple sources.
+  link: /covid-counter
 
 - name: PreMiD Presence Stats
-  link: /premid-presence-stats
   desc: View all PreMiD-related statistics derived from the PreMiD API in various ways.
+  link: /premid-presence-stats
 
 - name: Longplayer Warp
-  link: /longplayer-warp
   desc: View Longplayer's current score and stats, with time warping abilities (see future score and stats).
+  link: /longplayer-warp
+
+- name: .zrp Encryption Machine
+  desc: A very simple encryptor/decryptor for the .zrp archive format for Zenith.
+  link: /zrp-encryption-machine

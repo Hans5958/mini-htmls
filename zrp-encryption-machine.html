@@ -1,0 +1,52 @@
+---
+layout: default
+title: .zrp Encryption Machine
+description: A very simple encryptor/decryptor for the .zrp archive format for Zenith.
+---
+
+<!--
+	TODO: Fix styling
+-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aes-js/3.1.2/index.min.js"></script>
+
+<style>
+	#dropbox {
+		height: 100px;
+		border: dashed;
+		border-color: lightgray;
+		border-radius: 5px;
+		cursor: pointer;
+	}
+
+	#dropbox.dropping-down {
+		animation-name: blackborder;
+		animation-duration: 0.25s;
+		animation-fill-mode: forwards
+	}
+
+	#info {
+		margin: 0.5rem
+	}
+
+	p {
+		margin-bottom: 1rem;
+	}
+
+	@keyframes blackborder {
+		from {border-color: lightgray}
+		to {border-color: black}
+	}
+</style>
+
+<div class="container">
+	<h1><code>.zrp</code> Encryption Machine</h1>
+	<p>A very simple encryptor/decryptor for the .zrp archive format for <a href="https://github.com/arduano/Zenith-MIDI/">Zenith</a>. Copied from <a href="https://codepen.io/Hans5958/pen/wvGaXmL">Codepen</a>.</p>
+	<div id="dropbox" class="d-flex align-items-center justify-content-center flex-column text-center my-4 p-5">
+			<p class="m-0">Drop an archive here or <span style="text-decoration: underline">click here</span>.</p>
+			<p id="details" class="m-0">Drop a <code>.zrp</code> archive to decrypt it or a <code>.zip</code> archive to encrypt it.</p>
+	</div>	
+	<pre class="w-100" id="log"></pre>
+</div>
+
+<script src="{{ '/assets/js/zrp-encryption-machine.js' | relative_url }}"></script>
