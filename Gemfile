@@ -1,16 +1,22 @@
+# Batch command: 
+# del /f /s /q Gemfile.lock && bundle install && bundle lock --add-platform ruby x86_64-linux
+
 source "https://rubygems.org"
-gem "jekyll", "~> 3.9.0"
-# gem "minima", "~> 2.0"
+
+gem "jekyll", "~> 4.2.0"
 group :jekyll_plugins do
-  # gem "jekyll-feed", "~> 0.6"
+  gem "jekyll-sitemap"
+  gem "jekyll-last-modified-at"
+  gem "jekyll-default-layout"
+  gem "jekyll-minifier"
+  gem "jekyll-autoprefixer"
+  gem "jekyll-git_metadata", git: "https://github.com/ctrlgroup/jekyll-git_metadata.git"
 end
-install_if -> { RUBY_PLATFORM =~ %r!mingw|mswin|java! } do
+platforms :mingw, :x64_mingw, :mswin, :jruby do
   gem "tzinfo", "~> 1.2"
   gem "tzinfo-data"
 end
-gem "wdm", "~> 0.1.0", :install_if => Gem.win_platform?
-gem "kramdown-parser-gfm"
-# gem "eventmachine" "1.2.7"
+gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 
-# This can't run!
-# gem "github-pages", group: :jekyll_plugins
+# Hotfix to avoid using "eventmachine (1.2.7-x64-mingw32)" which makes errors on Windows.
+gem "eventmachine", "1.2.7", git: "https://github.com/eventmachine/eventmachine.git", tag: "v1.2.7"

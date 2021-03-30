@@ -1,5 +1,5 @@
 <footer class="footer text-middle">
 	<div class="container">
-		<span class="text-muted">Copyright (c) {{ site.copyright_year }}, {{ site.author }}. <a href="{{ site.repository }}">Site repository</a>.</span>
+		<span class="text-muted">Copyright (c) {{ site.copyright_year }}, {{ site.author }}. <a href="{{ site.repository }}">Site repository</a>. Revision: <a href="{{ site.repository }}/commit/{{ site.git.last_commit.long_sha }}"><code>{{ site.git.last_commit.short_sha }}</code></a></span>
 	</div>
 </footer>
