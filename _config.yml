@@ -34,4 +34,5 @@ autoprefixer:
   - not Explorer <= 11
 
 jekyll-minifier:
-  compress_javascript: false
+  uglifier_args:
+    harmony: true
