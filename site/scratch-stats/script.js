@@ -14,7 +14,7 @@ Also, I can make the code cleaner by using ES6.
 // One-time preparations
 
 const
-	buildDate = "23/07/2019",
+	buildDate = "24/04/2021",
 
 	lists = ["projectsFavorited", "usersFollowing", "usersFollowers", "studiosFollowed", "studiosCurated"]
 listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
@@ -181,14 +181,19 @@ const init = () => new Promise(async callback => {
 		if (cors !== false) {
 			logEvent("CORS proxy selected! " + cors)
 			if (cors === "") {
-				fullSpeed = true
-				logEvent("Allowed all cross-origin request. Full speed!")
-				callback()
+				if ($("#mode")[0].value === "sdb") {
+					logEvent("Cross-origin request allowed.")
+					logEvent("For some reason, ScratchStats API forbids cross-origin request.")
+					logEvent("To continue, disallow cross-origin request and try again.", true)
+				} else {
+					fullSpeed = true
+					logEvent("Allowed all cross-origin request. Full speed!")
+					callback()	
+				}
 			} else {
 				if ($("#mode")[0].value === "ext") {
 					logEvent("Cross-origin request not allowed.")
-					logEvent("To continue, allow cross-origin request (by downloading CORS Everywhere")
-					logEvent("or any other add-on/extension) and try again.", true)
+					logEvent("To continue, allow cross-origin request (by downloading CORS Everywhere or any other add-on/extension) and try again.", true)
 				} else {
 					callback()
 				}
