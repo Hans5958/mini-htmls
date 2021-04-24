@@ -34,5 +34,7 @@ autoprefixer:
   - not Explorer <= 11
 
 jekyll-minifier:
+  exclude: 
+    - "**/*.html"
   uglifier_args:
     harmony: true
