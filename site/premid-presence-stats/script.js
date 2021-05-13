@@ -188,8 +188,15 @@ const updateProgressBar = (details, increment = true) => {
 const processData = () => {
 
 	forEveryPresence((presence, name) => {
-		if (presence.name === undefined || presence.users === undefined) delete data.presence[name]
+		if (presence.name === undefined) {
+			if (presence.name === undefined) console.log(`${name} has no metadata`)
+			delete data.presence[name]
+		}
 		else {
+			if (presence.users === undefined) {
+				console.log(`${name} has no user count`)
+				presence.users = 0
+			}
 			data.presence[name].additional = {}
 			data.presence[name].additional.userPercentage = presence.users/totalUsers * 100
 			data.presence[name].additional.hot = (data.presence[name].additional.userPercentage > 5) ? true : false
@@ -290,7 +297,7 @@ const processData = () => {
 						</div>
 						<div class="col-md-6">
 							<a href="https://premid.app/store/presences/${presenceName}" target="_blank" class="btn btn-primary" role="button">PreMiD Store</a>
-							<a href="https://github.com/PreMiD/Presences/tree/master/${presenceName}" target="_blank" class="btn btn-secondary" role="button">Source Code (GitHub)</a>
+							<a href="https://github.com/PreMiD/Presences/tree/master/websites/${presenceName.slice(0,1).toUpperCase()}/${presenceName}" target="_blank" class="btn btn-secondary" role="button">Source Code (GitHub)</a>
 							<br />
 							<div class="card text-center" style="margin-top:1rem">
 								<div class="card-header">
