@@ -5,25 +5,24 @@ description: This is a tool to analyze vehicle registration plate number (plate 
 ---
 
 <link rel="stylesheet" href="style.css">
-<script>window.dict = "./dictMerged.json"</script>
+<script>window.dict = "./dictMergedEnglish.json"</script>
 <script defer src="script.js"></script>
 
 <div id="maindata" class="d-flex flex-column justify-content-center text-center container">
 	<h3>TNKB Analyzer</h3>
-	<input id="input" disabled class="mt-4 mb-2" placeholder="Contoh: "></input>
-	<p id="help" class="mt-4">Masukkan sebuah nomor polisi kendaraan untuk dianalisis. <a href="en">View this in English.</a></p>
+	<input id="input" disabled class="mt-4 mb-2" placeholder="Example: "></input>
+	<p id="help" class="mt-4">Enter a plate number from Indonesia to be analyzed. <a href="./">Lihat ini dalam Bahasa Indonesia.</a></p>
 	<div id="output" class="row mt-4" style="display:none">
 		<div id="tingkat1" class="col-sm-12 col-lg-6">
-			<h3>Daerah Tingkat 1</h3>
+			<h3>Area Level 1</h3>
 			<p class="result"></p>
-			<p class="details mb-0"></p>
+			<p class="details"></p>
 		</div>
 		<div id="tingkat2" class="col-sm-12 col-lg-6">
-			<h3>Daerah Tingkat 2</h3>
+			<h3>Area Level 2</h3>
 			<p class="result"></p>
-			<p class="details mb-0"></p>
+			<p class="details"></p>
 		</div>
 	</div>
 </div>
-
-	
+<br>

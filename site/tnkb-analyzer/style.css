@@ -1,0 +1,52 @@
+main {
+	display: flex;
+	vertical-align: middle;
+}
+
+#maindata {
+	/* text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+	width: 100vw; */
+	border: none;
+}
+
+p.result {
+	font-size: 20px;
+	margin-bottom: 0
+}
+
+#help {
+	font-size: 15px;
+	/* margin-top: 30px */
+}
+
+#output {
+	/* margin-top: 30px */
+}
+
+/* body {
+	vertical-align: middle;
+	margin: 0
+} */
+
+input {
+	/* padding: 35px 0px 5px; */
+	/* width: 80vw; */
+	font-size: 30px;
+	border: none;
+	border-bottom: 2px solid #4287f5;
+}
+
+/* button:hover {
+	transition-duration: 0.5s;
+	background-color: #1d6ef0;
+}
+
+button:focus {
+	outline: none;
+} */
+
+input:focus {
+	outline: none;
+}
