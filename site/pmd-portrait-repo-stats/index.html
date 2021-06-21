@@ -1,0 +1,363 @@
+---
+layout: default
+title: The PMD Portrait Repository Stats
+description: View all statistics related to The PMD Portrait Repository derived from multiple dataset in various ways.
+---
+
+<script>
+	let jsonData = {
+		portraitDict: "./portrait-dict.json"
+	}
+</script>
+<script src="./statistics.js" defer></script>
+<script src="./grid-tooltip.js" type="module"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/css/dataTables.bootstrap4.min.css" /> -->
+<style>
+	#main-stats h2, #main-stats h3, #main-stats h4,	#main-stats p {
+		text-align: center
+	}
+
+	p.count, p.count-main {
+		font-size: 3rem;
+		margin-bottom: 0
+	}
+
+	p.count-details {
+		margin-bottom: 0
+	}
+
+	#main-stats h2, #main-stats h3, #main-stats h4 {
+		margin-top: 1rem;
+		margin-bottom: 0;
+	}
+
+	#main-stats h2:nth-of-type(1) {
+		margin-top: 0
+	}
+
+	.toc-h1 {
+		display: none
+	}
+
+	.toc-h2 {
+		margin-left: 0
+	}
+
+	.toc-h3 {
+		margin-left: 1em
+	}
+
+	.toc-h4 {
+		margin-left: 2em
+	}
+
+	.viz-grid {
+		line-height: 0;
+	}
+
+	.viz-square {
+		width: 10px;
+		height: 10px;
+		background: gray;
+		display: inline-block;
+	}
+
+	.viz-square-complete {
+		background: lightgreen;
+	}
+
+	.viz-square-incomplete {
+		background: yellow;
+	}
+
+	.viz-scale[data-scale-type=heatmap] .viz-scale-gradient {
+		height: 10px;
+		background: linear-gradient(90deg, black 0%, red 100%);
+	}
+
+	.viz-scale-left {
+		text-align: left;
+	}
+
+	.viz-scale-right {
+		text-align: right;
+	}
+
+	.viz-legend {
+		text-align: center;
+	}
+
+	.viz-legend-item {
+		margin: 0 0.25rem
+	}
+
+	.viz-legend, .viz-scale, .viz-grid {
+		margin-bottom: .5rem;
+	}
+
+	#tooltip {
+		background: #333;
+		color: white;
+		padding: 4px 8px;
+		font-size: 13px;
+		border-radius: 4px;
+		width: max-content;
+	}
+
+	#tooltip > * {
+		margin: 0 auto
+	}
+
+	.tooltip-img {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+	
+	/* .child-info p {
+		margin: 0
+	}
+
+	.table-slim td,	.table-slim th {
+		padding: 0
+	}
+
+	.iconify {
+		width: 24px;
+		height: 24px;
+		pointer-events: none
+	} 
+	
+	.details-control, .nav-link {
+		cursor: pointer
+	} */
+
+</style>
+
+<div class="container">
+	<div id="intro" class="jumbotron">
+		<h1>The PMD Portrait Repository Stats</h1>
+		<p>Welcome! This page shows all statistics related to <a href="https://sprites.pmdcollab.org/">The PMD Portrait Repository</a> derived from provided datasets in various ways.</p>
+		<p class="font-italic">Note: More statistics is going to be added in the future. Only one dataset is used for now.</p>
+		<hr />
+		<p class="status">Preparing...</p>
+		<div class="progress" style="width: 100%; background: white;">
+			<div class="progress-bar" role="progressbar" style="width: 0; transition: width 0.25s ease;"></div>
+		</div>
+		<div id="toc" hidden>
+			<hr />
+			<h2 class="toc-ignore">
+				Table of contents
+				<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#toc-collapse" aria-expanded="false" aria-controls="toc-collapse">
+					Toggle
+				</button>
+			</h2>
+			<div class="collapse show" id="toc-collapse">
+				<div class="card card-body">
+					<div class="row" id="toc-content">
+						<div class="col-md-6"></div>
+						<div class="col-md-6"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="main-stats" hidden>
+		<div id="progress">
+			<h2>Progress</h2>
+			<div id="progress-1">
+				<h3>Completion by Pokemon</h3>
+				<div class="row">
+					<div id="progress-1-1" class="col-md-4">
+						<h4>Complete</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-1-2" class="col-md-4">
+						<h4>Incomplete</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-1-3" class="col-md-4">
+						<h4>Missing</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-1-4" class="col-md-12">
+						<h4>Total</h4>
+						<p class="count"></p>
+					</div>				
+				</div>			
+				<div id="progress-1-5" class="progress">
+					<div class="progress-bar bg-success" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-warning" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0"></div>
+				</div>
+			</div>
+			<div id="progress-2">
+				<h3>Completion by forms</h3>
+				<div class="row">
+					<div id="progress-2-1" class="col-md-4">
+						<h4>Complete</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-2-2" class="col-md-4">
+						<h4>Incomplete</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-2-3" class="col-md-4">
+						<h4>Missing</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-2-4" class="col-md-12">
+						<h4>Total</h4>
+						<p class="count"></p>
+					</div>				
+				</div>	
+				<div id="progress-2-5" class="progress">
+					<div class="progress-bar bg-success" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-warning" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0"></div>
+				</div>
+			</div>
+			<div id="progress-3">
+				<h4>Completion by portraits</h4>
+				<div class="row">
+					<div id="progress-3-1" class="col-md-4">
+						<h4>Complete</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-3-2" class="col-md-4">
+						<h4>Incomplete</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-3-3" class="col-md-4">
+						<h4>Missing</h4>
+						<p class="count-main"></p>
+						<p class="count-details"></p>
+					</div>
+					<div id="progress-3-4" class="col-md-12">
+						<h4>Total</h4>
+						<p class="count"></p>
+					</div>				
+				</div>	
+				<div id="progress-3-5" class="progress">
+					<div class="progress-bar bg-success" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-warning" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0"></div>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="viz">
+			<h2>Grid visualization</h2>
+			<div id="viz-1">
+				<h3>Completion by Pokemon
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#viz-wrapper-1" aria-expanded="false" aria-controls="viz-wrapper-1">
+						Toggle
+					</button>	
+				</h3>
+				<div id="viz-wrapper-1" class="collapse">
+					<div class="viz-legend">
+						<span class="viz-legend-item">
+							<span class="viz-square"></span> Missing
+						</span>
+						<span class="viz-legend-item">
+							<span class="viz-square viz-square-incomplete"></span> Incomplete (Existing)
+						</span>
+						<span class="viz-legend-item">
+							<span class="viz-square viz-square-complete"></span> Complete (Fully Featured)				
+						</span>
+					</div>
+					<div class="viz-grid" data-tooltip-function="completionPokemon"></div>
+				</div>
+			</div>
+			<div id="viz-2">
+				<h3>Completion by forms
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#viz-wrapper-2" aria-expanded="false" aria-controls="viz-wrapper-2">
+						Toggle
+					</button>
+				</h3>
+				<div id="viz-wrapper-2" class="collapse">
+					<div class="viz-legend">
+						<span class="viz-legend-item">
+							<span class="viz-square"></span> Missing
+						</span>
+						<span class="viz-legend-item">
+							<span class="viz-square viz-square-incomplete"></span> Incomplete (Existing)
+						</span>
+						<span class="viz-legend-item">
+							<span class="viz-square viz-square-complete"></span> Complete (Fully Featured)				
+						</span>
+					</div>
+					<div class="viz-grid" data-tooltip-function="completionForms"></div>
+				</div>
+			</div>
+			<div id="viz-3">
+				<h3>Completion by portraits
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#viz-wrapper-3" aria-expanded="false" aria-controls="viz-wrapper-3">
+						Toggle
+					</button>
+				</h3>
+				<div id="viz-wrapper-3" class="collapse">
+					<div class="viz-legend">
+						<span class="viz-legend-item">
+							<span class="viz-square"></span> Missing
+						</span>
+						<span class="viz-legend-item">
+							<span class="viz-square viz-square-incomplete"></span> Incomplete (Existing)
+						</span>
+						<span class="viz-legend-item">
+							<span class="viz-square viz-square-complete"></span> Complete (Fully Featured)				
+						</span>
+					</div>
+					<div class="viz-grid" data-tooltip-function="completionPortraits"></div>	
+				</div>
+			</div>
+			<div id="viz-4">
+				<h3>Last modified heatmap by Pokemon
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#viz-wrapper-4" aria-expanded="false" aria-controls="viz-wrapper-4">
+						Toggle
+					</button>
+				</h3>
+				<div id="viz-wrapper-4" class="collapse">
+					<div class="viz-scale" data-scale-type="heatmap">
+						<div class="row viz-scale-info">
+							<div class="col viz-scale-left"></div>
+							<div class="col viz-scale-right"></div>
+						</div>
+						<div class="viz-scale-gradient"></div>	
+					</div>
+					<div class="viz-grid" data-tooltip-function="heatmapPokemon"></div>	
+				</div>
+			</div>	
+			<div id="viz-5">
+				<h3>Last modified heatmap by forms
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#viz-wrapper-5" aria-expanded="false" aria-controls="viz-wrapper-5">
+						Toggle
+					</button>
+				</h3>
+				<div id="viz-wrapper-5" class="collapse">
+					<div class="viz-scale" data-scale-type="heatmap">
+						<div class="row viz-scale-info">
+							<div class="col viz-scale-left"></div>
+							<div class="col viz-scale-right"></div>
+						</div>
+						<div class="viz-scale-gradient"></div>	
+					</div>
+					<div class="viz-grid" data-tooltip-function="heatmapForms"></div>	
+				</div>
+			</div>	
+		</div>
+	</div>
+</div>
+
+<div id="tooltip" role="tooltip" class="mx-2 my-3" hidden></div>
