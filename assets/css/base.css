@@ -1,0 +1,1 @@
+.dropdown-menu{position:relative}.dropdown-menu .show>.dropdown-toggle::after{transform:rotate(-90deg)}.dropdown-menu .dropdown-menu{top:calc(100% - 3.25rem);left:calc(100%+.25rem)}body{display:flex;flex-direction:column;min-height:100vh;margin:0}main{padding:1.5rem 0;flex:1 0 auto}header,footer{flex-shrink:0;background-color:#f5f5f5}footer div{padding:1rem 0}
