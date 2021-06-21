@@ -106,6 +106,16 @@ description: View all statistics related to The PMD Portrait Repository derived 
 		border-radius: 4px;
 		width: max-content;
 	}
+
+	#tooltip > * {
+		margin: 0 auto
+	}
+
+	.tooltip-img {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
 	
 	/* .child-info p {
 		margin: 0
@@ -181,10 +191,11 @@ description: View all statistics related to The PMD Portrait Repository derived 
 						<p class="count"></p>
 					</div>				
 				</div>			
-				<!-- <div class="progress">
-					<div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-					<div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-				</div> -->
+				<div id="progress-1-5" class="progress">
+					<div class="progress-bar bg-success" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-warning" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0"></div>
+				</div>
 			</div>
 			<div id="progress-2">
 				<h3>Completion by forms</h3>
@@ -209,10 +220,11 @@ description: View all statistics related to The PMD Portrait Repository derived 
 						<p class="count"></p>
 					</div>				
 				</div>	
-				<!-- <div class="progress">
-					<div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-					<div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-				</div> -->
+				<div id="progress-2-5" class="progress">
+					<div class="progress-bar bg-success" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-warning" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0"></div>
+				</div>
 			</div>
 			<div id="progress-3">
 				<h4>Completion by portraits</h4>
@@ -237,10 +249,11 @@ description: View all statistics related to The PMD Portrait Repository derived 
 						<p class="count"></p>
 					</div>				
 				</div>	
-				<!-- <div class="progress">
-					<div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-					<div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="" aria-valuemin="0" aria-valuemax=""></div>
-				</div> -->
+				<div id="progress-3-5" class="progress">
+					<div class="progress-bar bg-success" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-warning" role="progressbar" aria-valuemin="0"></div>
+					<div class="progress-bar bg-secondary" role="progressbar" aria-valuemin="0"></div>
+				</div>
 			</div>
 		</div>
 		<hr />
@@ -264,7 +277,7 @@ description: View all statistics related to The PMD Portrait Repository derived 
 							<span class="viz-square viz-square-complete"></span> Complete (Fully Featured)				
 						</span>
 					</div>
-					<div class="viz-grid" data-tooltip-fields="name,status,lastModified" data-tooltip-field-display="Name,Status,Last modified"></div>
+					<div class="viz-grid" data-tooltip-function="completionPokemon"></div>
 				</div>
 			</div>
 			<div id="viz-2">
@@ -285,7 +298,7 @@ description: View all statistics related to The PMD Portrait Repository derived 
 							<span class="viz-square viz-square-complete"></span> Complete (Fully Featured)				
 						</span>
 					</div>
-					<div class="viz-grid" data-tooltip-fields="name,form,status,lastModified" data-tooltip-field-display="Name,Form,Status,Last modified"></div>
+					<div class="viz-grid" data-tooltip-function="completionForms"></div>
 				</div>
 			</div>
 			<div id="viz-3">
@@ -306,7 +319,7 @@ description: View all statistics related to The PMD Portrait Repository derived 
 							<span class="viz-square viz-square-complete"></span> Complete (Fully Featured)				
 						</span>
 					</div>
-					<div class="viz-grid" data-tooltip-fields="name,form,portrait,status,lastModified" data-tooltip-field-display="Name,Form,Portrait,Status,Last modified"></div>	
+					<div class="viz-grid" data-tooltip-function="completionPortraits"></div>	
 				</div>
 			</div>
 			<div id="viz-4">
@@ -323,7 +336,7 @@ description: View all statistics related to The PMD Portrait Repository derived 
 						</div>
 						<div class="viz-scale-gradient"></div>	
 					</div>
-					<div class="viz-grid" data-tooltip-fields="name,status,lastModified" data-tooltip-field-display="Name,Status,Last modified"></div>	
+					<div class="viz-grid" data-tooltip-function="heatmapPokemon"></div>	
 				</div>
 			</div>	
 			<div id="viz-5">
@@ -340,11 +353,11 @@ description: View all statistics related to The PMD Portrait Repository derived 
 						</div>
 						<div class="viz-scale-gradient"></div>	
 					</div>
-					<div class="viz-grid" data-tooltip-fields="name,form,status,lastModified" data-tooltip-field-display="Name,Form,Status,Last modified"></div>	
+					<div class="viz-grid" data-tooltip-function="heatmapForms"></div>	
 				</div>
 			</div>	
 		</div>
 	</div>
 </div>
 
-<div id="tooltip" role="tooltip" class="mr-2 ml-3 mb-2 mt-3" hidden></div>
+<div id="tooltip" role="tooltip" class="mx-2 my-3" hidden></div>

@@ -153,39 +153,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // })
 
-// https://gist.github.com/0x263b/2bdd90886c2036a1ad5bcf06d6e6fb37
+// // https://gist.github.com/0x263b/2bdd90886c2036a1ad5bcf06d6e6fb37
+
+// /**
+//  * Generates a color hash from a specified string.
+//  * @param {string} str String that will be hashed
+//  */
+// const getColorHash = str => {
+// 	var hash = 0
+// 	if (str.length === 0) return hash
+// 	for (var i = 0; i < str.length; i++) {
+// 		hash = str.charCodeAt(i) + ((hash << 5) - hash)
+// 		hash = hash & hash
+// 	}
+// 	var color = '#'
+// 	for (var i = 0; i < 3; i++) {
+// 		var value = (hash >> (i * 8)) & 255
+// 		color += ('00' + value.toString(16)).substr(-2)
+// 	}
+// 	return color
+// }
+
+// /**
+//  * General color hashing for Chart.js.
+//  * @param {*} ctx 
+//  */
+// const generalColorHashing = ctx => getColorHash(ctx.chart.data.labels[ctx.dataIndex])
 
 /**
- * Generates a color hash from a specified string.
- * @param {string} str String that will be hashed
+ * Updates the progress bar
+ * @param {string} details The status/details that will be shown.
+ * @param {boolean} increment Whether to increment the step or not
  */
-const getColorHash = str => {
-	var hash = 0
-	if (str.length === 0) return hash
-	for (var i = 0; i < str.length; i++) {
-		hash = str.charCodeAt(i) + ((hash << 5) - hash)
-		hash = hash & hash
-	}
-	var color = '#'
-	for (var i = 0; i < 3; i++) {
-		var value = (hash >> (i * 8)) & 255
-		color += ('00' + value.toString(16)).substr(-2)
-	}
-	return color
-}
-
-/**
- * General color hashing for Chart.js.
- * @param {*} ctx 
- */
-const generalColorHashing = ctx => getColorHash(ctx.chart.data.labels[ctx.dataIndex])
-
 const updateProgressBar = (details, increment = true) => {
 	if (increment) step++
 	document.querySelector("#intro .status").textContent = `${details}`
 	document.querySelector("#intro .progress-bar").style.width = `${(step / totalSteps) * 100}%`
 }
 
+/**
+ * Creates a square element.
+ * @returns A square element
+ */
 const generateSquareElement = () => {
 	let squareElement = document.createElement("div")
 	squareElement.classList.add("viz-square")
@@ -197,7 +206,7 @@ const generateSquareElement = () => {
  */
 const processData = () => {
 
-	let squareElement, colorClass
+	let squareElement
 
 	Object.values(data.pokemons).forEach((pokemon, index) => {
 
@@ -224,13 +233,17 @@ const processData = () => {
 		element.querySelector(".viz-scale-right").textContent = data.modifiedDates[data.modifiedDates.length - 1]        
 	})
 
-	Object.values(data.pokemons).forEach((pokemon, index) => {
+	Object.entries(data.pokemons).forEach(([ indexPokemon, pokemon ]) => {
+
+		const tooltipIdPokemon = indexPokemon
 
 		let dataPokemon = {
 			name: `${pokemon.name} (${pokemon.id})`,
 			status: "",
 			lastModified: ""
 		}
+
+		let colorClass
 
 		if (pokemon.complete === 0) { 
 			dataPokemon.status = "Missing"
@@ -249,33 +262,15 @@ const processData = () => {
 			unix: 0, heat: 0
 		}
 
-		Object.values(pokemon.forms).forEach(form => {
-			// if (form.complete === 2)
-			// console.log(form)
+		Object.entries(pokemon.forms).forEach(([ index, form ]) => {
 
-			// portraits[sic]
-
-			let dataForm = {
-				...dataPokemon,
-				form: `${form.name} (${form.filename.replace(/portrait-(\d{4}(?:-(\d{4}))*)\.png/, "$1")})`,
-				lastModified: form.modified
-			}
+			const tooltipIdForm = tooltipIdPokemon + ";" + index
 
 			let formModifiedDate = data.modifiedDatesTidy[form.modified]
 
 			if (pokemonLastModified.unix < formModifiedDate.unix) {
 				pokemonLastModified = formModifiedDate
-				dataPokemon.lastModified = form.modified
-			}
-
-			if (form.complete === 0) { 
-				dataForm.status = "Missing"
-			} else if (form.complete === 1) {
-				colorClass = "viz-square-incomplete"
-				dataForm.status = "Incomplete (Exists)"
-			} else if (form.complete === 2) { 
-				colorClass = "viz-square-complete"
-				dataForm.status = "Complete (Fully Featured)"
+				data.pokemons[indexPokemon].lastModified = form.modified
 			}
 
 			data.progress.form[form.complete]++
@@ -285,52 +280,39 @@ const processData = () => {
 			if (form.preversed) portraits.concat[form.preversed]
 
 			portraits.forEach((present, index) => {
-				
-				let dataPortrait = {
-					...dataForm,
-					portrait: `${data.portraitDict[index]} (${index})`
-				}
 
+				const tooltipIdPortrait = tooltipIdForm + ";" + index
+				
 				data.progress.portrait[form.complete * present]++
 				data.progress.portrait.total++
 
 				squareElement = generateSquareElement()
 				if (present) squareElement.classList.add(colorClass)
-				Object.keys(dataPortrait).forEach(key => {
-					squareElement.dataset[key] = dataPortrait[key]
-				})
+				squareElement.dataset.tooltipId = tooltipIdPortrait
 				document.querySelector("#viz-3 .viz-grid").appendChild(squareElement.cloneNode())
 
 			})
 
 			squareElement = generateSquareElement()
 			squareElement.classList.add(colorClass)
-			Object.keys(dataForm).forEach(key => {
-				squareElement.dataset[key] = dataForm[key]
-			})
+			squareElement.dataset.tooltipId = tooltipIdForm
 			document.querySelector("#viz-2 .viz-grid").appendChild(squareElement.cloneNode())
 		
 			squareElement = generateSquareElement()
 			squareElement.style.backgroundColor = `rgb(${255 * formModifiedDate.heat}, 0, 0)`
-			Object.keys(dataForm).forEach(key => {
-				squareElement.dataset[key] = dataForm[key]
-			})
+			squareElement.dataset.tooltipId = tooltipIdForm
 			document.querySelector("#viz-5 .viz-grid").appendChild(squareElement.cloneNode())
 	
 		})
 
 		squareElement = generateSquareElement()
 		squareElement.classList.add(colorClass)
-		Object.keys(dataPokemon).forEach(key => {
-			squareElement.dataset[key] = dataPokemon[key]
-		})
+		squareElement.dataset.tooltipId = tooltipIdPokemon
 		document.querySelector("#viz-1 .viz-grid").appendChild(squareElement.cloneNode())
 	
 		squareElement = generateSquareElement()
 		squareElement.style.backgroundColor = `rgb(${255 * pokemonLastModified.heat}, 0, 0)`
-		Object.keys(dataPokemon).forEach(key => {
-			squareElement.dataset[key] = dataPokemon[key]
-		})
+		squareElement.dataset.tooltipId = tooltipIdPokemon
 		document.querySelector("#viz-4 .viz-grid").appendChild(squareElement.cloneNode())
 
 	})
@@ -339,13 +321,15 @@ const processData = () => {
 		i++
 		progress = data.progress[key]
 		console.log(`#progress-${i}-1 .count-main`)
-		document.querySelector(`#progress-${i}-1 .count-main`).textContent = progress[2]
-		document.querySelector(`#progress-${i}-2 .count-main`).textContent = progress[1]
-		document.querySelector(`#progress-${i}-3 .count-main`).textContent = progress[0]
+		for (let i2 = 0; i2 < 3; i2++) {
+			document.querySelector(`#progress-${i}-${i2+1} .count-main`).textContent = progress[2-i2]
+			document.querySelector(`#progress-${i}-${i2+1} .count-details`).textContent = `${Math.round((progress[2-i2] / progress.total) * 100)}% (${progress[2-i2]}/${progress.total})`
+			document.querySelectorAll(`#progress-${i}-5 .progress-bar`)[i2]["aria-valuenow"] = progress[2-i2]
+			document.querySelectorAll(`#progress-${i}-5 .progress-bar`)[i2].style.width = `${(progress[2-i2] / progress.total) * 100}%`
+			document.querySelectorAll(`#progress-${i}-5 .progress-bar`)[i2].textContent = `${Math.round((progress[2-i2] / progress.total) * 100)}% (${progress[2-i2]}/${progress.total})`
+			document.querySelectorAll(`#progress-${i}-5 .progress-bar`)[i2]["aria-valuemax"] = progress.total
+		}
 		document.querySelector(`#progress-${i}-4 .count`).textContent = progress.total
-		document.querySelector(`#progress-${i}-1 .count-details`).textContent = `${Math.round((progress[2] / progress.total) * 100)}% (${progress[2]}/${progress.total})`
-		document.querySelector(`#progress-${i}-2 .count-details`).textContent = `${Math.round((progress[1] / progress.total) * 100)}% (${progress[1]}/${progress.total})`
-		document.querySelector(`#progress-${i}-3 .count-details`).textContent = `${Math.round((progress[0] / progress.total) * 100)}% (${progress[0]}/${progress.total})`
 	})
 
 }

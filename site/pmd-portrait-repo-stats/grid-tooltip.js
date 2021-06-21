@@ -1,6 +1,7 @@
 import { createPopper } from 'https://cdn.skypack.dev/@popperjs/core'
 
 let tempHidden = false
+let currentTarget
 
 let generateGetBoundingClientRect = (x = 0, y = 0) => () => ({
 	width: 0,
@@ -30,38 +31,31 @@ const instance = createPopper(virtualElement, tooltipElement, {
 })
 
 const updateTooltip = ({ clientX: x, clientY: y, target }) => {
-	const squareElement = target
-	const gridElement = target.parentElement
-	if (!gridElement.dataset.tooltipFields) {
-		tempHidden = true
-		hideTooltip()
-		return
+	console.log(tempHidden)
+	if (target.classList.contains(".viz-square")) {
+		if (document.querySelector(".viz-square:hover")) target = document.querySelector(".viz-square:hover")
+		else {
+			tempHidden = false
+			virtualElement.getBoundingClientRect = generateGetBoundingClientRect(x, y)
+			instance.update()
+		}
 	}
-	if (tempHidden) {
-		tempHidden = false
-		showTooltip()
+	if (currentTarget !== target) {
+		currentTarget = target
+		const squareElement = target
+		const gridElement = target.parentElement
+		tooltipElement.innerHTML = tooltipFunctions[gridElement.dataset.tooltipFunction](squareElement.dataset.tooltipId)
 	}
-	console.log(target)
 	virtualElement.getBoundingClientRect = generateGetBoundingClientRect(x, y)
-	const fields = gridElement.dataset.tooltipFields.split(",")
-	const fieldDisplay = {}
-	fields.forEach((v, i) => {
-		fieldDisplay[v] = gridElement.dataset.tooltipFieldDisplay.split(",")[i]
-	})
-	tooltipElement.innerHTML = ""
-	tooltipElement.insertAdjacentHTML(
-		"beforeend", 
-		fields.map(field => `<span class="font-weight-bold">${fieldDisplay[field]}</span>: ${squareElement.dataset[field]}`).join("<br />")
-	)
 	instance.update()
 }
 
 const showTooltip = event => {
-	tooltip.removeAttribute("hidden");
+	tooltip.removeAttribute("hidden")
 	instance.setOptions({
 		modifiers: [{ name: 'eventListeners', enabled: true }],
 	});
-	if (!tempHidden) document.addEventListener('mousemove', updateTooltip)
+	document.addEventListener('mousemove', updateTooltip)
 }
 
 const hideTooltip = event => {
@@ -69,10 +63,125 @@ const hideTooltip = event => {
 	instance.setOptions({
 		modifiers: [{ name: 'eventListeners', enabled: false }],
 	})
-	if (!tempHidden) document.removeEventListener('mousemove', updateTooltip);
+	document.removeEventListener('mousemove', updateTooltip);
 }
 
 document.querySelectorAll(".viz-grid").forEach(element => {
 	element.addEventListener("mouseenter", showTooltip)
 	element.addEventListener("mouseleave", hideTooltip)
 })
+
+document.querySelector("#tooltip").addEventListener("mouseenter", updateTooltip)
+
+const tooltipDataGenerator = {
+	pokemon(pokemonId) {
+		let pokemonData = data.pokemons[pokemonId]
+		let formData = pokemonData.forms[Object.keys(pokemonData.forms)[0]]
+		let portraitData = formData.portraits
+		if (formData.preversed) portraitData = portraitData.concat(formData.preversed)
+
+		let tooltipData = {
+			"Name": `${pokemonData.name} (${pokemonData.id})`,
+			"Status": "",
+			"Last modified": pokemonData.lastModified,
+			"!imgDirPath": formData.botPath,
+			"!reversed": !!formData.preversed,
+			"!portrait": portraitData,
+			"!canvasId": "portrait-" + formData.filename.replace(/portrait-(\d{4}(?:-(\d{4}))*)\.png/, "$1"),
+		}
+		if (pokemonData.complete === 0) { 
+			tooltipData["Status"] = "Missing"
+		} else if (pokemonData.complete === 1) {
+			tooltipData["Status"] = "Incomplete (Exists)"
+		} else if (pokemonData.complete === 2) { 
+			tooltipData["Status"] = "Complete (Fully Featured)"
+		}
+		return tooltipData
+	},
+	forms(pokemonId, formId) {
+		let formData = data.pokemons[pokemonId].forms[formId]
+		let portraitData = formData.portraits
+		if (formData.preversed) portraitData = portraitData.concat(formData.preversed)
+		let tooltipData = {
+			"Name": "",
+			"Form": `${formData.name} (${formData.filename.replace(/portrait-(\d{4}(?:-(\d{4}))*)\.png/, "$1")})`,
+			...this.pokemon(pokemonId),
+			"Last modified": formData.modified,
+			// "!imgDirPath": formData.filename.replace(/portrait-(\d{4}(?:-(\d{4}))*)\.png/, "$1").replace(/-/g, "/")
+			"!imgDirPath": formData.botPath,
+			"!reversed": !!formData.preversed,
+			"!portrait": portraitData,
+			"!canvasId": "portrait-" + formData.filename.replace(/portrait-(\d{4}(?:-(\d{4}))*)\.png/, "$1"),
+		}
+		return tooltipData
+	},
+	portraits(pokemonId, formId, portraitId) {
+		let formData = data.pokemons[pokemonId].forms[formId]
+		let portraitData = formData.portraits
+		if (formData.preversed) portraitData.concat(formData.preversed)
+		let tooltipData = {
+			"Name": "",
+			"Form": "",
+			"Portrait": `${data.portraitDict[portraitId]} (${portraitId})`,
+			...this.forms(pokemonId, formId),
+			"!done": portraitData[portraitId],
+		}
+		return tooltipData
+	}
+}
+
+const tooltipFunctions = {
+	completionPokemon(tooltipId) {
+		let html = ""
+		let pokemonId = tooltipId
+		let tooltipData = tooltipDataGenerator.pokemon(tooltipId)
+		html += Object.entries(tooltipData).filter(([display]) => !display.startsWith("!")).map(([display, value]) => `<p><span class="font-weight-bold">${display}</span>: ${value}</p>`).join("")
+		html += `<div class="tooltip-img"><canvas id="${tooltipData["!canvasId"]}" width="200" height="${tooltipData["!reversed"] ? "320" : "160"}"></div>`
+		tooltipData["!portrait"].forEach((portrait, index) => {
+			if (!portrait) return
+			const image = new Image();
+			image.src = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait${tooltipData["!imgDirPath"]}${data.portraitDict[index % 20]}${index > 19 ? "^" : ""}.png`
+			image.onload = () => {
+				try {
+					const ctx = document.querySelector(`#${tooltipData["!canvasId"]}`).getContext("2d")
+					ctx.drawImage(image, (index % 5) * 40, Math.floor(index/5) * 40)
+				} catch (e) {}
+			}
+		})
+		return html
+	},
+	completionForms(tooltipId) {
+		let html = ""
+		let [pokemonId, formId] = tooltipId.split(";")
+		let tooltipData = tooltipDataGenerator.forms(...tooltipId.split(";"))
+		html += Object.entries(tooltipData).filter(([display]) => !display.startsWith("!")).map(([display, value]) => `<p><span class="font-weight-bold">${display}</span>: ${value}</p>`).join("")
+		html += `<div class="tooltip-img"><canvas id="${tooltipData["!canvasId"]}" width="200" height="${tooltipData["!reversed"] ? "320" : "160"}"></div>`
+		tooltipData["!portrait"].forEach((portrait, index) => {
+			if (!portrait) return
+			const image = new Image();
+			image.src = `https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait${tooltipData["!imgDirPath"]}${data.portraitDict[index % 20]}${index > 19 ? "^" : ""}.png`
+			image.onload = () => {
+				try {
+					const ctx = document.querySelector(`#${tooltipData["!canvasId"]}`).getContext("2d")
+					ctx.drawImage(image, (index % 5) * 40, Math.floor(index/5) * 40)
+				} catch (e) {}
+			}
+		})
+		return html
+	},
+	completionPortraits(tooltipId) {
+		let html = ""
+		let [pokemonId, formId, portraitId] = tooltipId.split(";")
+		let tooltipData = tooltipDataGenerator.portraits(...tooltipId.split(";"))
+		html += Object.entries(tooltipData).filter(([display]) => !display.startsWith("!")).map(([display, value]) => `<p><span class="font-weight-bold">${display}</span>: ${value}</p>`).join("")
+		if (tooltipData["!done"])
+			html += `<div class="tooltip-img"><img src="https://raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait${tooltipData["!imgDirPath"]}${data.portraitDict[portraitId % 20]}${portraitId > 19 ? "^" : ""}.png"></img></div>`
+		return html
+	},
+	heatmapPokemon(tooltipId) {
+		return this.completionPokemon(tooltipId)
+	},
+	heatmapForms(tooltipId) {
+		return this.completionForms(tooltipId)
+	}
+}

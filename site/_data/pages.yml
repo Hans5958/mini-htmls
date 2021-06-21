@@ -53,3 +53,7 @@
 - name: .zrp Encryption Machine
   desc: A very simple encryptor/decryptor for the .zrp archive format for Zenith.
   link: /zrp-encryption-machine
+
+- name: The PMD Portrait Repository Stats
+  desc: View all statistics related to The PMD Portrait Repository derived from multiple dataset in various ways.
+  link: /pmd-portrait-repo-stats
