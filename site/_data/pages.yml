@@ -34,9 +34,9 @@
   desc: A tool to analyze vehicle registration plate number (plate number) from Indonesia.
   link: /tnkb-analyzer
 
-- name: "#StopTheFire Live Counter"
-  desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
-  link: /stopthefire
+# - name: "#StopTheFire Live Counter"
+#   desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
+#   link: /stopthefire
 
 - name: COVID Counter
   desc: View the number of cases of COVID-19 from multiple sources.
@@ -57,3 +57,7 @@
 - name: The PMD Portrait Repository Stats
   desc: View all statistics related to The PMD Portrait Repository derived from multiple dataset in various ways.
   link: /pmd-portrait-repo-stats
+
+- name: "#TeamSeas Live Counter"
+  desc: "This is the #TeamSeas (teamseas.org) live counter of the money raised, or ocean trash (planned to be) collected."
+  link: /teamseas
