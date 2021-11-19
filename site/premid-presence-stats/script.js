@@ -30,7 +30,7 @@ let data = {
 	charts = {},
 	chartData = {},
 	step = 0,
-	totalSteps = 6,
+	totalSteps = 3,
 	locale = {},
 	imgurAllow = false,
 	totalUsers = 0
@@ -243,7 +243,7 @@ const processData = () => {
 			let presenceInfo = []
 			presenceInfo.push(`<p><strong>Service</strong>: ${presenceName}</p>`)
 			presenceInfo.push(`<p><strong>Author</strong>: <a href="https://premid.app/users/${data.presence[presenceName].metadata.author.id}">${data.presence[presenceName].metadata.author.name}</a></p>`)
-			if (typeof data.presence[presenceName].metadata.contributors !== "undefined") {
+			if (typeof data.presence[presenceName].metadata.contributors) {
 				presenceInfo.push(`<p><strong>Contributors</strong>: ${data.presence[presenceName].metadata.contributors.map(contributor => `<a href="https://premid.app/users/${contributor.id}">${contributor.name}</a>`).join(", ")}</p>`)
 			}
 			presenceInfo.push(`<p><strong>Version</strong>: ${data.presence[presenceName].metadata.version}</p>`)
@@ -662,14 +662,14 @@ const processData = () => {
 	let implementation = Array(implementations + 1).fill(0)
 
 	forEveryPresence(presence => {
-		if (typeof presence.metadata.iframe !== "undefined") implementation[1]++
-		if (typeof presence.metadata.contributors !== "undefined") implementation[2]++
-		if (typeof presence.metadata.regExp !== "undefined") implementation[4]++
+		if (presence.metadata.iframe) implementation[1]++
+		if (presence.metadata.contributors) implementation[2]++
+		if (presence.metadata.regExp) implementation[4]++
 		if (Object.keys(presence.metadata.description).length !== 1 && typeof presence.metadata.description === "object") implementation[5]++
 		if (presence.additional.partner) implementation[6]++
 		if (presence.additional.hot) implementation[7]++
-		if (typeof presence.metadata.altnames !== "undefined") implementation[8]++
-		if (typeof presence.metadata.settings !== "undefined") {
+		if (presence.metadata.altnames) implementation[8]++
+		if (presence.metadata.settings) {
 			implementation[3]++
 			if (presence.metadata.settings.filter(setting => setting.multiLanguage).length !== 0) implementation[9]++
 		}
@@ -813,7 +813,7 @@ document.addEventListener("DOMContentLoaded", event => {
 			 * Callback for all ``getData()``.
 			 */
 			const getDataCallback = () => {
-				updateProgressBar(`Fetching data... (${step - 1}/4)`)
+				updateProgressBar(`Fetching data... (${step - 1}/1)`)
 				if (step === totalSteps) {
 					document.querySelector("#title .status").textContent = `All data fetched! Fetched on ${(new Date()).toString()}`
 					document.querySelector("#main-stats").removeAttribute("hidden")
@@ -825,33 +825,31 @@ document.addEventListener("DOMContentLoaded", event => {
 				callback()
 			}
 
-			getData("https://api.premid.app/v2/presences", response => {
-				response.forEach(value => {
-					if (typeof data.presence[value.name] === "undefined") data.presence[value.name] = {}
-					Object.keys(value).forEach(key => {
-						data.presence[value.name][key] = value[key]
+			fetch('https://api.premid.app/v3', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({query: `{usage{count},presences{metadata{author{id,name},contributors{id,name},altnames,service,description,url,version,logo,thumbnail,color,tags,category,iframe,regExp,iframeRegExp,readLogs,button,warning,settings{id,title,icon,if{propretyNames,patternProprties},placeholder,value,values,multiLanguage}},users},partners{name}}`})
+			})
+				.then(res => res.json())
+				.then(res => res.data)
+				.then(apiData => {
+					apiData.presences.forEach(presenceObject => {
+						data.presence[presenceObject.metadata.service] = {}
+						data.presence[presenceObject.metadata.service].users = 
+						data.presence[presenceObject.metadata.service] = {
+							name: presenceObject.metadata.service,
+							metadata: presenceObject.metadata,
+							users: presenceObject.users
+					}
+						// console.log(data.presence[presenceObject.metadata.service])
 					})
+					console.log(data.presence)
+					totalUsers = apiData.usage.count
+					data.partner = apiData.partners.map(partner => partner.name)
+					getDataCallback()
 				})
-				getDataCallback()
-			})
-
-			getData("https://api.premid.app/v2/presenceUsage", response => {
-				Object.keys(response).forEach(name => {
-					if (typeof data.presence[name] === "undefined") data.presence[name] = {}
-					data.presence[name].users = response[name]
-				})
-				getDataCallback()
-			})
-
-			getData("https://api.premid.app/v2/usage", response => {
-				totalUsers = response.users
-				getDataCallback()
-			})
-
-			getData("https://api.premid.app/v2/partners", response => {
-				data.partner = response.map(value => value.storeName)
-				getDataCallback()
-			})
 
 			// getData(jsonData.staticData, response => {
 			// 	data.presence = response
