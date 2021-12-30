@@ -61,3 +61,7 @@
 - name: "#TeamSeas Live Counter"
   desc: "This is the #TeamSeas (teamseas.org) live counter of the money raised, or ocean trash (planned to be) collected."
   link: /teamseas
+
+- name: My Minecraft Skins
+  desc: A page with skins that I use on Minecraft, and my first Vue project. (also interactive!)
+  link: /my-minecraft-skins

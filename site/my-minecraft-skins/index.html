@@ -1,0 +1,58 @@
+---
+layout: default
+title: My Minecraft Skins
+description: A page with skins that I use on Minecraft, and my first Vue project. (also interactive!)
+render_with_liquid: false
+---
+
+<style>
+	.blockquote {
+		font-size: 1rem
+	}
+
+	[v-cloak] {
+		visibility: hidden;
+	}
+</style>
+
+<div class="container">
+	<h1>My Minecraft Skins</h1>
+	<p>Here are skins that I use on Minecraft. Thank you for all of the original creators of these skins.</p>
+	<div id="app" v-cloak>
+		<div class="form-group">
+			<div class="form-check form-check-inline " v-for='[id, data] in Object.entries(allSkinData)'>
+				<input class="form-check-input" type='radio' :id='id' :value='id' v-model='skin'>
+				<label class="form-check-label" :for='id'>{{ data.name }}</label>
+			</div>
+		</div>	
+		<div class="row">
+			<div class="col-12 col-md-4">
+				<div id='skinview3d-canvas-wrapper' @mouseenter='pauseRotate' @mouseleave='resumeRotate'>
+					<canvas id="skinview3d-canvas"></canvas>
+				</div>
+			</div>
+			<div class="col-12 col-md-8 d-flex flex-column justify-content-center">
+				<h2>{{ name }} <small class='text-muted' v-if='fullName'>{{ fullName }}</small></h2>
+				<p>by {{ author }} <span v-if='edited' class='text-muted'>(edited)</span></p>
+				<blockquote class="blockquote text-sm" v-if='authorDesc'>
+					<p class="mb-0 text-justify" v-html='authorDesc'></p>
+					<p class="blockquote-footer mb-0"><cite :title="author">{{ author }}</cite></p>
+				</blockquote>
+				<p class="mt-2"><a v-for='[name, href] in link' :href="href" target='_blank' class='btn btn-primary mr-1'>{{ name }}</a></p>
+			</div>
+		</div>
+	</div>
+	<div class="jumbotron py-5">
+		<h2 class='mb-2'>Why?</h2>
+		<p class='mb-2'>Two simple reasons.</p>
+		<ol>
+			<li>I wanted to credit those who needs to be credited. Skin creators are rarely to be credited.</li>
+			<li>I wanted to start learning a JS framework, and I saw Vue is the easiest of bunch.</li>
+		</ol>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bs-community/skinview3d@aa89d40/js/skinview3d.bundle.js"></script>
+<script src="load-vue.js"></script>
+<script src="load-viewer.js"></script>
