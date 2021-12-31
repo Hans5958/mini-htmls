@@ -94,15 +94,17 @@ const initChart = (name, selector, label) => {
 		data: chartData[name],
 		options: {
 			responsive: true,
-			title: {
-				display: false
-			},
-			legend: {
-				display: false
-			},
-			tooltips: {
-				mode: 'index',
-				intersect: true
+			plugins: {
+				title: {
+					display: false
+				},
+				legend: {
+					display: false
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: true
+				}	
 			}
 		}
 	})
@@ -243,7 +245,7 @@ const processData = () => {
 			let presenceInfo = []
 			presenceInfo.push(`<p><strong>Service</strong>: ${presenceName}</p>`)
 			presenceInfo.push(`<p><strong>Author</strong>: <a href="https://premid.app/users/${data.presence[presenceName].metadata.author.id}">${data.presence[presenceName].metadata.author.name}</a></p>`)
-			if (typeof data.presence[presenceName].metadata.contributors) {
+			if (data.presence[presenceName].metadata.contributors) {
 				presenceInfo.push(`<p><strong>Contributors</strong>: ${data.presence[presenceName].metadata.contributors.map(contributor => `<a href="https://premid.app/users/${contributor.id}">${contributor.name}</a>`).join(", ")}</p>`)
 			}
 			presenceInfo.push(`<p><strong>Version</strong>: ${data.presence[presenceName].metadata.version}</p>`)
@@ -360,48 +362,25 @@ const processData = () => {
 		charts.presence.update()
 	}
 
+	selectChartElement = document.querySelector('#presence-4 select')
+
+	for (let i = 1; i < Math.ceil(presenceCount / 100); i++) {
+		let optionElement = document.createElement('option')
+		optionElement.value = i * 100
+		optionElement.textContent = `${(i - 1) * 100 + 1}-${i * 100}`
+		selectChartElement.appendChild(optionElement)
+	}
+
 	updatePresenceChart([6, 106])
 	document.querySelector("#presence-4 div select").value = "106no6"
 
 	document.querySelector("#presence-4 div select").onchange = () => {
-		switch (document.querySelector("#presence-4 div select").value) {
-			case '100':
-				updatePresenceChart([0, 100])
-				break
-			case '106':
-				updatePresenceChart([0, 106])
-				break
-			case '106no6':
-				updatePresenceChart([6, 106])
-				break
-			case 'all':
-				updatePresenceChart([0, undefined])
-				break
-			case 'allno6':
-				updatePresenceChart([6, undefined])
-				break
-			case '200':
-				updatePresenceChart([100, 200])
-				break
-			case '300':
-				updatePresenceChart([200, 300])
-				break
-			case '400':
-				updatePresenceChart([300, 400])
-				break
-			case '500':
-				updatePresenceChart([400, 500])
-				break
-			case '600':
-				updatePresenceChart([500, 600])
-				break	
-			case '600':
-				updatePresenceChart([600, 700])
-				break
-			case '700':
-				updatePresenceChart([700, 800])
-				break
-			}
+		let chartType = document.querySelector("#presence-4 div select").value
+		if (chartType === '106') updatePresenceChart([0, 106])
+		else if (chartType === '106no6') updatePresenceChart([6, 106])
+		else if (chartType === 'all') updatePresenceChart([0, undefined])
+		else if (chartType === 'allno6') updatePresenceChart([6, undefined])
+		else updatePresenceChart([chartType - 100, chartType - 0])
 	}
 
 	/*
@@ -791,7 +770,7 @@ document.addEventListener("DOMContentLoaded", event => {
 	(async () => {
 		await Promise.all([
 			(() => new Promise(callback => {
-				$.get("https://i.imgur.com/aaaaaaa.jpg")
+				$.get("https://i.imgur.com/removed.png")
 					.done(() => imgurAllow = true)
 					.fail(() => imgurAllow = false)
 					.always(() => {

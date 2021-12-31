@@ -12,10 +12,12 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/css/dataTables.bootstrap4.min.css" />
+<script src="https://cdn.jsdelivr.net/combine/npm/tocbot@4/dist/tocbot.min.js,npm/chart.js@3"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.css" />
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" /> -->
 <script src="./script.js" defer></script>
 <style>
 	h2,
@@ -27,7 +29,8 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 
 	p.count {
 		font-size: 3rem;
-		margin-bottom: 0
+		line-height: 4rem;
+		margin: 0.4rem 0 0.5rem;
 	}
 
 	.table-slim td,
@@ -198,13 +201,6 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 							<option value="106no6">6-106</option>
 							<option value="all">All</option>
 							<option value="allno6">All except top 6</option>
-							<option value="200">101-200</option>
-							<option value="300">201-300</option>
-							<option value="400">301-400</option>
-							<option value="500">401-500</option>
-							<option value="600">501-600</option>
-							<option value="700">601-700</option>
-							<option value="800">701-800</option>
 						</select>
 					</div>
 				</div>
