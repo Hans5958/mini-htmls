@@ -65,3 +65,7 @@
 - name: My Minecraft Skins
   desc: A page with skins that I use on Minecraft, and my first Vue project. (also interactive!)
   link: /my-minecraft-skins
+
+- name: Give Internet Things
+  desc: Those "give things" counters that you put on forum signatures, all in one page.
+  link: /give-internet-things
