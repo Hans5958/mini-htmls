@@ -1,4 +1,4 @@
-import { createPopper } from 'https://cdn.skypack.dev/@popperjs/core'
+import { createPopper } from 'https://cdn.skypack.dev/pin/@popperjs/core@v2.11.0-vNaZ2PjSixWsKsSynVha/mode=imports,min/optimized/@popperjs/core.js'
 
 let tempHidden = false
 let currentTarget
