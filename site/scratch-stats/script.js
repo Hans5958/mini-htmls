@@ -13,20 +13,26 @@ Also, I can make the code cleaner by using ES6.
 
 // One-time preparations
 
+dayjs.extend(dayjs_plugin_utc)
+dayjs.extend(dayjs_plugin_timezone)
+dayjs.extend(dayjs_plugin_advancedFormat)
+
 const
-	buildDate = "24/04/2021",
+	buildDate = "31/12/2021",
 
 	lists = ["projectsFavorited", "usersFollowing", "usersFollowers", "studiosFollowed", "studiosCurated"]
 listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
 
 let test1, test2, test3, test4, test5
 
-let username, cors, profileData, projList, topProjects, dateJoined, activity, msgCount, fullSpeed, list,
+let username, cors, profileData, projList, topProjects, dateJoined, activity, msgCount, fullSpeed, list, mode,
 	stats, statsC, statsP, statsPC,
 	log = [],
 	report = []
 
 // Log function for interface.
+
+const capitalizeFirstLetter = s => s[0].toUpperCase() + s.slice(1)
 
 function logEvent(logged = "", error = false, update = true) {
 	//console.log("[SS] " + logged)
@@ -91,17 +97,19 @@ const init = () => new Promise(async callback => {
 
 	// C = capitalized, P = passive
 
-	stats = ["views", "loves", "favorites", "comments"]
-	statsC = ["Views", "Loves", "Favorites", "Comments"]
-	statsP = ["viewed", "loved", "favorited", "commented"]
-	statsPC = ["Viewed", "Loved", "Favorited", "Commented"]
+	stats = ["views", "loves", "favorites"]
+	statsP = ["viewed", "loved", "favorited"]
 
-	if ($("#mode")[0].value === "alt" || $("#mode")[0].value === "ext") {
+	if (mode === "alt" || mode === "ext") {
 		stats.push("remixes")
-		statsC.push("Remixes")
 		statsP.push("remixed")
-		statsPC.push("Remixed")
+	} else if (mode === "sdb") {
+		stats.push("comments")
+		statsP.push("commented")
 	}
+
+	statsC = stats.map(word => capitalizeFirstLetter(word))
+	statsPC = statsP.map(word => capitalizeFirstLetter(word))
 
 	report = []
 	projList = []
@@ -181,7 +189,7 @@ const init = () => new Promise(async callback => {
 		if (cors !== false) {
 			logEvent("CORS proxy selected! " + cors)
 			if (cors === "") {
-				if ($("#mode")[0].value === "sdb") {
+				if (mode === "sstats") {
 					logEvent("Cross-origin request allowed.")
 					logEvent("For some reason, ScratchStats API forbids cross-origin request.")
 					logEvent("To continue, disallow cross-origin request and try again.", true)
@@ -191,7 +199,7 @@ const init = () => new Promise(async callback => {
 					callback()	
 				}
 			} else {
-				if ($("#mode")[0].value === "ext") {
+				if (mode === "ext") {
 					logEvent("Cross-origin request not allowed.")
 					logEvent("To continue, allow cross-origin request (by downloading CORS Everywhere or any other add-on/extension) and try again.", true)
 				} else {
@@ -354,7 +362,7 @@ const execProjectAlt = () => new Promise(async callback1 => {
 		logEvent("[P1] Total projects: " + proj2.length)
 		projN = proj2.length
 		logEvent("[P1] Obtaining " + projN + " project's statistics...")
-		for (var i2 = 0; i2 < projN + 1; i2++) {
+		for (var i2 = 0; i2 < projN; i2++) {
 			$.getJSON(cors + "https://api.scratch.mit.edu/projects/" + proj2[i2].match(/\d+/g))
 				.done(function(data) {
 					projDone++
@@ -757,7 +765,7 @@ function execEnd() {
 	reportEvent("Hans5958's Scratch Stats (build date " + buildDate + ")")
 	reportEvent("Report of " + profileData.username)
 	reportEvent()
-	reportEvent("Data obtained on " + moment().tz(moment.tz.guess()).format("dddd, D MMMM YYYY, H:mm:ss z") + ".")
+	reportEvent("Data obtained on " + dayjs().tz(dayjs.tz.guess()).format("dddd, D MMMM YYYY, H:mm:ss z") + ".")
 	reportEvent("Vanity URL: " + window.location)
 	reportEvent()
 
@@ -765,10 +773,10 @@ function execEnd() {
 
 	reportEvent("Username: " + profileData.username)
 	reportEvent("ID: " + profileData.id)
-	reportEvent("Join Date: " + moment.tz(dateJoined, "GMT").tz(moment.tz.guess()).format("dddd, D MMMM YYYY, H:mm:ss z"))
+	reportEvent("Join Date: " + dayjs.tz(dateJoined, "GMT").tz(dayjs.tz.guess()).format("dddd, D MMMM YYYY, H:mm:ss z"))
 	reportEvent("Country: " + profileData.profile.country)
 	reportEvent("Projects Shared: " + projList.length)
-	if ($("#mode")[0].value === "ext") {
+	if (mode === "ext") {
 		reportEvent("Projects Favorited: " + list.projectsFavorited.length)
 		reportEvent("Followed User: " + list.usersFollowing.length)
 		reportEvent("Followers: " + list.usersFollowers.length)
@@ -813,10 +821,10 @@ function execEnd() {
 
 	reportEvent("Lists Of Stats:")
 	reportEvent()
-	reportEvent("Projects: (views / loves / comments / favorites / remixes)")
+	reportEvent(`Projects: (${stats.join(' / ')})`)
 	sortLists.id.forEach(function(v, i) {
 		i++
-		reportEvent(i + ". [" + v.id + "] " + v.title + " (" + v.stats.views + " / " + v.stats.loves + " / " + v.stats.comments + " / " + v.stats.favorites + " / " + v.stats.remixes + ")")
+		reportEvent(i + ". [" + v.id + "] " + v.title + " (" + stats.map(stat => v.stats[stat]).join(' / ') + ")")
 	})
 	stats.forEach(function(v1, i) {
 		reportEvent()
@@ -828,7 +836,7 @@ function execEnd() {
 	})
 
 	// Other list.
-	if ($("#mode")[0].value === "ext") {
+	if (mode === "ext") {
 		lists.forEach(function(v1, i) {
 			reportEvent()
 			reportEvent(listsName[i] + ":")
@@ -886,25 +894,27 @@ $(function() {
 
 async function go() {
 
+	mode = $("#mode")[0].value
+
 	if ($("#username")[0].disabled === false) {
 		async function execProfile() {
-			if ($("#mode")[0].value === "main" || $("#mode")[0].value === "alt" || $("#mode")[0].value === "ext") await execProfileMain()
-			else if ($("#mode")[0].value === "sdb") await execProfileSDB()
+			if (mode === "main" || mode === "alt" || mode === "ext") await execProfileMain()
+			else if (mode === "sdb") await execProfileSDB()
 			await execProjectStats()
 		}
 		async function execProject() {
-			if ($("#mode")[0].value === "main") await execProjectMain()
-			else if ($("#mode")[0].value === "alt" || $("#mode")[0].value === "ext") await execProjectAlt()
-			else if ($("#mode")[0].value === "sdb") await execProjectSDB()
+			if (mode === "main") await execProjectMain()
+			else if (mode === "alt" || mode === "ext") await execProjectAlt()
+			else if (mode === "sdb") await execProjectSDB()
 			await execProjectStats()
 		}
 		async function execExtended() {
-			if ($("#mode")[0].value === "ext") {
+			if (mode === "ext") {
 				await Promise.all([execUsersFollowing(), execUsersFollowers(), execStudiosCurated(), execStudiosFollowed(), execProjectsFavorited()])
 			}
 		}
 		await init()
-		if ($("#mode")[0].value !== "sstats") {
+		if (mode !== "sstats") {
 			await execProfile()
 			await Promise.all([execActivity(), execMessages(), execProject(), execExtended()])
 		} else {
