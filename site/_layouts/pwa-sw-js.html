@@ -1,0 +1,41 @@
+const cacheName = "{{ page.title }}@{{ site.git.last_commit.short_sha }}"
+
+const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
+{{ '/assets/css/base.css' | absolute_url }}
+{{ content }}`.trim().split('\n')
+
+self.addEventListener('install', (event) => {
+	console.log('Service worker install event!');
+	event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(cacheResource)));
+});
+
+self.addEventListener('activate', (event) => {
+	console.log('Service worker activate event!');
+});
+
+self.addEventListener('fetch', (event) => {
+	// console.log('Fetch intercepted for:', event.request.url);
+	event.respondWith((async function () {
+		const cachedResponse = await caches.match(event.request);
+		if (cachedResponse) {
+			return cachedResponse;
+		}
+
+		const networkResponse = await fetch(event.request);
+
+		const hosts = [
+			'https://cdn.jsdelivr.net'
+		];
+
+		if (hosts.some((host) => event.request.url.startsWith(host))) {
+			const clonedResponse = networkResponse.clone();
+
+			event.waitUntil((async function () {
+				const cache = await caches.open(cacheName);
+				await cache.put(event.request, clonedResponse);
+			})());
+		}
+
+		return networkResponse;
+	})());
+});
