@@ -1,0 +1,73 @@
+if ("serviceWorker" in navigator) {
+	window.addEventListener("load", function () {
+		navigator.serviceWorker
+			.register("pwa-sw.js")
+			.then(res => console.log("Service worker registered"))
+			.catch(err => console.log("Service worker not registered", err))
+	})
+}
+
+let brand = document.querySelector('.navbar-brand')
+let disableAnchorEls = [
+	...document.querySelectorAll('footer a')
+]
+
+let isStandalone
+
+let pwaEl = document.createElement('span')
+pwaEl.className = "nav-text ml-2 badge badge-info"
+pwaEl.textContent = "PWA active"
+
+window.addEventListener('online', handleConnection);
+window.addEventListener('offline', handleConnection);
+
+function handleConnection() {
+	if (isStandalone) {
+		pwaEl.textContent = "Standalone mode"
+		gatekeepOn()
+	} else if (navigator.onLine) {
+		pwaEl.textContent = "PWA active"
+		gatekeepOff()
+	} else {
+		pwaEl.textContent = "Offline mode"
+		gatekeepOn()
+	}
+}
+
+function gatekeepOff() {
+	pwaEl.classList.add("ml-2")
+	brand.style.pointerEvents = ""
+	document.querySelector('.navbar-nav').style.display = ""
+	disableAnchorEls.forEach(el => {
+		el.style.color = ""
+		el.style.pointerEvents = ""
+	})
+}
+
+function gatekeepOn() {
+	pwaEl.classList.remove("ml-2")
+	brand.style.pointerEvents = "none"
+	document.querySelector('.navbar-nav').style.display = "none"
+	disableAnchorEls.forEach(el => {
+		el.style.color = "inherit"
+		el.style.pointerEvents = "none"
+	})
+}
+
+window.matchMedia('(display-mode: standalone)').addEventListener('change', ({ matches }) => {
+	console.log(matches)
+	if (matches) {
+		console.log("In standalone")
+		isStandalone = true
+		pwaEl.textContent = "Standalone mode"
+		gatekeepOn()
+	} else {
+		isStandalone = false
+		pwaEl.textContent = "PWA active"
+		gatekeepOff()
+	}
+})
+
+$(() => {
+	document.querySelector('#collapsibleNavbar').insertBefore(pwaEl, document.querySelector('#collapsibleNavbar').children[1])
+})
