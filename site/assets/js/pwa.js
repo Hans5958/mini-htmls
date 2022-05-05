@@ -81,13 +81,23 @@ const documentReadyPwa = () => {
 
 if ("serviceWorker" in navigator) {
 	window.addEventListener("load", () => {
-		documentReadyPwa()
 		navigator.serviceWorker
 			.register("pwa-sw.js")
 			.then(res => {
 				documentReadyPwa()
 				// console.log("Service worker registered")
 			})
-			// .catch(err => console.log("Service worker not registered", err))
+		// .catch(err => console.log("Service worker not registered", err))
+		// navigator.serviceWorker.ready
+		// 	.then(res => {
+		// 		res.addEventListener("updatefound", event => {
+		// 			const newSW = res.installing;
+		// 			newSW.addEventListener("statechange", event => {
+		// 				if (newSW.state == "installed") {
+		// 					console.info('Service worker updated.')
+		// 				}
+		// 			})
+		// 		})
+		// 	})
 	})
 }

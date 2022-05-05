@@ -8,13 +8,24 @@ https://cdn.jsdelivr.net/combine/npm/jquery@3.5.1/dist/jquery.min.js,npm/bootstr
 https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css`.trim().split('\n')
 
 self.addEventListener('install', (event) => {
-	// console.log('Service worker install event!');
-	event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(cacheResource)));
+	logInfo(`Service worker installed.`)
+	self.skipWaiting()
+	event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(cacheResource)))
+	logInfo(`Resources cached.`)
 });
 
 self.addEventListener('activate', (event) => {
-	// console.log('Service worker activate event!');
+	logInfo(`Service worker activated.`)
+	event.waitUntil(clients.claim())
 });
+
+self.addEventListener("statechange", event => {
+	if (newSW.state == "installed") {
+		logInfo(`Service worker updated.`)
+		// New service worker is installed, but waiting activation
+	}
+});
+
 
 self.addEventListener('fetch', (event) => {
 	// console.log('Fetch intercepted for:', event.request.url);
@@ -42,3 +53,7 @@ self.addEventListener('fetch', (event) => {
 		return networkResponse;
 	})());
 });
+
+function logInfo(...data) {
+	console.info(`[${cacheName}]`, ...data)
+}
