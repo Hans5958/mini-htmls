@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Musescore Downloader
-description: Download Musescore downloads without login, and free.
+title: MuseScore Downloader
+description: Download MuseScore downloads without login, and free.
 ---
 
-<script>
+<!-- <script>
 	let cors, inputButton, inputField
 	const parser = new DOMParser()
 	const result = { mscz: "", pdf: "", mxl: "", mid: "", mp3: "" }
@@ -91,25 +91,25 @@ description: Download Musescore downloads without login, and free.
 
 		cors = await corsDetect()
 	})
-</script>
+</script> -->
 
 <style></style>
 
 <div class="container">
-	<h1>Musescore Downloader</h1>
+	<h1>MuseScore Downloader</h1>
 	<br />
 	<h6 style="font-weight: 600;">Link to song:</h6>
 	<div class="input-group">
-		<input type="text" class="form-control" id="link" value="https://musescore.com/user/12461571/scores/3291706" />
+		<input type="text" class="form-control" id="link" value="https://musescore.com/user/12461571/scores/3291706" disabled/>
 		<div class="input-group-append">
-			<button class="btn btn-success" type="submit" id="go">Go</button>
+			<button class="btn btn-success" type="submit" id="go" disabled>Go</button>
 		</div>
 	</div>
 	<br />
 	<div id="download" style="display: none;">
 		<h3 id="title">Title</h3>
 		<p>Download one of the versions.</p>
-		<a class="btn btn-primary" role="button" id="download-mscz">Musescore</a>
+		<a class="btn btn-primary" role="button" id="download-mscz">MuseScore</a>
 		<a class="btn btn-secondary" role="button" id="download-pdf">PDF</a>
 		<a class="btn btn-secondary" role="button" id="download-mxl">MusicXML</a>
 		<a class="btn btn-secondary" role="button" id="download-mid">MIDI</a>
@@ -118,5 +118,10 @@ description: Download Musescore downloads without login, and free.
 	<br />
 	<pre id="batch" class="d-none"></pre>
 	<div id="dialog" class="d-none"></div>
+	<div class="alert alert-warning" role="alert">
+		<h4 class="mb-2">Deprecated</h4>
+		<p class="mb-2">With changes made on the MuseScore side, this tool is now not working and has been deprecated.</p>
+		<p class="mb-0">Please use other services to download from MuseScore. As a recommendation, check out <a href="https://github.com/LibreScore/dl-librescore">dl-librescore</a> or <a href="https://github.com/LibreScore/app-librescore">app-librescore</a>.</p>
+	</div>
 	<br />
 </div>
