@@ -1,6 +1,7 @@
 const cacheName = '{{ page.id }}@{{ site.time | date: "%s%N" }}'
 
 const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
+{{ '/assets/js/pwa.js' | absolute_url }}
 {{ '/assets/css/base.css' | absolute_url }}
 {{ '/assets/img/placeholder-144.png' | absolute_url }}
 {{ content }}
