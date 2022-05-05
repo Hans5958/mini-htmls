@@ -16,7 +16,7 @@ pwaEl.classList.add("mr-md-2")
 let pwaIsStandalone
 
 const pwaHandleConnection = () => {
-	console.log(navigator.onLine)
+	// console.log(navigator.onLine)
 	if (pwaIsStandalone) {
 		pwaEl.textContent = "Standalone mode"
 		pwaGatekeepOn()
