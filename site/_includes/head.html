@@ -22,6 +22,11 @@
 
 <!-- Require Script and Loading Page -->
 
+{% if page.pwa %}
+<link rel="manifest" href="pwa.webmanifest" />
+<script defer src="{{ '/assets/js/pwa.js' | relative_url }}?t={{ site.time | date: '%y%m%d%H%M%S' }}"></script>
+{% endif %}
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css" />
 <link rel="stylesheet" href="{{ '/assets/css/base.css' | relative_url }}" />
 
@@ -33,8 +38,3 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-49890594-3"></script>
 <script>window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments)}; gtag("js", new Date); gtag("config", "UA-49890594-3")</script>
 {% endunless %}
-
-{% if page.pwa %}
-<link rel="manifest" href="pwa.webmanifest" />
-<script defer src="{{ '/assets/js/pwa.js' | relative_url }}?t={{ site.time | date: '%y%m%d%H%M%S' }}"></script>
-{% endif %}
