@@ -1,5 +1,5 @@
 ---
 layout: pwa-webmanifest
 title: TNKB Analyzer
-root: /tnkb-analyzer/
+id: tnkb-analyzer
 ---

@@ -1,3 +1,0 @@
----
-layout: pwa-js
----

@@ -1,11 +1,11 @@
-const cacheName = '{{ page.title }}@{{ site.time | date: "%s%N" }}'
+const cacheName = '{{ page.id }}@{{ site.time | date: "%s%N" }}'
 
-const cacheResource = `https://cdn.jsdelivr.net/combine/npm/jquery@3.5.1/dist/jquery.min.js,npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js,npm/pace-js@1.2.4,npm/@iconify/iconify@1.0.7
-https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css
-{{ '/assets/js/base.js' | absolute_url }}
+const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
 {{ '/assets/css/base.css' | absolute_url }}
 {{ '/assets/img/placeholder-144.png' | absolute_url }}
-{{ content }}`.trim().split('\n')
+{{ content }}
+https://cdn.jsdelivr.net/combine/npm/jquery@3.5.1/dist/jquery.min.js,npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js,npm/pace-js@1.2.4,npm/@iconify/iconify@1.0.7
+https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css`.trim().split('\n')
 
 self.addEventListener('install', (event) => {
 	// console.log('Service worker install event!');

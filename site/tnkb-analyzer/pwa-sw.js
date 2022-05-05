@@ -1,6 +1,6 @@
 ---
 layout: pwa-sw-js
-title: tnkb-analyzer
+id: tnkb-analyzer
 ---
 
 {{ '/tnkb-analyzer/' | absolute_url }}
@@ -11,4 +11,3 @@ title: tnkb-analyzer
 {{ '/tnkb-analyzer/style.css' | absolute_url }}
 {{ '/tnkb-analyzer/dictMerged.json' | absolute_url }}
 {{ '/tnkb-analyzer/dictMergedEnglish.json' | absolute_url }}
-{{ '/tnkb-analyzer/pwa.js' | absolute_url }}
