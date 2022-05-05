@@ -36,5 +36,5 @@
 
 {% if page.pwa %}
 <link rel="manifest" href="pwa.webmanifest" />
-<script defer src="{{ '/assets/js/pwa.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/pwa.js' | relative_url }}?t={{ site.time | date: '%y%m%d%H%M%S' }}"></script>
 {% endif %}
