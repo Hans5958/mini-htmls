@@ -1,7 +1,7 @@
-const cacheName = '{{ page.id }}@{{ site.time | date: "%s%N" }}'
+const cacheName = '{{ page.id }}@{{ site.time | date: '%y%m%d%H%M%S' }}'
 
 const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
-{{ '/assets/js/pwa.js' | absolute_url }}
+{{ '/assets/js/pwa.js' | absolute_url }}?t={{ site.time | date: '%y%m%d%H%M%S' }}
 {{ '/assets/css/base.css' | absolute_url }}
 {{ '/assets/img/placeholder-144.png' | absolute_url }}
 {{ content }}
@@ -30,30 +30,56 @@ self.addEventListener("statechange", event => {
 
 self.addEventListener('fetch', (event) => {
 	// console.log('Fetch intercepted for:', event.request.url);
-	event.respondWith((async function () {
-		const cachedResponse = await caches.match(event.request);
+	event.respondWith((async () => {
+
+		const networkResponse = await fetch(event.request)
+		if (networkResponse) {
+			return networkResponse
+		}
+
+		const cachedResponse = await caches.match(event.request)
 		if (cachedResponse) {
-			return cachedResponse;
+			return cachedResponse
 		}
 
-		const networkResponse = await fetch(event.request);
-
-		const hosts = [
-			'https://cdn.jsdelivr.net'
-		];
-
-		if (hosts.some((host) => event.request.url.startsWith(host))) {
-			const clonedResponse = networkResponse.clone();
-
-			event.waitUntil((async function () {
-				const cache = await caches.open(cacheName);
-				await cache.put(event.request, clonedResponse);
-			})());
-		}
+		event.waitUntil((async () => {
+			const cache = await caches.open(cacheName);
+			await cache.put(event.request, clonedResponse)
+		}))
 
 		return networkResponse;
 	})());
 });
+
+// self.addEventListener('fetch', (event) => {
+// 	// console.log('Fetch intercepted for:', event.request.url);
+// 	event.respondWith((function () {
+
+// 		fetch(event.request)
+// 			.then(networkResponse => {
+// 				// const hosts = [
+// 				// 	'https://cdn.jsdelivr.net'
+// 				// ];
+		
+// 				// if (hosts.some((host) => event.request.url.startsWith(host))) {
+// 				// 	const clonedResponse = networkResponse.clone();
+		
+// 				// 	event.waitUntil((async function () {
+// 				// 		const cache = await caches.open(cacheName);
+// 				// 		await cache.put(event.request, clonedResponse);
+// 				// 	})());
+// 				// }
+		
+// 				cache.put(event.request, networkResponse.clone())
+// 				return networkResponse;	
+// 			})
+// 			.catch(() => {
+// 				return await caches.match(event.request)
+// 			})
+		
+// 	})());
+// });
+
 
 function logInfo(...data) {
 	console.info(`[${cacheName}]`, ...data)
