@@ -1,6 +1,6 @@
 const brandEl = document.querySelector('.navbar-brand')
 const pwaToDisableAnchorEls = [
-	...document.querySelectorAll('footer a')
+	...document.querySelectorAll('a[href^=http]')
 ]
 const pwaEl = document.createElement('span')
 pwaEl.className = "nav-text ml-md-2 mr-1 mr-md-2 badge badge-info"

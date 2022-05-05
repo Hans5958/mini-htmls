@@ -1,9 +1,10 @@
+{% capture root %}/{{ page.id }}/{% endcapture %}
 {
 	"name": "{{ page.title }}",
 	"short_name": "{{ page.title }}",
-	"id": "{{ page.root | relative_url }}",
-	"start_url": "{{ page.root | relative_url }}",
-	"scope": "{{ page.root | relative_url }}",
+	"id": "{{ root | relative_url }}",
+	"start_url": "{{ root | relative_url }}",
+	"scope": "{{ root | relative_url }}",
 	"display": "standalone",
 	"orientation": "any",
 	"background_color": "#343a40",
