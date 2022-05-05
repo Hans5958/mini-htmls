@@ -1,4 +1,4 @@
-const cacheName = '{{ page.id }}@{{ site.time | date: '%y%m%d%H%M%S' }}'
+const cacheName = "{{ page.id }}@{{ site.time | date: '%y%m%d%H%M%S' }}"
 
 const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
 {{ '/assets/js/pwa.js' | absolute_url }}?t={{ site.time | date: '%y%m%d%H%M%S' }}
@@ -11,14 +11,14 @@ https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,
 self.addEventListener('install', (event) => {
 	logInfo(`Service worker installed.`)
 	self.skipWaiting()
-	event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(cacheResource)))
+	event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(cacheResource)))
 	logInfo(`Resources cached.`)
 });
 
 self.addEventListener('activate', (event) => {
 	logInfo(`Service worker activated.`)
 	event.waitUntil(clients.claim())
-});
+})
 
 self.addEventListener("statechange", event => {
 	if (newSW.state == "installed") {
@@ -32,22 +32,19 @@ self.addEventListener('fetch', (event) => {
 	// console.log('Fetch intercepted for:', event.request.url);
 	event.respondWith((async () => {
 
-		const networkResponse = await fetch(event.request)
+		const networkResponse = await fetch(event.request).catch(() => undefined)
 		if (networkResponse) {
+			// console.log("network", event.request.url)
+			await caches.open(cacheName).then(cache => cache.put(event.request, networkResponse.clone()))
 			return networkResponse
 		}
 
 		const cachedResponse = await caches.match(event.request)
 		if (cachedResponse) {
+			// console.log("cache", event.request.url)
 			return cachedResponse
 		}
 
-		event.waitUntil((async () => {
-			const cache = await caches.open(cacheName);
-			await cache.put(event.request, clonedResponse)
-		}))
-
-		return networkResponse;
 	})());
 });
 
@@ -60,23 +57,23 @@ self.addEventListener('fetch', (event) => {
 // 				// const hosts = [
 // 				// 	'https://cdn.jsdelivr.net'
 // 				// ];
-		
+
 // 				// if (hosts.some((host) => event.request.url.startsWith(host))) {
 // 				// 	const clonedResponse = networkResponse.clone();
-		
+
 // 				// 	event.waitUntil((async function () {
 // 				// 		const cache = await caches.open(cacheName);
 // 				// 		await cache.put(event.request, clonedResponse);
 // 				// 	})());
 // 				// }
-		
+
 // 				cache.put(event.request, networkResponse.clone())
 // 				return networkResponse;	
 // 			})
 // 			.catch(() => {
 // 				return await caches.match(event.request)
 // 			})
-		
+
 // 	})());
 // });
 
