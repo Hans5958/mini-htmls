@@ -1,0 +1,1 @@
+$(()=>{$(".dropdown-menu a.dropdown-toggle").on("click",()=>($(this).next().hasClass("show")||$(this).parents(".dropdown-menu").first().find(".show").removeClass("show"),$(this).next(".dropdown-menu").toggleClass("show"),$(this).parents("li.nav-item.dropdown.show").on("hidden.bs.dropdown",()=>{$(".dropdown-menu .show").removeClass("show")}),!1))});

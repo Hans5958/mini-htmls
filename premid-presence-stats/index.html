@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<!-- Title and Meta -->
+
+<title>PreMiD Presence Stats - Hans5958's Mini HTMLs</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="View all PreMiD-related statistics derived from the PreMiD API in various ways." />
+<meta name="author" content="Hans5958" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hans5958.github.io/mini-htmls/premid-presence-stats/">
+<meta property="og:title" content="PreMiD Presence Stats - Hans5958's Mini HTMLs" />
+<meta property="og:description" content="View all PreMiD-related statistics derived from the PreMiD API in various ways.">
+<meta property="og:site_name" content="Hans5958's Mini HTMLs" />
+<meta property="og:locale" content="en_US" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@Hans5958" />
+<meta name="twitter:creator" content="@Hans5958" />
+<meta name="twitter:url" content="https://hans5958.github.io/mini-htmls/premid-presence-stats/" />
+<meta name="twitter:title" content="PreMiD Presence Stats - Hans5958's Mini HTMLs" />
+<meta name="twitter:description" content="View all PreMiD-related statistics derived from the PreMiD API in various ways." />
+
+<!-- Require Script and Loading Page -->
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css" />
+<link rel="stylesheet" href="/mini-htmls/assets/css/base.css" />
+
+<script src="https://cdn.jsdelivr.net/combine/npm/jquery@3.5.1/dist/jquery.min.js,npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js,npm/pace-js@1.2.4,npm/@iconify/iconify@1.0.7"></script>
+<script>Pace.on("done", () => setTimeout(() => Pace.options.ajax = false, 300));</script>
+<script src="/mini-htmls/assets/js/base.js"></script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49890594-3"></script>
+<script>window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments)}; gtag("js", new Date); gtag("config", "UA-49890594-3")</script>
+
+
+
+</head>
+
+<body>
+
+<header><nav class="navbar navbar-expand-md bg-dark navbar-dark">
+	<a class="navbar-brand" href="/mini-htmls/">
+		Hans5958's Mini HTMLs
+	</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="collapsibleNavbar">
+		<ul class="navbar-nav">
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Pages
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navDrop">
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/sourceforge-mirror-test">
+							SourceForge Mirror Test
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/scratch-stats">
+							Scratch Stats
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/scratch-link-shortener">
+							Scratch Link Shortener
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/discordgg.ga">
+							discordgg.ga Website Snapshots
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/teamtrees">
+							#TeamTrees Live Counter
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/musescore-downloader">
+							MuseScore Downloader
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/tnkb-analyzer">
+							TNKB Analyzer
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/covid-counter">
+							COVID Counter
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/premid-presence-stats">
+							PreMiD Presence Stats
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/longplayer-warp">
+							Longplayer Warp
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/zrp-encryption-machine">
+							.zrp Encryption Machine
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/pmd-portrait-repo-stats">
+							The PMD Portrait Repository Stats
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/teamseas">
+							#TeamSeas Live Counter
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/my-minecraft-skins">
+							My Minecraft Skins
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/give-internet-things">
+							Give Internet Things
+						</a>
+					</li>
+					
+				</ul>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/">
+					Main Website
+				</a>
+			</li>
+		</ul>
+		<span class="nav-text ml-auto" style="color: #fff;">
+			<i>Ready or not, here we go!</i>
+		</span>
+	</div>
+</nav></header>
+
+
+  <main id="content">
+    <script>
+	let jsonData = {
+		locale: "./locale.json",
+		// staticData: "./static-data.json"
+	}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/css/dataTables.bootstrap4.min.css" />
+<script src="https://cdn.jsdelivr.net/combine/npm/tocbot@4/dist/tocbot.min.js,npm/chart.js@3"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.css" />
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" /> -->
+<script src="./script.js" defer></script>
+<style>
+	h2,
+	h3,
+	h4,
+	#main-stats p {
+		text-align: center
+	}
+
+	p.count {
+		font-size: 3rem;
+		line-height: 4rem;
+		margin: 0.4rem 0 0.5rem;
+	}
+
+	.table-slim td,
+	.table-slim th {
+		padding: 0
+	}
+
+	.toc-h1 {
+		display: none
+	}
+
+	.toc-h2 {
+		margin-left: 0
+	}
+
+	.toc-h3 {
+		margin-left: 1em
+	}
+
+	.toc-h4 {
+		margin-left: 2em
+	}
+
+	#title * {
+		text-align: left
+	}
+
+	.details-control,
+	.nav-link {
+		cursor: pointer
+	}
+
+	.child-info p {
+		margin: 0
+	}
+
+	.iconify {
+		width: 24px;
+		height: 24px;
+	    pointer-events: none
+	}
+</style>
+
+<div class="container">
+	<div id="opening">
+		<div id="title" class="jumbotron">
+			<h1>PreMiD Presence Stats</h1>
+			<p>Welcome! This page shows all PreMiD-related statistics derived from the PreMiD API in various ways.</p>
+			<hr />
+			<p class="status">Preparing...</p>
+			<div class="progress" style="width: 100%; background: white;">
+				<div class="progress-bar" role="progressbar" style="width: 0; transition: width 0.25s ease;"></div>
+			</div>
+			<div id="toc" hidden>
+				<hr />
+				<h2 class="toc-ignore">
+					Table of contents
+					<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#toc-collapse" aria-expanded="false" aria-controls="toc-collapse">
+						Toggle
+					</button>
+				</h2>
+				<div class="collapse show" id="toc-collapse">
+					<div class="card card-body">
+						<div class="row">
+							<div class="col-md-6"></div>
+							<div class="col-md-6"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="main-stats" hidden>
+		<div id="usage">
+			<h2>Usage</h2>
+			<div id="usage-1">
+				<div class="row">
+					<div class="col-md-6" id="usage-1-1">
+						<h4>Total users</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-6" id="usage-1-2">
+						<h4>5% threshold</h4>
+						<p class="count"></p>
+						<p>If the number of users who added a certain presence is above this threshold, it will be counted as a popular presence.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="presence">
+			<h2>Presence</h2>
+			<div id="presence-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4" id="presence-1-1">
+						<h4>Total presences</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="presence-1-2">
+						<h4>Total "users"</h4>
+						<p class="count"></p>
+						<p>Well, not exactly, it's just the sum for all user numbers from all presences.</p>
+					</div>
+					<div class="col-md-4" id="presence-1-3">
+						<h4>User to presence average</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div id="presence-2">
+						<div class="row">
+							<div class="col-12">
+								<h3>Top 10 presences</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<table class="table table-slim">
+									<thead>
+										<tr>
+											<th>Presence</th>
+											<th>Users</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div id="presence-3">
+						<div class="row">
+							<div class="col-12">
+								<h3>Top 10 presences, excluding 6 pre-installed</h3>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<table class="table table-slim">
+									<thead>
+										<tr>
+											<th>Presence</th>
+											<th>Users</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="presence-4">
+				<div class="row">
+					<div class="col-12">
+						<h3>Line graph</h3>
+						<select class="form-control">
+							<option value="100">Top 100</option>
+							<option value="106">Top 106</option>
+							<option value="106no6">6-106</option>
+							<option value="all">All</option>
+							<option value="allno6">All except top 6</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<canvas></canvas>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="category">
+			<div class="row">
+				<div class="col-12">
+					<h2>Category</h2>
+				</div>
+			</div>
+			<div id="category-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4" id="category-1-1">
+						<h4>Total categories</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="category-1-2">
+						<h4>Presence to category average</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="category-1-3">
+						<h4>Users to category average</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div id="category-2">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top categories, presence count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Presences</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="category-3">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top categories, user count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Users</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="category-4">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top categories, users to presence average</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Average</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="author">
+			<h2>Developer/Author</h2>
+			<div id="author-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4" id="author-1-1">
+						<h4>Total developers</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="author-1-2">
+						<h4>Presence to developer average</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-4" id="author-1-3">
+						<h4>Users to developer average</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div id="author-2">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 developers, presence count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Author</th>
+									<th>Presences</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="author-3">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 developers, user count</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Author</th>
+									<th>Users</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="author-4">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 developers, user to presence average</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Author</th>
+									<th>Average</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="author-5">
+				<div class="row">
+					<div class="col-12">
+						<h3>Line graph</h3>
+						<select class="form-control">
+							<option value="presence">Presence count</option>
+							<option value="presencenotop">Presence count, excluding top 1</option>
+							<option value="user">User count</option>
+							<option value="usernotop">User count, excluding top 3</option>
+							<option value="average">Users to presence average</option>
+							<option value="averagenotop">Users to presence average, excluding top 1</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<canvas></canvas>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="implementation">
+			<h2>Feature implementation</h2>
+			<p>(not sure about the name because it's kind of cheesy)</p>
+			<div class="row">
+				<div id="implementation-1" class="col-md-4">
+					<h3>iframe</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+				<div id="implementation-2" class="col-md-4">
+					<h3>Multiple contributors</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+				<div id="implementation-3" class="col-md-4">
+					<h3>Settings</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+			</div>
+			<div class="row">
+				<div id="implementation-4" class="col-md-4">
+					<h3>Regular expression</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+				<div id="implementation-5" class="col-md-4">
+					<h3>Multilingual description</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+				<div id="implementation-6" class="col-md-4">
+					<h3>Partnership</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+			</div>
+			<div class="row">
+				<div id="implementation-7" class="col-md-4">
+					<h3>Popular (> 5% usage)</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+				<div id="implementation-8" class="col-md-4">
+					<h3>Alternative names</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+				<div id="implementation-9" class="col-md-4">
+					<h3>Multilingual settings</h3>
+					<p class="count"></p>
+					<p></p>
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div id="lang">
+			<h2>Description language</h2>
+			<div id="lang-1">
+				<div class="row">
+					<div class="col-12">
+						<h3>Overview</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6" id="lang-1-1">
+						<h4>Multilingual presences</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-6" id="lang-1-2">
+						<h4>Unique languages</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+			</div>
+			<div id="lang-2">
+				<div class="row">
+					<div class="col-12">
+						<h3>Top 10 languages</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<table class="table table-slim">
+							<thead>
+								<tr>
+									<th>Language</th>
+									<th>Presences</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<canvas></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="lang-3">
+				<div class="row">
+					<div class="col-12">
+						<h3>Line graph</h3>
+					</div>
+				</div>
+				<div class="row">
+					<select class="form-control">
+						<option value="all">All</option>
+						<option value="no1">All, excluding top 1</option>
+						<!-- <option value="no2">All, excluding top 2</option> -->
+					</select>
+					<canvas></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="main-tables" hidden>
+		<h2>List of presences</h2>
+		<table class="table" id="presence">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Presence</th>
+					<th>Category</th>
+					<th>Author</th>
+					<th>Users</th>
+					<th>Search Tags</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<hr />
+		<h2>List of categories</h2>
+		<table class="table" id="category">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Category</th>
+					<th>Presences</th>
+					<th>Users</th>
+					<th>Average Users</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<hr />
+		<h2>List of developers</h2>
+		<table class="table" id="author">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Author</th>
+					<th>ID</th>
+					<th>Presences</th>
+					<th>Users</th>
+					<th>Average Users</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+		<hr />
+		<h2>List of description language</h2>
+		<table class="table" id="lang">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Language</th>
+					<th>Tag</th>
+					<th>Presences</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+</div>
+
+  </main>
+
+<footer class="footer text-middle">
+	<div class="container">
+		<span class="text-muted">Copyright (c) 2021, Hans5958. <a href="https://github.com/Hans5958/mini-htmls">Site repository</a>. Revision: <a href="https://github.com/Hans5958/mini-htmls/commit/4d7ddcccab7f881ebba31c03dc1382901cca933b"><code>4d7ddcc</code></a></span>
+	</div>
+</footer>
+
+  
+</body>
+
+</html>

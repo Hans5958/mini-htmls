@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<!-- Title and Meta -->
+
+<title>COVID Counter - Hans5958's Mini HTMLs</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="View the number of cases of COVID-19 from multiple sources." />
+<meta name="author" content="Hans5958" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://hans5958.github.io/mini-htmls/covid-counter/">
+<meta property="og:title" content="COVID Counter - Hans5958's Mini HTMLs" />
+<meta property="og:description" content="View the number of cases of COVID-19 from multiple sources.">
+<meta property="og:site_name" content="Hans5958's Mini HTMLs" />
+<meta property="og:locale" content="en_US" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@Hans5958" />
+<meta name="twitter:creator" content="@Hans5958" />
+<meta name="twitter:url" content="https://hans5958.github.io/mini-htmls/covid-counter/" />
+<meta name="twitter:title" content="COVID Counter - Hans5958's Mini HTMLs" />
+<meta name="twitter:description" content="View the number of cases of COVID-19 from multiple sources." />
+
+<!-- Require Script and Loading Page -->
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css" />
+<link rel="stylesheet" href="/mini-htmls/assets/css/base.css" />
+
+<script src="https://cdn.jsdelivr.net/combine/npm/jquery@3.5.1/dist/jquery.min.js,npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js,npm/pace-js@1.2.4,npm/@iconify/iconify@1.0.7"></script>
+<script>Pace.on("done", () => setTimeout(() => Pace.options.ajax = false, 300));</script>
+<script src="/mini-htmls/assets/js/base.js"></script>
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-49890594-3"></script>
+<script>window.dataLayer = window.dataLayer || []; function gtag() {dataLayer.push(arguments)}; gtag("js", new Date); gtag("config", "UA-49890594-3")</script>
+
+
+
+</head>
+
+<body>
+
+<header><nav class="navbar navbar-expand-md bg-dark navbar-dark">
+	<a class="navbar-brand" href="/mini-htmls/">
+		Hans5958's Mini HTMLs
+	</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="collapsibleNavbar">
+		<ul class="navbar-nav">
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navDrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Pages
+				</a>
+				<ul class="dropdown-menu" aria-labelledby="navDrop">
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/sourceforge-mirror-test">
+							SourceForge Mirror Test
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/scratch-stats">
+							Scratch Stats
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/scratch-link-shortener">
+							Scratch Link Shortener
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/discordgg.ga">
+							discordgg.ga Website Snapshots
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/teamtrees">
+							#TeamTrees Live Counter
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/musescore-downloader">
+							MuseScore Downloader
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/tnkb-analyzer">
+							TNKB Analyzer
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/covid-counter">
+							COVID Counter
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/premid-presence-stats">
+							PreMiD Presence Stats
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/longplayer-warp">
+							Longplayer Warp
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/zrp-encryption-machine">
+							.zrp Encryption Machine
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/pmd-portrait-repo-stats">
+							The PMD Portrait Repository Stats
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/teamseas">
+							#TeamSeas Live Counter
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/my-minecraft-skins">
+							My Minecraft Skins
+						</a>
+					</li>
+					
+					<li>
+						<a class="dropdown-item" href="/mini-htmls/give-internet-things">
+							Give Internet Things
+						</a>
+					</li>
+					
+				</ul>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/">
+					Main Website
+				</a>
+			</li>
+		</ul>
+		<span class="nav-text ml-auto" style="color: #fff;">
+			<i>Ready or not, here we go!</i>
+		</span>
+	</div>
+</nav></header>
+
+
+  <main id="content">
+    <script src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/dayjs@1.8.36,npm/dayjs@1.8.36/plugin/relativeTime.min.js,npm/dayjs@1.8.36/plugin/customParseFormat.min.js"></script><script src="./covid-counter.js" defer></script>
+<style>
+	.section .counter-main {
+		font-size: 3.5rem
+	}
+
+	.section .title {
+		font-size: 2rem
+	}
+
+	.section .counter-active {
+		font-size: 2rem;
+		color: blue
+	}
+
+	.section .counter-deaths {
+		font-size: 2rem;
+		color: red
+	}
+
+	.section .counter-recovered {
+		font-size: 2rem;
+		color: green
+	}
+
+	#source p {
+		margin-bottom: 0 !important
+	}
+</style>
+<style id="odometer-style">
+	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
+		-webkit-transition: -webkit-transform 5s;
+		-moz-transition: -moz-transform 5s;
+		-ms-transition: -ms-transform 5s;
+		-o-transition: -o-transform 5s;
+		transition: transform 5s;
+	}
+</style>
+<style>
+	@keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-moz-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-webkit-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-ms-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	@-o-keyframes fadein {
+		from {
+			opacity: 0
+		}
+
+		to {
+			opacity: 1
+		}
+	}
+
+	.fadeout {
+		-webkit-animation: fadeout .5s;
+		-moz-animation: fadeout .5s;
+		-ms-animation: fadeout .5s;
+		-o-animation: fadeout .5s;
+		animation: fadeout .5s
+	}
+
+	@keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-moz-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-webkit-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-ms-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	@-o-keyframes fadeout {
+		from {
+			opacity: 1
+		}
+
+		to {
+			opacity: 0
+		}
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit,
+	.odometer.odometer-theme-default .odometer-digit {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		position: relative
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
+		display: inline-block;
+		vertical-align: middle;
+		*vertical-align: auto;
+		*zoom: 1;
+		*display: inline;
+		visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
+		text-align: left;
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
+		display: block
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
+	.odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
+		display: block;
+		-webkit-backface-visibility: hidden
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value {
+		display: block;
+		-webkit-transform: translateZ(0)
+	}
+
+	.odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
+	.odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
+		position: absolute
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner {
+		-webkit-transform: translateY(-100%);
+		-moz-transform: translateY(-100%);
+		-ms-transform: translateY(-100%);
+		-o-transform: translateY(-100%);
+		transform: translateY(-100%)
+	}
+
+	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+		-webkit-transform: translateY(0);
+		-moz-transform: translateY(0);
+		-ms-transform: translateY(0);
+		-o-transform: translateY(0);
+		transform: translateY(0)
+	}
+
+	.odometer.odometer-auto-theme,
+	.odometer.odometer-theme-default {
+		font-family: "Helvetica Neue", sans-serif;
+		line-height: 1.1em
+	}
+
+	.odometer.odometer-auto-theme .odometer-value,
+	.odometer.odometer-theme-default .odometer-value {
+		text-align: center
+	}
+</style>
+<div class="container-fluid">
+	<!-- <div class="row section" id="thevirustracker">
+				<div class="col-md-3">
+			<h2 class="title">TheVirusTracker</h2>
+			<p class="lastupdated">Last updated: </p>
+				</div>
+				<div class="col-md-3">
+						<p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div> -->
+	<!-- <div class="row section" id="who">
+				<div class="col-md-3">
+						<h2 class="title">WHO</h2>
+			<p class="lastupdated">Last updated: </p>
+				</div>
+				<div class="col-md-3">
+						<p class="odometer counter-main"></p>
+				</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div> -->
+	<div class="row section" id="johnshopkins">
+		<div class="col-md-3">
+			<h2 class="title">JHU CSSE</h2>
+			<p class="lastupdated">Last updated: </p>
+		</div>
+		<div class="col-md-3">
+			<p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row section" id="ihme">
+		<div class="col-md-3">
+			<h2 class="title">IHME</h2>
+			<p class="lastupdated">Last updated: </p>
+		</div>
+		<div class="col-md-3">
+			<p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row section" id="worldometers">
+		<div class="col-md-3">
+			<h2 class="title">Worldometer</h2>
+			<p class="lastupdated">Last updated: </p>
+		</div>
+		<div class="col-md-3">
+			<p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="row section" id="wikipedia">
+		<div class="col-md-3">
+			<h2 class="title">Wikipedia</h2>
+			<p class="lastupdated">Last updated: </p>
+		</div>
+		<div class="col-md-3">
+			<p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div> -->
+	<div class="row section" id="indonesia">
+		<div class="col-md-3">
+			<h2 class="title">Indonesia</h2>
+			<p class="lastupdated">Last updated: </p>
+		</div>
+		<div class="col-md-3">
+			<p class="odometer counter-main"></p>
+		</div>
+		<div class="col-md-6">
+			<div class="row counter-small">
+				<div class="col-md-4">
+					<p class="counter-active odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-deaths odometer"></p>
+				</div>
+				<div class="col-md-4">
+					<p class="counter-recovered odometer"></p>
+				</div>
+			</div>
+			<div class="progress">
+				<div class="progress-bar progress-active" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-danger progress-deaths" role="progressbar" style="width: 0%"></div>
+				<div class="progress-bar bg-success progress-recovered" role="progressbar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div id="status">
+		<p style="text-align: center; width: 100%; margin-bottom: 0"> </p>
+		<div class="progress" style="width: 100%">
+			<div class="progress-bar" role="progressbar" style="width: 0"></div>
+		</div>
+	</div>
+	<hr />
+	<div id="source">
+		<h2>Sources</h2>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>WHO</h3>
+				<p>👨‍🔬 World Health Organization</p>
+				<p>📝 <a href="https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports">WHO Situation Reports</a></p>
+				<p>📝 <a href="https://who.maps.arcgis.com/apps/opsdashboard/index.html#/bf48be9799364068be4706c56b1916f5">ArcGIS Operation Dashboard (who.maps)</a></p>
+				<p>🖥 ArcGIS Feature Layer</p>
+			</div>
+			<div class="col-md-4">
+				<h3>JHU CSSE</h3>
+				<p>👨‍🔬 Johns Hopkins University Center for Systems Science and Engineering</p>
+				<p>📝 <a href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6">ArcGIS Operations Dashboard (gisanddata)</a></p>
+				<p>📝 <a href="https://github.com/CSSEGISandData/COVID-19/">GitHub repository (CSSEGISandData/COVID19)</a></p>
+				<p>🖥 ArcGIS Feature Layer</p>
+			</div>
+			<div class="col-md-4">
+				<h3>IHME</h3>
+				<p>👨‍🔬 Outbreak and Pandemic Preparedness team at the Institute for Health Metrics and Evaluation, University of Washington</p>
+				<p>📝 <a href="https://github.com/beoutbreakprepared/nCoV2019">GitHub repository (beoutbreakprepared/nCoV2019)</a></p>
+				<p>📝 <a href="https://healthmap.org/covid-19/">Dashboard</a></p>
+				<p>🖥 API from the dashboard</p>
+				<p>⚠️ Cross-origin request is not allowed from this source. Allow it by using add-ons/extensions. (CORS Everywhere, Allow CORS, etc)</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>Worldometer</h3>
+				<p>👨‍🔬 Worldometer</p>
+				<p>📝 <a href="https://www.worldometers.info/coronavirus/">Coronavirus page</a></p>
+				<p>🖥 <a href="https://www.worldometers.info/coronavirus/">Coronavirus page</a></p>
+				<p>🖥 <a href="https://corona.lmao.ninja">API by NovelCOVID</a> (<a href="https://github.com/NovelCOVID/API">repo</a>) (initial date and alternative, allows CORS)</p>
+			</div>
+			<div class="col-md-4">
+				<h3>Wikipedia</h3>
+				<p>👨‍🔬 Contributors on the Wikipedia page "Template:2019–20 coronavirus pandemic data"</p>
+				<p>📝 <a href="https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data">Template:2019–20 coronavirus pandemic data</a></p>
+				<p>🖥 MediaWiki API</p>
+				<p>⚠️ Cross-origin request is not allowed from this source. Allow it by using add-ons/extensions. (CORS Everywhere, Allow CORS, etc)</p>
+			</div>
+			<div class="col-md-4">
+				<h3>Indonesia</h3>
+				<p>👨‍🔬 Gugus Tugas Percepatan Penanganan COVID-19</p>
+				<p>📝 <a href="https://www.covid19.go.id/">Covid19.go.id</a></p>
+				<p>📝 <a href="https://inacovid19.maps.arcgis.com/apps/opsdashboard/index.html#/4411f5e9c69d4ca4be31ac805a0267be">ArcGIS Operations Dashboard (inacovid19)</a></p>
+				<p>🖥 ArcGIS Feature Layer</p>
+			</div>
+		</div>
+	</div>
+</div>
+  </main>
+
+<footer class="footer text-middle">
+	<div class="container">
+		<span class="text-muted">Copyright (c) 2021, Hans5958. <a href="https://github.com/Hans5958/mini-htmls">Site repository</a>. Revision: <a href="https://github.com/Hans5958/mini-htmls/commit/4d7ddcccab7f881ebba31c03dc1382901cca933b"><code>4d7ddcc</code></a></span>
+	</div>
+</footer>
+
+  
+</body>
+
+</html>
