@@ -2,7 +2,7 @@
 	"BA": {
 		"tingkat1": "West Sumatera",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Padang City",
 				"B": "Padang City",
@@ -36,10 +36,10 @@
 	"BB": {
 		"tingkat1": [
 			"North Sumatera",
-			"west part"
+			"western part"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Sibolga City",
 				"B": "North Tapanuli Regency",
@@ -73,7 +73,7 @@
 	"BD": {
 		"tingkat1": "Bengkulu",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bengkulu City",
 				"B": "South Bengkulu Regency",
@@ -107,7 +107,7 @@
 	"BE": {
 		"tingkat1": "Lampung",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bandar Lampung City",
 				"B": "Bandar Lampung City",
@@ -141,7 +141,7 @@
 	"BG": {
 		"tingkat1": "South Sumatera",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Palembang City",
 				"B": "Musi Banyuasin Regency",
@@ -175,7 +175,7 @@
 	"BH": {
 		"tingkat1": "Jambi",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Jambi City",
 				"B": "Batanghari Regency",
@@ -209,10 +209,10 @@
 	"BK": {
 		"tingkat1": [
 			"North Sumatera",
-			"east part"
+			"eastern part"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Medan City",
 				"B": "Medan City",
@@ -246,7 +246,7 @@
 	"BL": {
 		"tingkat1": "Aceh",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Banda Aceh City",
 				"B": "Aceh Besar Regency",
@@ -280,7 +280,7 @@
 	"BM": {
 		"tingkat1": "Riau",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Pekanbaru City",
 				"B": "Indragiri Hulu Regency",
@@ -305,10 +305,32 @@
 				"U": "Rokan Hulu Regency",
 				"V": "Pekanbaru City",
 				"W": "Rokan Hilir Regency",
-				"X": [
-					"Kuantan Singingi/Meranti Islands Regency",
-					"XA - XJ = Kuantan Singingi, XK - XZ = Kepulauan Meranti"
-				],
+				"XA": "Kuantan Singingi Regency",
+				"XB": "Kuantan Singingi Regency",
+				"XC": "Kuantan Singingi Regency",
+				"XD": "Kuantan Singingi Regency",
+				"XE": "Kuantan Singingi Regency",
+				"XF": "Kuantan Singingi Regency",
+				"XG": "Kuantan Singingi Regency",
+				"XH": "Kuantan Singingi Regency",
+				"XI": "Kuantan Singingi Regency",
+				"XJ": "Kuantan Singingi Regency",
+				"XK": "Meranti Islands Regency",
+				"XL": "Meranti Islands Regency",
+				"XM": "Meranti Islands Regency",
+				"XN": "Meranti Islands Regency",
+				"XO": "Meranti Islands Regency",
+				"XP": "Meranti Islands Regency",
+				"XQ": "Meranti Islands Regency",
+				"XR": "Meranti Islands Regency",
+				"XS": "Meranti Islands Regency",
+				"XT": "Meranti Islands Regency",
+				"XU": "Meranti Islands Regency",
+				"XV": "Meranti Islands Regency",
+				"XW": "Meranti Islands Regency",
+				"XX": "Meranti Islands Regency",
+				"XY": "Meranti Islands Regency",
+				"XZ": "Meranti Islands Regency",
 				"Y": "Siak Regency",
 				"Z": "Kampar Regency"
 			}
@@ -317,7 +339,7 @@
 	"BN": {
 		"tingkat1": "Kepulauan Bangka Belitung",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Pangkal Pinang City",
 				"B": "Bangka Regency",
@@ -351,7 +373,7 @@
 	"BP": {
 		"tingkat1": "Kepulauan Riau",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Tanjung Pinang City",
 				"B": "Bintan Regency",
@@ -385,7 +407,7 @@
 	"A": {
 		"tingkat1": "Banten",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Serang City",
 				"B": "Serang City",
@@ -417,36 +439,50 @@
 		}
 	},
 	"B": {
-		"tingkat1": ["Special Capital Region of Jakarta", "and it's surroundings (Jabodetabek)"],
-		"tingkat2": {
-			"from": "start",
+		"tingkat1": {
+			"from": "kodeAkhir-start",
 			"values": {
-				"A": null,
+				"C": ["Banten", "Jabodetabek"],
+				"E": ["Jawa Barat", "Jabodetabek"],
+				"F": ["Jawa Barat", "Jabodetabek"],
+				"G": ["Banten", "Jabodetabek"],
+				"K": ["Jawa Barat", "Jabodetabek"],
+				"N": ["Banten", "Jabodetabek"],
+				"V": ["Banten", "Jabodetabek"],
+				"W": ["Banten", "Jabodetabek"],
+				"Z": ["Jawa Barat", "Jabodetabek"]
+			},
+			"default": ["DKI Jakarta", "Jabodetabek"]
+		},
+		"tingkat2": {
+			"from": "kodeAkhir-start",
+			"values": {
+				"A": "Central Jakarta Administrative City",
 				"B": "West Jakarta Administrative City",
-				"C": "Tangerang City",
-				"D": null,
-				"E": "Depok City",
+				"C": ["Tangerang City", "northen and western part (Batuceper, Benda, Cibodas, Jatiuwung, Karawaci, Neglasari, Periuk, Tangerang Kota dan Bandara Internasional Soekarno-Hatta)"],
+				"D": "South Jakarta Administrative City",
+				"E": ["Depok City", "eastern part (Beji, Cimanggis, Cilodong, Cipayung, Pancoran Mas. Sukmajaya, Tapos)"],
 				"F": "Bekasi Regency",
 				"G": "Tangerang Regency",
-				"H": null,
+				"H": "West Jakarta Administrative City",
 				"I": null,
-				"J": null,
+				"J": "Tangerang Regency",
 				"K": "Bekasi City",
-				"L": null,
-				"M": null,
-				"N": "Tangerang Regency",
-				"O": null,
+				"L": "Tangerang City",
+				"M": "Bekasi City",
+				"N": ["Tangerang Regency<br>South Tangerang City", "Tangerang Regency (Cisauk, Curug, Kelapa Dua, Legok, Pagedangan) and western part of South Tangerang City (Serpong, Serpong Utara, Setu)"],
+				"O": "Tangerang City",
 				"P": "Central Jakarta Administrative City",
-				"Q": null,
-				"R": null,
+				"Q": "North Jakarta Administrative City<br>Kepulauan Seribu Administrative Regency",
+				"R": "East Jakarta Administrative City",
 				"S": "South Jakarta Administrative City",
 				"T": "East Jakarta Administrative City",
-				"U": "North Jakarta Administrative City/Kepulauan Seribu Administrative Regency",
-				"V": "Tangerang City",
+				"U": "North Jakarta Administrative City<br>Kepulauan Seribu Administrative Regency",
+				"V": ["Tangerang City", "southern and eastern part (Ciledug, Cipondoh, Karangtengah, Larangan, Pinang)"],
 				"W": "South Tangerang City",
-				"X": null,
-				"Y": null,
-				"Z": "Depok City"
+				"X": "Bekasi Regency",
+				"Y": "Bekasi City",
+				"Z": ["Depok City", "western part (Bojongsari, Cinere, Limo, Sawangan)"]
 			}
 		}
 	},
@@ -456,7 +492,7 @@
 			"ex-Parahyangan Residency, west"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bandung City",
 				"B": "Bandung City",
@@ -493,7 +529,7 @@
 			"ex-Cirebon Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Cirebon City",
 				"B": "Cirebon City",
@@ -530,7 +566,7 @@
 			"ex-Bogor Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bogor City",
 				"B": "Bogor City",
@@ -567,7 +603,7 @@
 			"ex-Karawang Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Purwakarta Regency",
 				"B": "Purwakarta Regency",
@@ -604,7 +640,7 @@
 			"ex-Parahyangan Residency, east"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Sumedang Regency",
 				"B": "Sumedang Regency",
@@ -641,7 +677,7 @@
 			"ex-Pekalongan Residency"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Pekalongan City",
 				"B": "Pekalongan Regency",
@@ -678,12 +714,12 @@
 			"ex-Semarang Residency"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Semarang City",
 				"B": "Salatiga City",
 				"C": "Semarang Regency",
-				"D": "Kendal Regency",
+				"D": "KkodeAkhir-endal Regency",
 				"E": "Demak Regency",
 				"F": "Semarang City",
 				"G": "Semarang City",
@@ -692,7 +728,7 @@
 				"J": "Demak Regency",
 				"K": "Salatiga City",
 				"L": "Semarang Regency",
-				"M": "Kendal Regency",
+				"M": "KkodeAkhir-endal Regency",
 				"N": "Demak Regency",
 				"O": "Salatiga City",
 				"P": "Semarang City",
@@ -700,7 +736,7 @@
 				"R": "Semarang City",
 				"S": "Semarang City",
 				"T": "Salatiga City",
-				"U": "Kendal Regency",
+				"U": "KkodeAkhir-endal Regency",
 				"V": "Semarang Regency",
 				"W": "Semarang City",
 				"X": null,
@@ -715,7 +751,7 @@
 			"ex-Pati Residency"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Pati Regency",
 				"B": "Kudus Regency",
@@ -752,7 +788,7 @@
 			"ex-Banyumas Residency"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Banyumas Regency",
 				"B": "Cilacap Regency",
@@ -789,7 +825,7 @@
 			"ex-Kedu Residency"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Magelang City",
 				"B": "Magelang Regency",
@@ -823,7 +859,7 @@
 	"AB": {
 		"tingkat1": "DI Yogyakarta",
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Yogyakarta City",
 				"B": "Bantul Regency",
@@ -860,7 +896,7 @@
 			"ex-Surakarta Residency"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Surakarta City",
 				"B": "Sukoharjo Regency",
@@ -897,7 +933,7 @@
 			"Surabaya City"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": ["Surabaya City",  "East Surabaya"],
 				"B": ["Surabaya City",  "East Surabaya"],
@@ -934,7 +970,7 @@
 			"ex-Madura Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Pamekasan Regency",
 				"B": "Pamekasan Regency",
@@ -971,7 +1007,7 @@
 			"ex-Malang Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Malang City",
 				"B": "Malang City",
@@ -1008,7 +1044,7 @@
 			"ex-Besuki Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bondowoso Regency",
 				"B": "Bondowoso Regency",
@@ -1045,7 +1081,7 @@
 			"ex-Bojonegoro Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bojonegoro Regency",
 				"B": "Bojonegoro Regency",
@@ -1083,7 +1119,7 @@
 			"ex-Surabaya Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Gresik Regency",
 				"B": "Gresik Regency",
@@ -1121,7 +1157,7 @@
 			"ex-Madiun Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Madiun City",
 				"B": "Madiun City",
@@ -1158,7 +1194,7 @@
 			"ex-Kediri Residency"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kediri City",
 				"B": "Kediri City",
@@ -1196,7 +1232,7 @@
 			"Pulau Timor"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kupang City",
 				"B": "Kupang City",
@@ -1230,7 +1266,7 @@
 	"DK": {
 		"tingkat1": "Bali",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Denpasar City",
 				"B": "Denpasar City",
@@ -1267,7 +1303,7 @@
 			"Pulau Lombok"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Mataram City",
 				"B": "Mataram City",
@@ -1304,7 +1340,7 @@
 			"Pulau Sumbawa"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Sumbawa Regency",
 				"B": null,
@@ -1341,9 +1377,9 @@
 			"Pulau Flores dan kepulauan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
-				"A": "Ende Regency",
+				"A": "kodeAkhir-ende Regency",
 				"B": "Sikka Regency",
 				"C": "Ngada Regency",
 				"D": "East Flores Regency",
@@ -1365,7 +1401,7 @@
 				"T": null,
 				"U": null,
 				"V": null,
-				"W": "Ende Regency",
+				"W": "kodeAkhir-ende Regency",
 				"X": null,
 				"Y": "Nagekeo Regency",
 				"Z": null
@@ -1378,7 +1414,7 @@
 			"Pulau Sumba"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Central Sumba Regency",
 				"B": "East Sumba Regency",
@@ -1412,7 +1448,7 @@
 	"DA": {
 		"tingkat1": "South Kalimantan",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Banjarmasin City",
 				"B": "Banjar Regency",
@@ -1446,7 +1482,7 @@
 	"KB": {
 		"tingkat1": "West Kalimantan",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Pontianak City",
 				"B": "Mempawah Regency",
@@ -1480,7 +1516,7 @@
 	"KH": {
 		"tingkat1": "Kalimantan Tengah",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Palangkaraya City",
 				"B": "Kapuas Regency",
@@ -1514,7 +1550,7 @@
 	"KT": {
 		"tingkat1": "East Kalimantan",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Balikpapan City",
 				"B": "Samarinda City",
@@ -1548,7 +1584,7 @@
 	"KU": {
 		"tingkat1": "North Kalimantan",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bulungan Regency",
 				"B": "Bulungan Regency",
@@ -1585,7 +1621,7 @@
 			"daratan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Manado City",
 				"B": "Minahasa Regency",
@@ -1619,7 +1655,7 @@
 	"DC": {
 		"tingkat1": "West Sulawesi",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Mamuju Regency",
 				"B": "Majene Regency",
@@ -1653,10 +1689,10 @@
 	"DD": {
 		"tingkat1": [
 			"South Sulawesi",
-			"south part"
+			"southern part"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Makassar City",
 				"B": "Gowa Regency",
@@ -1693,7 +1729,7 @@
 			"kepulauan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Sangihe Islands Regency",
 				"B": "Talaud Islands Regency",
@@ -1727,7 +1763,7 @@
 	"DM": {
 		"tingkat1": "Gorontalo",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Gorontalo City",
 				"B": "Gorontalo Regency",
@@ -1761,7 +1797,7 @@
 	"DN": {
 		"tingkat1": "Sulawesi Tengah",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Palu City",
 				"B": "Donggala Regency",
@@ -1795,10 +1831,10 @@
 	"DP": {
 		"tingkat1": [
 			"South Sulawesi",
-			"north part"
+			"northen part"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Parepare City",
 				"B": "Barru Regency",
@@ -1832,14 +1868,14 @@
 	"DT": {
 		"tingkat1": "Southeast Sulawesi",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Konawe Regency",
 				"B": "Kolaka Regency",
 				"C": "Buton Regency",
 				"D": "Muna Regency",
-				"E": "Kendari City",
-				"F": "Kendari City",
+				"E": "KkodeAkhir-endari City",
+				"F": "KkodeAkhir-endari City",
 				"G": "Baubau City",
 				"H": "South Konawe Regency",
 				"I": null,
@@ -1869,7 +1905,7 @@
 			"central part"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Bone Regency",
 				"B": "Wajo Regency",
@@ -1903,7 +1939,7 @@
 	"DE": {
 		"tingkat1": "Maluku",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Ambon City",
 				"B": "Central Maluku Regency",
@@ -1937,7 +1973,7 @@
 	"DG": {
 		"tingkat1": "North Maluku",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Ternate City",
 				"B": "Tidore Kepulauan City",
@@ -1971,7 +2007,7 @@
 	"PA": {
 		"tingkat1": "Papua",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Jayapura City",
 				"B": "Jayawijaya Regency",
@@ -2005,7 +2041,7 @@
 	"PB": {
 		"tingkat1": "West Papua",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Sorong City",
 				"B": "Bintuni Bay Regency",
