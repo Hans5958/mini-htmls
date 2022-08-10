@@ -2,7 +2,7 @@
 	"BA": {
 		"tingkat1": "Sumatera Barat",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Padang",
 				"B": "Kota Padang",
@@ -39,7 +39,7 @@
 			"bagian Barat"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Sibolga",
 				"B": "Kabupaten Tapanuli Utara",
@@ -73,7 +73,7 @@
 	"BD": {
 		"tingkat1": "Bengkulu",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Bengkulu",
 				"B": "Kabupaten Bengkulu Selatan",
@@ -107,7 +107,7 @@
 	"BE": {
 		"tingkat1": "Lampung",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Bandar Lampung",
 				"B": "Kota Bandar Lampung",
@@ -141,7 +141,7 @@
 	"BG": {
 		"tingkat1": "Sumatera Selatan",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Palembang",
 				"B": "Kabupaten Musi Banyuasin",
@@ -175,7 +175,7 @@
 	"BH": {
 		"tingkat1": "Jambi",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Jambi",
 				"B": "Kabupaten Batanghari",
@@ -212,7 +212,7 @@
 			"bagian Timur"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Medan",
 				"B": "Kota Medan",
@@ -246,7 +246,7 @@
 	"BL": {
 		"tingkat1": "Aceh",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Banda Aceh",
 				"B": "Kabupaten Aceh Besar",
@@ -280,7 +280,7 @@
 	"BM": {
 		"tingkat1": "Riau",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Pekanbaru",
 				"B": "Kabupaten Indragiri Hulu",
@@ -305,10 +305,32 @@
 				"U": "Kabupaten Rokan Hulu",
 				"V": "Kota Pekanbaru",
 				"W": "Kabupaten Rokan Hilir",
-				"X": [
-					"Kabupaten Kuantan Singingi/Kepulauan Meranti",
-					"XA - XJ = Kuantan Singingi, XK - XZ = Kepulauan Meranti"
-				],
+				"XA": "Kabupaten Kuantan Singingi",
+				"XB": "Kabupaten Kuantan Singingi",
+				"XC": "Kabupaten Kuantan Singingi",
+				"XD": "Kabupaten Kuantan Singingi",
+				"XE": "Kabupaten Kuantan Singingi",
+				"XF": "Kabupaten Kuantan Singingi",
+				"XG": "Kabupaten Kuantan Singingi",
+				"XH": "Kabupaten Kuantan Singingi",
+				"XI": "Kabupaten Kuantan Singingi",
+				"XJ": "Kabupaten Kuantan Singingi",
+				"XK": "Kabupaten Kepulauan Meranti",
+				"XL": "Kabupaten Kepulauan Meranti",
+				"XM": "Kabupaten Kepulauan Meranti",
+				"XN": "Kabupaten Kepulauan Meranti",
+				"XO": "Kabupaten Kepulauan Meranti",
+				"XP": "Kabupaten Kepulauan Meranti",
+				"XQ": "Kabupaten Kepulauan Meranti",
+				"XR": "Kabupaten Kepulauan Meranti",
+				"XS": "Kabupaten Kepulauan Meranti",
+				"XT": "Kabupaten Kepulauan Meranti",
+				"XU": "Kabupaten Kepulauan Meranti",
+				"XV": "Kabupaten Kepulauan Meranti",
+				"XW": "Kabupaten Kepulauan Meranti",
+				"XX": "Kabupaten Kepulauan Meranti",
+				"XY": "Kabupaten Kepulauan Meranti",
+				"XZ": "Kabupaten Kepulauan Meranti",
 				"Y": "Kabupaten Siak",
 				"Z": "Kabupaten Kampar"
 			}
@@ -317,7 +339,7 @@
 	"BN": {
 		"tingkat1": "Kepulauan Bangka Belitung",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Pangkal Pinang",
 				"B": "Kabupaten Bangka",
@@ -351,7 +373,7 @@
 	"BP": {
 		"tingkat1": "Kepulauan Riau",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Tanjung Pinang",
 				"B": "Kabupaten Bintan",
@@ -385,7 +407,7 @@
 	"A": {
 		"tingkat1": "Banten",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Serang",
 				"B": "Kota Serang",
@@ -417,36 +439,50 @@
 		}
 	},
 	"B": {
-		"tingkat1": ["DKI Jakarta", "dan sekitarnya (Jabodetabek)"],
-		"tingkat2": {
-			"from": "start",
+		"tingkat1": {
+			"from": "kodeAkhir-start",
 			"values": {
-				"A": null,
+				"C": ["Banten", "Jabodetabek"],
+				"E": ["Jawa Barat", "Jabodetabek"],
+				"F": ["Jawa Barat", "Jabodetabek"],
+				"G": ["Banten", "Jabodetabek"],
+				"K": ["Jawa Barat", "Jabodetabek"],
+				"N": ["Banten", "Jabodetabek"],
+				"V": ["Banten", "Jabodetabek"],
+				"W": ["Banten", "Jabodetabek"],
+				"Z": ["Jawa Barat", "Jabodetabek"]
+			},
+			"default": ["DKI Jakarta", "Jabodetabek"]
+		},
+		"tingkat2": {
+			"from": "kodeAkhir-start",
+			"values": {
+				"A": "Kota Administrasi Jakarta Pusat",
 				"B": "Kota Administrasi Jakarta Barat",
-				"C": "Kota Tangerang",
-				"D": null,
-				"E": "Kota Depok",
+				"C": ["Kota Tangerang", "bagian utara dan barat (Batuceper, Benda, Cibodas, Jatiuwung, Karawaci, Neglasari, Periuk, Tangerang Kota dan Bandara Internasional Soekarno-Hatta)"],
+				"D": "Kota Administrasi Jakarta Selatan",
+				"E": ["Kota Depok", "bagian timur (Beji, Cimanggis, Cilodong, Cipayung, Pancoran Mas. Sukmajaya, Tapos)"],
 				"F": "Kabupaten Bekasi",
 				"G": "Kabupaten Tangerang",
-				"H": null,
+				"H": "Kota Administrasi Jakarta Barat",
 				"I": null,
-				"J": null,
+				"J": "Kabupaten Tangerang",
 				"K": "Kota Bekasi",
-				"L": null,
-				"M": null,
-				"N": "Kabupaten Tangerang",
-				"O": null,
+				"L": "Kota Tangerang",
+				"M": "Kabupaten Bekasi",
+				"N": ["Kabupaten Tangerang<br>Kota Tangerang Selatan", "Kabupaten Tangerang (Cisauk, Curug, Kelapa Dua, Legok, Pagedangan) dan Kota Tangerang Selatan bagian barat (Serpong, Serpong Utara, Setu)"],
+				"O": "Kota Tangerang",
 				"P": "Kota Administrasi Jakarta Pusat",
-				"Q": null,
-				"R": null,
+				"Q": "Kota Administrasi Jakarta Utara<br>Kabupaten Administrasi Kepulauan Seribu",
+				"R": "Kota Administrasi Jakarta Timur",
 				"S": "Kota Administrasi Jakarta Selatan",
 				"T": "Kota Administrasi Jakarta Timur",
-				"U": "Kota Administrasi Jakarta Utara/Kabupaten Administrasi Kepulauan Seribu",
-				"V": "Kota Tangerang",
-				"W": "Kota Tangerang Selatan",
-				"X": null,
-				"Y": null,
-				"Z": "Kota Depok"
+				"U": "Kota Administrasi Jakarta Utara<br>Kabupaten Administrasi Kepulauan Seribu",
+				"V": ["Kota Tangerang", "bagian selatan dan timur (Ciledug, Cipondoh, Karangtengah, Larangan, Pinang)"],
+				"W": ["Kota Tangerang Selatan", "bagian timur (Ciputat, Ciputat Timur, Pamulang, Pondok Aren)"],
+				"X": "Kabupaten Bekasi",
+				"Y": "Kota Bekasi",
+				"Z": ["Kota Depok", "bagian barat (Bojongsari, Cinere, Limo, Sawangan)"]
 			}
 		}
 	},
@@ -457,7 +493,7 @@
 			"barat"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Bandung",
 				"B": "Kota Bandung",
@@ -494,7 +530,7 @@
 			"eks Karesidenan Cirebon"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Cirebon",
 				"B": "Kota Cirebon",
@@ -531,7 +567,7 @@
 			"eks Karesidenan Bogor"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Bogor",
 				"B": "Kota Bogor",
@@ -568,7 +604,7 @@
 			"eks Karesidenan Karawang"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Purwakarta",
 				"B": "Kabupaten Purwakarta",
@@ -605,7 +641,7 @@
 			"eks Karesidenan Parahyangan, timur"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Sumedang",
 				"B": "Kabupaten Sumedang",
@@ -642,7 +678,7 @@
 			"eks Karesidenan Pekalongan"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kota Pekalongan",
 				"B": "Kabupaten Pekalongan",
@@ -679,12 +715,12 @@
 			"eks Karesidenan Semarang"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kota Semarang",
 				"B": "Kota Salatiga",
 				"C": "Kabupaten Semarang",
-				"D": "Kabupaten Kendal",
+				"D": "Kabupaten KkodeAkhir-endal",
 				"E": "Kabupaten Demak",
 				"F": "Kota Semarang",
 				"G": "Kota Semarang",
@@ -693,7 +729,7 @@
 				"J": "Kabupaten Demak",
 				"K": "Kota Salatiga",
 				"L": "Kabupaten Semarang",
-				"M": "Kabupaten Kendal",
+				"M": "Kabupaten KkodeAkhir-endal",
 				"N": "Kabupaten Demak",
 				"O": "Kota Salatiga",
 				"P": "Kota Semarang",
@@ -701,7 +737,7 @@
 				"R": "Kota Semarang",
 				"S": "Kota Semarang",
 				"T": "Kota Salatiga",
-				"U": "Kabupaten Kendal",
+				"U": "Kabupaten KkodeAkhir-endal",
 				"V": "Kabupaten Semarang",
 				"W": "Kota Semarang",
 				"X": null,
@@ -716,7 +752,7 @@
 			"eks Karesidenan Pati"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kabupaten Pati",
 				"B": "Kabupaten Kudus",
@@ -753,7 +789,7 @@
 			"eks Karesidenan Banyumas"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kabupaten Banyumas",
 				"B": "Kabupaten Cilacap",
@@ -790,7 +826,7 @@
 			"eks Karesidenan Kedu"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kota Magelang",
 				"B": "Kabupaten Magelang",
@@ -824,7 +860,7 @@
 	"AB": {
 		"tingkat1": "DI Yogyakarta",
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kota Yogyakarta",
 				"B": "Kabupaten Bantul",
@@ -861,7 +897,7 @@
 			"eks Karesidenan Surakarta"
 		],
 		"tingkat2": {
-			"from": "end",
+			"from": "kodeAkhir-end",
 			"values": {
 				"A": "Kota Surakarta",
 				"B": "Kabupaten Sukoharjo",
@@ -898,7 +934,7 @@
 			"Kota Surabaya"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": ["Kota Surabaya", "Surabaya Timur"],
 				"B": ["Kota Surabaya", "Surabaya Timur"],
@@ -935,7 +971,7 @@
 			"eks Karesidenan Madura"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Pamekasan",
 				"B": "Kabupaten Pamekasan",
@@ -972,7 +1008,7 @@
 			"eks Karesidenan Malang"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Malang",
 				"B": "Kota Malang",
@@ -1009,7 +1045,7 @@
 			"eks Karesidenan Besuki"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Bondowoso",
 				"B": "Kabupaten Bondowoso",
@@ -1046,7 +1082,7 @@
 			"eks Karesidenan Bojonegoro"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Bojonegoro",
 				"B": "Kabupaten Bojonegoro",
@@ -1084,7 +1120,7 @@
 			"eks Karesidenan Surabaya"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Gresik",
 				"B": "Kabupaten Gresik",
@@ -1122,7 +1158,7 @@
 			"eks Karesidenan Madiun"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Madiun",
 				"B": "Kota Madiun",
@@ -1159,7 +1195,7 @@
 			"eks Karesidenan Kediri"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Kediri",
 				"B": "Kota Kediri",
@@ -1197,7 +1233,7 @@
 			"Pulau Timor"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Kupang",
 				"B": "Kota Kupang",
@@ -1231,7 +1267,7 @@
 	"DK": {
 		"tingkat1": "Bali",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Denpasar",
 				"B": "Kota Denpasar",
@@ -1268,7 +1304,7 @@
 			"Pulau Lombok"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Mataram",
 				"B": "Kota Mataram",
@@ -1305,7 +1341,7 @@
 			"Pulau Sumbawa"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Sumbawa",
 				"B": null,
@@ -1342,9 +1378,9 @@
 			"Pulau Flores dan kepulauan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
-				"A": "Kabupaten Ende",
+				"A": "Kabupaten kodeAkhir-ende",
 				"B": "Kabupaten Sikka",
 				"C": "Kabupaten Ngada",
 				"D": "Kabupaten Flores Timur",
@@ -1366,7 +1402,7 @@
 				"T": null,
 				"U": null,
 				"V": null,
-				"W": "Kabupaten Ende",
+				"W": "Kabupaten kodeAkhir-ende",
 				"X": null,
 				"Y": "Kabupaten Nagekeo",
 				"Z": null
@@ -1379,7 +1415,7 @@
 			"Pulau Sumba"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Sumba Tengah",
 				"B": "Kabupaten Sumba Timur",
@@ -1413,7 +1449,7 @@
 	"DA": {
 		"tingkat1": "Kalimantan Selatan",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Banjarmasin",
 				"B": "Kabupaten Banjar",
@@ -1447,7 +1483,7 @@
 	"KB": {
 		"tingkat1": "Kalimantan Barat",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Pontianak",
 				"B": "Kabupaten Mempawah",
@@ -1481,7 +1517,7 @@
 	"KH": {
 		"tingkat1": "Kalimantan Tengah",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Palangkaraya",
 				"B": "Kabupaten Kapuas",
@@ -1515,7 +1551,7 @@
 	"KT": {
 		"tingkat1": "Kalimantan Timur",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Balikpapan",
 				"B": "Kota Samarinda",
@@ -1549,7 +1585,7 @@
 	"KU": {
 		"tingkat1": "Kalimantan Utara",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Bulungan",
 				"B": "Kabupaten Bulungan",
@@ -1586,7 +1622,7 @@
 			"daratan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Manado",
 				"B": "Kabupaten Minahasa",
@@ -1620,7 +1656,7 @@
 	"DC": {
 		"tingkat1": "Sulawesi Barat",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Mamuju",
 				"B": "Kabupaten Majene",
@@ -1657,7 +1693,7 @@
 			"bagian selatan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Makassar",
 				"B": "Kabupaten Gowa",
@@ -1694,7 +1730,7 @@
 			"kepulauan"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Kepulauan Sangihe",
 				"B": "Kabupaten Kepulauan Talaud",
@@ -1728,7 +1764,7 @@
 	"DM": {
 		"tingkat1": "Gorontalo",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Gorontalo",
 				"B": "Kabupaten Gorontalo",
@@ -1762,7 +1798,7 @@
 	"DN": {
 		"tingkat1": "Sulawesi Tengah",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Palu",
 				"B": "Kabupaten Donggala",
@@ -1799,7 +1835,7 @@
 			"bagian utara"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Parepare",
 				"B": "Kabupaten Barru",
@@ -1833,14 +1869,14 @@
 	"DT": {
 		"tingkat1": "Sulawesi Tenggara",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Konawe",
 				"B": "Kabupaten Kolaka",
 				"C": "Kabupaten Buton",
 				"D": "Kabupaten Muna",
-				"E": "Kota Kendari",
-				"F": "Kota Kendari",
+				"E": "Kota KkodeAkhir-endari",
+				"F": "Kota KkodeAkhir-endari",
 				"G": "Kota Baubau",
 				"H": "Kabupaten Konawe Selatan",
 				"I": null,
@@ -1870,7 +1906,7 @@
 			"bagian tengah"
 		],
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kabupaten Bone",
 				"B": "Kabupaten Wajo",
@@ -1904,7 +1940,7 @@
 	"DE": {
 		"tingkat1": "Maluku",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Ambon",
 				"B": "Kabupaten Maluku Tengah",
@@ -1938,7 +1974,7 @@
 	"DG": {
 		"tingkat1": "Maluku Utara",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Ternate",
 				"B": "Kota Tidore Kepulauan",
@@ -1972,7 +2008,7 @@
 	"PA": {
 		"tingkat1": "Papua",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Jayapura",
 				"B": "Kabupaten Jayawijaya",
@@ -2006,7 +2042,7 @@
 	"PB": {
 		"tingkat1": "Papua Barat",
 		"tingkat2": {
-			"from": "start",
+			"from": "kodeAkhir-start",
 			"values": {
 				"A": "Kota Sorong",
 				"B": "Kabupaten Teluk Bintuni",
