@@ -1,46 +1,60 @@
-let varsToCheck = [], varsChecked = 0, timer = 0, statusProgressBar = "fetch"
+let varsToCheck = [], varsChecked = 0, timer = 0, statusProgressBar = "fetch", isCors = true
 
 var parseToHTML = (raw) => (new DOMParser()).parseFromString(raw, 'text/html')
 
-const getData = (url, type, done = () => { }, fail = () => { }, replied = () => { }) => {
-	if (type === "json") {
-		$.getJSON(url)
-			.done(response => done(response))
-			.fail(response => fail(response))
-			.always(() => replied())
-	} else if (type === "html") {
-		$.get(url)
-			.done(response => done(parseToHTML(response)))
-			.fail(response => fail(parseToHTML(response)))
-			.always(() => replied())
-	}
+const getData = (url, type, done = () => {}, fail = () => {}, replied = () => {}) => {
+	fetch(url)
+		.then(async response => {
+			if (type === "json") {
+				done(await response.json())
+			} else if (type === "html") {
+				done(parseToHTML(await response.text()))
+			}
+			replied()
+		})
+		.catch(response => {
+			fail(response)
+			replied(response)
+		})
 }
 
 class Counter {
-	constructor(name, elementID, { url, doneCallback = () => { }, failCallback = () => { }, repliedCallback = () => { }, applyCallback = () => { }, resetCallback = () => { } }) {
+	constructor({
+		name,
+		elementID,
+		url,
+		doneCallback = () => { }, 
+		failCallback = () => { }, 
+		repliedCallback = () => { }, 
+		applyCallback = () => { }, 
+		resetCallback = () => { },
+		values
+	}) {
 		this.name = name
 		this.elementID = elementID
 		this.url = url
 		this.doneCallback = doneCallback
 		this.failCallback = failCallback
 		this.repliedCallback = repliedCallback
-		this.values = {}
+		this.values = values || {}
 		this.applyCallback = applyCallback
 		this.resetCallback = resetCallback
+		this.section = document.querySelector(`#${this.elementID}.section`)
 		this.attach()
 	}
 
 	apply() {
 		this.applyCallback()
-		document.querySelector(`#${this.elementID}.section .counter-main`).textContent = this.values.currentConfirmed
-		document.querySelector(`#${this.elementID}.section .progress-active`).style.width = `${((this.values.currentConfirmed - this.values.currentDeaths - this.values.currentRecovered) / this.values.currentConfirmed) * 100}%`
-		document.querySelector(`#${this.elementID}.section .progress-deaths`).style.width = `${(this.values.currentDeaths / this.values.currentConfirmed) * 100}%`
-		document.querySelector(`#${this.elementID}.section .progress-recovered`).style.width = `${(this.values.currentRecovered / this.values.currentConfirmed) * 100}%`
-		document.querySelector(`#${this.elementID}.section .counter-active`).textContent = this.values.currentConfirmed - this.values.currentDeaths - this.values.currentRecovered
-		document.querySelector(`#${this.elementID}.section .counter-deaths`).textContent = this.values.currentDeaths
-		document.querySelector(`#${this.elementID}.section .counter-recovered`).textContent = this.values.currentRecovered
-		document.querySelector(`#${this.elementID}.section .lastupdated`).textContent = `Last updated: ${dayjs(this.values.lastUpdated).fromNow()}`
-		// document.querySelector(`#${this.elementID}.section .lastupdated`).textContent = `Last updated: ${dayjs(this.values.lastUpdated).format("HH:mm:ss DD/MM/YY")}` 
+		const section = this.section
+		const { currentConfirmed, currentDeaths, currentRecovered } = this.values
+		section.querySelector(`.counter-main`).textContent = currentConfirmed
+		section.querySelector(`.progress-active`).style.width = `${((currentConfirmed - currentDeaths - currentRecovered) / currentConfirmed) * 100}%`
+		section.querySelector(`.progress-deaths`).style.width = `${(currentDeaths / currentConfirmed) * 100}%`
+		section.querySelector(`.progress-recovered`).style.width = `${(currentRecovered / currentConfirmed) * 100}%`
+		section.querySelector(`.counter-active`).textContent = currentConfirmed - currentDeaths - currentRecovered
+		section.querySelector(`.counter-deaths`).textContent = currentDeaths
+		section.querySelector(`.counter-recovered`).textContent = currentRecovered
+		section.querySelector(`.lastupdated`).textContent = `Last updated: ${dayjs(this.values.lastUpdated).fromNow()}`
 	}
 
 	reset() {
@@ -50,40 +64,54 @@ class Counter {
 
 	async fetch() {
 		return new Promise(async callback => {
-			if (Array.isArray(this.url)) {
-				var urlToFetch = this.url[~~(this.url.length * Math.random())]
-			} else {
-				var urlToFetch = this.url
-			}
-			if (!Array.isArray(urlToFetch)) {
-				urlToFetch = [urlToFetch, "json"]
-			}
-			getData(
-				urlToFetch[0],
-				urlToFetch[1],
-				async (data) => {
-					var newValues = this.doneCallback(data, urlToFetch[0])
-					Object.keys(newValues).forEach(key => {
-						if (this.values[key] === undefined || this.values[key] < newValues[key]) {
-							this.values[key] = newValues[key]
-						}
-					})
-				},
-				this.failCallback,
-				() => {
-					this.repliedCallback()
-					callback()
+			let urlToFetch
+			if (isCors) {
+				if (this.url.noCors) {
+					urlToFetch = this.url.noCors[~~(this.url.noCors.length * Math.random())]
+				} else if (this.url.cors) {
+					urlToFetch = this.url.cors[~~(this.url.cors.length * Math.random())]
 				}
-			)
+			} else {
+				if (this.url.cors) {
+					urlToFetch = this.url.cors[~~(this.url.cors.length * Math.random())]
+				}
+			}
+			if (urlToFetch) {
+				getData(
+					...urlToFetch,
+					async (data) => {
+						var newValues = this.doneCallback(data, urlToFetch[0])
+						Object.keys(newValues).forEach(key => {
+							if (this.values[key] === undefined || this.values[key] < newValues[key]) {
+								this.values[key] = newValues[key]
+							}
+						})
+					},
+					this.failCallback,
+					() => {
+						this.repliedCallback()
+						callback()
+					}
+				)	
+			} else {
+				this.failCallback()
+				this.repliedCallback()
+				callback()
+			}
 		})
 	}
 
 	attach() {
 		varsToCheck = varsToCheck.filter(e => e !== this.name).concat(this.name)
+		this.section.style.display = ""
 	}
 
 	detach() {
 		varsToCheck = varsToCheck.filter(e => e !== this.name)
+		if (Object.keys(this.values).length === 0) {
+			this.section.style.display = "none"
+			this.apply()
+		}
 	}
 
 	static applyAll() {
@@ -121,55 +149,41 @@ class Counter {
 
 }
 
-// var TheVirusTracker = new Counter("TheVirusTracker", "thevirustracker", {
-// 	url: "https://thevirustracker.com/free-api?global=stats",
-// 	doneCallback: (data) => {
-// 		if (TheVirusTracker.values === {} ? false : TheVirusTracker.values.currentConfirmed === data.results[0].total_cases) {
-// 			return TheVirusTracker.values
-// 		} else {
-// 			return {
-// 				"currentConfirmed": data.results[0].total_cases,
-// 				"currentDeaths": data.results[0].total_deaths,
-// 				"currentRecovered": data.results[0].total_recovered,
-// 				"lastUpdated": new Date()
-// 			}
-// 		}
-// 	}
-// })
-
-// var worldometers = new Counter("worldometers", "worldometers", {
-// 	url: [
-// 		"https://corona.lmao.ninja/all", 								// https://github.com/NovelCOVID/API
-// 		"https://coronavirus-19-api.herokuapp.com/all",			 		// https://github.com/javieraviles/covidAPI
-// 		"https://covid19-server.chrismichael.now.sh/api/v1/AllReports"	// https://github.com/ChrisMichaelPerezSantiago/covid19
-// 	],
-// 	doneCallback: (data, urlToFetch) => {
-// 		switch(urlToFetch) {
-// 			case "https://covid19-server.chrismichael.now.sh/api/v1/AllReports":
-// 				return {currentConfirmed: data.reports[0].cases}
-// 			default:
-// 				return {currentConfirmed: data.cases}
-// 		}
-// 	}
-// })
-
-var worldometers = new Counter("worldometers", "worldometers", {
-	url: [["https://www.worldometers.info/coronavirus/", "html"]],
+var worldometers = new Counter({
+	name: "worldometers", 
+	elementID: "worldometers", 
+	url: {
+		noCors: [
+			["https://www.worldometers.info/coronavirus/", "html"]
+		],
+		cors: [
+			["https://disease.sh/v3/covid-19/all", "json"]
+		]
+	},
 	doneCallback: (data, urlToFetch) => {
-		var returnedObj = {
-			"currentConfirmed": parseInt(data.querySelector(".content-inner > div:nth-child(7) > div:nth-child(2) > span").textContent.split(",").join("")),
-			"currentDeaths": parseInt(data.querySelector(".content-inner > div:nth-child(9) > div:nth-child(2) > span").textContent.split(",").join("")),
-			"currentRecovered": parseInt(data.querySelector(".content-inner > div:nth-child(10) > div:nth-child(2) > span").textContent.split(",").join("")),
-			"lastUpdated": new Date()
-		}
-		if (worldometers.values === {} ? false : worldometers.values.currentConfirmed === returnedObj.currentConfirmed) {
-			return worldometers.values
-		} else {
-			return returnedObj
+		if (urlToFetch === "https://www.worldometers.info/coronavirus/") {
+			var returnedObj = {
+				"currentConfirmed": parseInt(data.querySelector(".content-inner > div:nth-child(7) > div:nth-child(2) > span").textContent.split(",").join("")),
+				"currentDeaths": parseInt(data.querySelector(".content-inner > div:nth-child(9) > div:nth-child(2) > span").textContent.split(",").join("")),
+				"currentRecovered": parseInt(data.querySelector(".content-inner > div:nth-child(10) > div:nth-child(2) > span").textContent.split(",").join("")),
+				"lastUpdated": new Date()
+			}
+			if (worldometers.values === {} ? false : worldometers.values.currentConfirmed === returnedObj.currentConfirmed) {
+				return worldometers.values
+			} else {
+				return returnedObj
+			}	
+		} else if (urlToFetch === "https://disease.sh/v3/covid-19/all") {
+			return {
+				"currentConfirmed": data.cases,
+				"currentDeaths": data.deaths,
+				"currentRecovered": data.recovered,
+				"lastUpdated": new Date()
+			}
 		}
 	},
 	applyCallback: () => {
-		getData("https://corona.lmao.ninja/v2/all", "json", (data) => {
+		getData("https://disease.sh/v3/covid-19/all", "json", (data) => {
 			worldometers.values.lastUpdated = new Date(data.updated)
 			worldometers.applyCallback = () => { }
 			worldometers.apply()
@@ -178,41 +192,14 @@ var worldometers = new Counter("worldometers", "worldometers", {
 })
 
 
-// var JohnsHopkins = new Counter("JohnsHopkins", "johnshopkins", {
-// 	url: [
-// 		"https://coronavirus-tracker-api.herokuapp.com/v2/latest",					// https://github.com/ExpDev07/coronavirus-tracker-api
-// 		"https://covid2019-api.herokuapp.com/v2/total",								// https://github.com/nat236919/Covid2019API (kinda needs CORS)
-// 		"https://covid19.mathdro.id/api",											// https://github.com/mathdroid/covid-19-api
-// 		"https://wuhan-coronavirus-api.laeyoung.endpoint.ainize.ai/jhu-edu/brief",	// https://github.com/Laeyoung/COVID-19-API
-// 		"https://covid19-api.yggdrasil.id/"											// https://github.com/ChrisMichaelPerezSantiago/covid19
-// 	],
-// 	// https://the2019ncov.com/ - https://api.the2019ncov.com/api/cases
-// 	doneCallback: (data, urlToFetch) => {
-// 		resultObj = {}
-// 		switch(urlToFetch) {
-// 			case "https://coronavirus-tracker-api.herokuapp.com/v2/latest":
-// 				resultObj.currentConfirmed = data.latest.confirmed
-// 				break
-// 			case "https://covid2019-api.herokuapp.com/v2/total":
-// 				resultObj.currentConfirmed = data.data.confirmed
-// 				break
-// 			case "https://covid19.mathdro.id/api":
-// 				resultObj.currentConfirmed = data.confirmed.value
-// 				break
-// 			case "https://wuhan-coronavirus-api.laeyoung.endpoint.ainize.ai/jhu-edu/brief":
-// 				resultObj.currentConfirmed = data.confirmed
-// 				break
-// 			case "https://covid19-api.yggdrasil.id/":
-// 				resultObj.currentConfirmed = data.confirmed
-// 				break
-// 			}
-// 		return resultObj
-// 	}
-// })
-
-var JohnsHopkins = new Counter("JohnsHopkins", "johnshopkins", {
-	url: "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=Confirmed%20%3E%200&outFields=%22Last_Update,Confirmed,Deaths,Recovered%22&returnGeometry=false",
-	// https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=Confirmed%20%3E%200&outFields=*&outStatistics=[{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22Confirmed%22,%22outStatisticFieldName%22:%22confirmed%22},{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22Deaths%22,%22outStatisticFieldName%22:%22deaths%22},{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22Recovered%22,%22outStatisticFieldName%22:%22recovered%22}]
+var JohnsHopkins = new Counter({
+	name: "JohnsHopkins", 
+	elementID: "johnshopkins",
+	url: {
+		cors: [
+			["https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=Confirmed%20%3E%200&outFields=%22Last_Update,Confirmed,Deaths,Recovered%22&returnGeometry=false", "json"]
+		]
+	},
 	doneCallback: (data, urlToFetch) => {
 		resultObj = {
 			"currentConfirmed": 0,
@@ -234,72 +221,32 @@ var JohnsHopkins = new Counter("JohnsHopkins", "johnshopkins", {
 	}
 })
 
-
-// var WHO = new Counter("WHO", "who", {
-// 	url: "https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/Cases_by_country_pt_V3/FeatureServer/0/query?f=json&where=1=1&outFields=*&outStatistics=[{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22cum_conf%22,%22outStatisticFieldName%22:%22confirmed%22},{%22statisticType%22:%22sum%22,%22onStatisticField%22:%22cum_death%22,%22outStatisticFieldName%22:%22deaths%22}]",
-// 	doneCallback: (data) => {
-// 		if (WHO.values === {} ? false : WHO.values.currentConfirmed === data.features[0].attributes.confirmed) {
-// 			return WHO.values
-// 		} else {
-// 			return {
-// 				"currentConfirmed": data.features[0].attributes.confirmed,
-// 				"currentDeaths": data.features[0].attributes.deaths,
-// 				"currentRecovered": 0,
-// 				"lastUpdated": new Date()
-// 			}
-// 		}
-// 	},
-// 	applyCallback: () => {
-// 		getData("https://services.arcgis.com/5T5nSi527N4F7luB/arcgis/rest/services/nCoV_dashboard_time_stamp/FeatureServer/0/query?f=json&where=1%3D1&returnGeometry=false&outFields=*&resultOffset=0&resultRecordCount=1", "json", (data) => {
-// 			WHO.values.lastUpdated = dayjs(`${data.features[0].attributes.Last_Updated_at__}+01:00`, "DD/MM/YYYY HH:mmZ").$d
-// 			WHO.applyCallback = () => { }
-// 			WHO.apply()
-// 		})
-// 	}
-// })
-
-// var Wikipedia = new Counter("Wikipedia", "wikipedia", {
-// 	url: "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Template:Cases_in_2019%E2%80%9320_coronavirus_pandemic&rvprop=content|timestamp&formatversion=2&rvslots=*&format=json",
-// 	doneCallback: (data) => {
-// 		var numberData = [...data.query.pages[0].revisions[0].slots.main.content.matchAll(/(\d{1,3},\d{3}(?:,\d{3})?)/g)]
-// 		return {
-// 			"currentConfirmed": parseInt(numberData[0][1].split(",").join("")),
-// 			"currentDeaths": parseInt(numberData[2][1].split(",").join("")),
-// 			"currentRecovered": parseInt(numberData[4][1].split(",").join("")),
-// 			"lastUpdated": new Date(data.query.pages[0].revisions[0].timestamp)
-// 		}
-// 	}
-// 	// Google: https://google.org/crisisresponse/covid19-map
-// 	// Bing: https://www.bing.com/covid/data (requires CORS)
-// })
-
-
-var Indonesia = new Counter("Indonesia", "indonesia", {
-	url: "https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/Statistik_Perkembangan_COVID19_Indonesia/FeatureServer/0/query?f=json&where=(Jumlah_Kasus_Kumulatif%20%3C%3E%20null)&outFields=%22Jumlah_Kasus_Kumulatif,Jumlah_Pasien_Meninggal,Jumlah_Pasien_Sembuh,Tanggal%22&returnGeometry=false&orderByFields=Jumlah_Kasus_Kumulatif",
-	doneCallback: (data) => {
-		if (Indonesia.values === {} ? false : Indonesia.values.currentConfirmed === data.features[data.features.length - 1].attributes.Jumlah_Kasus_Kumulatif) {
-			return Indonesia.values
-		} else {
-			return {
-				"currentConfirmed": data.features[data.features.length - 1].attributes.Jumlah_Kasus_Kumulatif,
-				"currentDeaths": data.features[data.features.length - 1].attributes.Jumlah_Pasien_Meninggal,
-				"currentRecovered": data.features[data.features.length - 1].attributes.Jumlah_Pasien_Sembuh,
-				"lastUpdated": new Date()
-			}
-		}
-
+var Indonesia = new Counter({
+	name: "Indonesia", 
+	elementID: "indonesia",
+	url: {
+		noCors: [
+			["https://data.covid19.go.id/public/api/update.json", "json"]
+		]
 	},
-	applyCallback: () => {
-		getData("https://services5.arcgis.com/VS6HdKS0VfIhv8Ct/arcgis/rest/services/Statistik_Perkembangan_COVID19_Indonesia/FeatureServer/0?f=json", "json", (data) => {
-			Indonesia.values.lastUpdated = new Date(data.editingInfo.lastEditDate)
-			Indonesia.applyCallback = () => { }
-			Indonesia.apply()
-		})
-	}
+	doneCallback: (data) => {
+		return {
+			"currentConfirmed": data.update.total.jumlah_positif,
+			"currentDeaths": data.update.total.jumlah_meninggal,
+			"currentRecovered": data.update.total.jumlah_sembuh,
+			"lastUpdated": new Date(data.update.penambahan.created)
+		}
+	},
 })
 
-var IHME = new Counter("IHME", "ihme", {
-	url: "https://healthmap.org/covid-19/latestCounts.json",
+var IHME = new Counter({
+	name: "IHME", 
+	elementID: "ihme",
+	url: {
+		noCors: [
+			["https://healthmap.org/covid-19/latestCounts.json", "json"]
+		]
+	},
 	doneCallback: (data) => {
 		if (IHME.values === {} ? false : IHME.values.currentConfirmed === parseInt(data[0].caseCount.split(",").join(""))) {
 			return IHME.values
@@ -318,6 +265,12 @@ var IHME = new Counter("IHME", "ihme", {
 			IHME.applyCallback = () => { }
 			IHME.apply()
 		})
+	},
+	values: {
+		"currentConfirmed": 71503614,
+		"currentDeaths": 0,
+		"currentRecovered": 0,
+		"lastUpdated": new Date("2021-03-31T18:44:40.000Z")
 	}
 })
 
@@ -326,34 +279,13 @@ dayjs.extend(dayjs_plugin_customParseFormat)
 
 $(document).ready(async () => {
 	document.querySelector("#status p").textContent = "Testing for cross-origin request ability... (If this text won't disappear, please refresh.)"
-	// var isCORS = await (async () => {
-	// 	new Promise(callback => {
-	// 		getData("https://en.wikipedia.org/w/api.php", "html", () => {
-	// 			callback(true)
-	// 		}, () => {
-	// 			callback(false)
-	// 		})
-	// 	})
-	// })(bool => {return bool})
-	// console.log(isCORS)
 
 	getData("https://en.wikipedia.org/w/api.php", "html", () => {
 	}, () => {
-		// Wikipedia.detach()
-		// document.querySelector("#wikipedia").style.display = "none"
-		IHME.detach()
-		document.querySelector("#ihme").style.display = "none"
-		worldometers.url = "https://corona.lmao.ninja/v2/all"
-		worldometers.doneCallback = (data, urlToFetch) => {
-			return {
-				"currentConfirmed": data.cases,
-				"currentDeaths": data.deaths,
-				"currentRecovered": data.recovered,
-				"lastUpdated": new Date(data.updated)
-			}
-		}
+		isCors = false
+		Indonesia.detach()
 	}, () => {
-		Counter.resetAll()
+		// Counter.resetAll()
 		execute()
 		setInterval(
 			() => {
