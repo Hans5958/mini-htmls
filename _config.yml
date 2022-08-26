@@ -6,12 +6,13 @@ url: https://hans5958.github.io
 
 author: Hans5958
 twitter: "@Hans5958"
-copyright_year: 2021
+copyright_year: 2022
 repository: https://github.com/Hans5958/mini-htmls
 
 source: site
 markdown: kramdown
-livereload: false
+livereload: true
+# incremental: true
 
 plugins:
   - jekyll-sitemap
