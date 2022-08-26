@@ -1,9 +1,16 @@
 name: Site Deployment
 
-on: 
+on:
+  workflow_dispatch:
   push:
     branches:
       - master
+    paths:
+      - .github/workflows/deploy-site.yml
+      - site/**
+      - Gemfile
+      - Gemfile.lock
+      - _config.yml
 
 concurrency:
   group: "pages"
