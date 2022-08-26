@@ -16,7 +16,7 @@ livereload: false
 plugins:
   - jekyll-sitemap
   - jekyll-default-layout
-  - jekyll-minifier
+  # - jekyll-minifier
   - jekyll-autoprefixer
   - jekyll-git_metadata
 
@@ -33,8 +33,8 @@ autoprefixer:
   - Android >= 6
   - not Explorer <= 11
 
-jekyll-minifier:
-  exclude: 
-    - "**/*.html"
-  uglifier_args:
-    harmony: true
+# jekyll-minifier:
+#   exclude: 
+#     - "**/*.html"
+#   uglifier_args:
+#     harmony: true
