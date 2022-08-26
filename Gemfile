@@ -8,7 +8,7 @@ group :jekyll_plugins do
   gem "jekyll-sitemap"
   gem "jekyll-last-modified-at"
   gem "jekyll-default-layout"
-  gem "jekyll-minifier"
+  # gem "jekyll-minifier"
   gem "jekyll-autoprefixer"
   gem "jekyll-git_metadata", git: "https://github.com/ctrlgroup/jekyll-git_metadata.git"
 end
