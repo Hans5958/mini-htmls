@@ -21,7 +21,8 @@ let data = {
 			1: 0,
 			2: 0
 		},
-	}
+	},
+	// credits: {}
 },
 	// tables = {},
 	// tableData = {},
@@ -371,6 +372,11 @@ const processData = () => {
 			data.pokemons = response
 			getDataCallback()
 		})
+
+		// getData("https://raw.githubusercontent.com/PMDCollab/SpriteViewer/main/resources/credits.json", response => {
+		// 	data.credits = response
+		// 	getDataCallback()
+		// })
 
 		getData(jsonData.portraitDict, response => {
 			data.portraitDict = response
