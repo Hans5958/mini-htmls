@@ -259,7 +259,7 @@ const processData = () => {
 				presenceInfo.push(`<p><strong>URL</strong>: ${urlVal.map(url => `<a href="https:/${url}">${url}</a>`).join(", ")}</p>`)
 			}
 			presenceInfo.push(`<p style="display:inline-block"><strong>Color</strong>: ${data.presence[presenceName].metadata.color}</p>`)
-			presenceInfo.push(`<div style="margin-left:4px;width:.9rem;height:.9rem;background:${data.presence[presenceName].metadata.color};border:.1rem solid #bbb;display:inline-block" />`)
+			presenceInfo.push(`<div class="color-preview" style="background:${data.presence[presenceName].metadata.color};"></div>`)
 			presenceInfo.push(`<p><strong>Alternative Name</strong>: ${data.presence[presenceName].metadata.altnames ? data.presence[presenceName].metadata.altnames.join(", ") : "None"}</p>`)
 			presenceInfo.push(`<p><strong>Using regex?</strong>: ${data.presence[presenceName].metadata.regExp ? `Yes (<code>${data.presence[presenceName].metadata.regExp}</code>)` : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using iFrame?</strong>: ${data.presence[presenceName].metadata.iframe ? "Yes" : "No"}</p>`)
