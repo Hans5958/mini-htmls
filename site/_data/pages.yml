@@ -69,3 +69,7 @@
 - name: Give Internet Things
   desc: Those "give things" counters that you put on forum signatures, all in one page.
   link: /give-internet-things
+
+- name: GitHub Noreply Address Generator
+  desc: Generate GitHub noreply email address based on given username.
+  link: /gh-noreply-address
