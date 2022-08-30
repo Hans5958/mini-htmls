@@ -1,0 +1,76 @@
+---
+layout: default
+title: GitHub Noreply Address Generator
+description: Generate GitHub noreply email address based on given username.
+pwa: true
+---
+
+<div class="container">
+	<h1>GitHub <code>noreply</code> Address Generator</h1>
+	<form class="input-group mb-3">
+		<input type="text" class="form-control" id="input-name" />
+		<div class="input-group-append">
+			<button class="btn btn-success" type="submit" id="input-go">Go</button>
+		</div>
+	</form>
+
+	<div class="alert alert-danger mb-3" role="alert" style="display: none"></div>	  
+
+	<div id="address" class="mb-3">
+		<h3>Address</h3>
+		<p class="result border p-2 bg-light rounded">...</p>	
+	</div>
+	<div id="co-authored-by" class="mb-3">
+		<h3><code>Co-authored-by</code></h3>
+		<p class="result border p-2 bg-light rounded">...</p>	
+	</div>
+	<div id="signed-off-by" class="mb-3">
+		<h3><code>Signed-off-by</code></h3>
+		<p class="result border p-2 bg-light rounded">...</p>	
+	</div>
+	<div id="id">
+		<h3>ID</h3>
+		<p class="result border p-2 bg-light rounded">...</p>	
+	</div>
+
+	
+</div>
+
+<script>
+	const updateResult = apiObject => {
+		const username = apiObject.login
+		const id = apiObject.id
+		const address = `${id}+${username}@users.noreply.github.com`
+		document.querySelector('#address .result').textContent = address
+		document.querySelector('#id .result').textContent = id
+		document.querySelector('#co-authored-by .result').textContent = `Co-authored-by: ${username} <${address}>`
+		document.querySelector('#signed-off-by .result').textContent = `Signed-off-by: ${username} <${address}>`
+	}
+
+	const alert = document.querySelector('.alert')
+
+	document.querySelector("#input-go").addEventListener("click", e => {
+		e.preventDefault()
+		alert.style.display = "none"
+		fetch("https://api.github.com/users/" + document.querySelector('#input-name').value)
+			.then(async response => {
+				if (!response.ok) return Promise.reject(await response.json())
+				return response.json()
+			})
+			.then(apiObject => {
+				updateResult(apiObject)
+			})
+			.catch(response => {
+				// console.log(response)
+				alert.style.display = "block"
+				if (response.message === "Not Found") {
+					alert.textContent = "User not found! Please try again with another username."
+				} else {
+					alert.textContent = "Something went wrong: " + response.message
+				}
+			})
+	})
+
+	// updateResult(test)
+
+</script>
