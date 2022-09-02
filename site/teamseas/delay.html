@@ -4,7 +4,7 @@ title: "#TeamSeas Live Counter (Delay)"
 description: "This is the #TeamSeas (teamseas.org) live counter of the money raised, or ocean trash (planned to be) collected."
 ---
 
-<script src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js"></script>
 <script defer src="delay.js"></script>
 <link rel="stylesheet" href="{{ '/assets/css/odometer.css' | relative_url }}">
 <style>
@@ -37,111 +37,11 @@ description: "This is the #TeamSeas (teamseas.org) live counter of the money rai
 		font-size: 1.5rem
 	}
 
-	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 1s;
-		-moz-transition: -moz-transform 1s;
-		-ms-transition: -ms-transform 1s;
-		-o-transition: -o-transform 1s;
-		transition: transform 1s;
+	:root {
+		--odometer-duration: 2.5s;
+		--fadeout-duration: 0.5s
 	}
 
-	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 1s;
-		-moz-transition: -moz-transform 1s;
-		-ms-transition: -ms-transform 1s;
-		-o-transition: -o-transform 1s;
-		transition: transform 1s;
-	}
-
-	@keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-moz-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-webkit-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-ms-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-o-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	.fadeout {
-		-webkit-animation: fadeout 0.5s;
-		-moz-animation: fadeout 0.5s;
-		-ms-animation: fadeout 0.5s;
-		-o-animation: fadeout 0.5s;
-		animation: fadeout 0.5s;
-	}
-	@keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-moz-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-webkit-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-ms-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-o-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
 </style>
 
 <div class="container">
@@ -167,10 +67,10 @@ description: "This is the #TeamSeas (teamseas.org) live counter of the money rai
 			</div>
 			<div class="col-sm-12 col-lg-6 text-center">
 				<div class="row">
-					<div class="time col">
+					<!-- <div class="time col">
 						<h2>Time Left</h2>
 						<p id="countdown"></p>
-					</div>
+					</div> -->
 					<div class="time col">
 						<h2>Delay Time</h2>
 						<p id="delay-time"></p>

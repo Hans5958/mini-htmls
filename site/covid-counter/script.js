@@ -2,7 +2,7 @@ let countersToCheck = [],
 	countersChecked = 0, 
 	statusProgressBar = "fetch", 
 	isCors = true
-const delay = 10000
+const timerSet = 10000
 
 var parseToHTML = (raw) => (new DOMParser()).parseFromString(raw, 'text/html')
 
@@ -54,7 +54,7 @@ class Counter {
 		}
 		this.values = values || {}
 		this.section = document.querySelector(`#${this.elementID}.section`)
-		this.attached = true
+		if (this.section) this.attached = true
 	}
 
 	apply() {
@@ -114,13 +114,14 @@ class Counter {
 
 	attach() {
 		this.attached = true
+		this.section = document.querySelector(`#${this.elementID}.section`)
 		this.section.style.display = ""
 	}
 
 	detach() {
 		this.attached = false
 		if (Object.keys(this.values).length === 0) {
-			this.section.style.display = "none"
+			if (this.section) this.section.style.display = "none"
 			this.apply()
 		}
 	}
@@ -302,32 +303,30 @@ dayjs.extend(dayjs_plugin_customParseFormat)
 $(document).ready(async () => {
 	document.querySelector("#status p").textContent = "Testing for cross-origin request ability... (If this text won't disappear, please refresh.)"
 
-	getData("https://en.wikipedia.org/w/api.php", "html", () => {
-	}, () => {
-		isCors = false
+	isCors = await window.checkCors()
+
+	if (!isCors) {
 		counters.forEach(counter => {
 			if (!counter.url.cors && !counter.values.currentConfirmed) counter.detach()
 		})
-	}, () => {
-		// Counter.resetAll()
-		execute()
-		let targetTime = Date.now() + delay
-		const timerUpdate = setInterval(
-			() => {
-				let timer = (targetTime - Date.now())/1000
-				if (statusProgressBar === "timer") {
-					document.querySelector("#status p").textContent = `Waiting... (${timer.toFixed(2)}s)`
-					document.querySelector("#status .progress-bar").style.width = `${100 - (timer / 10) * 100}%`
-				}
-				if (timer < 0 || timer === 0) {
-					statusProgressBar = "fetch"
-					document.querySelector("#status .progress-bar").style.width = "0"
-					targetTime = Date.now() + delay
-					execute()
-				}
-			}, 10
-		)
-	})
+	}
+
+	// Counter.resetAll()
+	execute()
+	let targetTime = Date.now() + timerSet
+	setInterval(() => {
+		let timer = (targetTime - Date.now())/1000
+		if (statusProgressBar === "timer") {
+			document.querySelector("#status p").textContent = `Waiting... (${timer.toFixed(2)}s)`
+			document.querySelector("#status .progress-bar").style.width = `${100 - (timer / 10) * 100}%`
+		}
+		if (timer <= 0) {
+			statusProgressBar = "fetch"
+			document.querySelector("#status .progress-bar").style.width = "0"
+			targetTime += timerSet
+			execute()
+		}
+	}, 10)
 })
 
 const execute = async () => {

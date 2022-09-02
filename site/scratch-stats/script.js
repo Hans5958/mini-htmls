@@ -18,7 +18,7 @@ dayjs.extend(dayjs_plugin_timezone)
 dayjs.extend(dayjs_plugin_advancedFormat)
 
 const
-	buildDate = "31/12/2021",
+	revision = "02/09/2022",
 
 	lists = ["projectsFavorited", "usersFollowing", "usersFollowers", "studiosFollowed", "studiosCurated"]
 listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
@@ -38,12 +38,12 @@ function logEvent(logged = "", error = false, update = true) {
 	//console.log("[SS] " + logged)
 	log.push(logged)
 	if (error === true) {
-		$("#username")[0].disabled = false
-		$("#mode")[0].disabled = false
+		document.querySelector("#username").disabled = false
+		document.querySelector("#mode").disabled = false
 	}
 	if (update === true) {
-		$("pre#log")[0].innerHTML = log.join("\n")
-		$("pre#log")[0].scrollTop = $("pre#log")[0].scrollHeight;
+		document.querySelector("pre#log").textContent = log.join("\n")
+		document.querySelector("pre#log").scrollTop = $("pre#log")[0].scrollHeight;
 	}
 }
 
@@ -91,8 +91,8 @@ const init = () => new Promise(async callback => {
 	logEvent("Scratch Stats starting...")
 	logEvent("Preparing...")
 
-	$("#username")[0].disabled = true
-	$("#mode")[0].disabled = true
+	document.querySelector("#username").disabled = true
+	document.querySelector("#mode").disabled = true
 	timer.start()
 
 	// C = capitalized, P = passive
@@ -165,27 +165,13 @@ const init = () => new Promise(async callback => {
 
 	// Selecting CORS proxy.
 
-	const corsDetect = () => new Promise(callback2 => {
-		$.getJSON("https://api.scratch.mit.edu/", function() {
-				callback2("")
-			})
-			.fail(function() {
-				$.getJSON("https://cf-cors.hans5958.workers.dev/?url=https://api.scratch.mit.edu", function() {
-						callback2("https://cf-cors.hans5958.workers.dev/?url=")
-					})
-					.fail(function() {
-						callback2(false)
-					})
-			})
-	})
-
 	logEvent("Selecting CORS proxy...")
 	if (typeof corsOverride === "string") {
 		cors = corsOverride
 		logEvent("CORS proxy selected! " + cors)
 		callback()
 	} else {
-		cors = await corsDetect()
+		cors = await window.getCorsUrl()
 		if (cors !== false) {
 			logEvent("CORS proxy selected! " + cors)
 			if (cors === "") {
@@ -762,7 +748,7 @@ function execEnd() {
 
 	// Header
 
-	reportEvent("Hans5958's Scratch Stats (build date " + buildDate + ")")
+	reportEvent("Hans5958's Scratch Stats (revision " + revision + ")")
 	reportEvent("Report of " + profileData.username)
 	reportEvent()
 	reportEvent("Data obtained on " + dayjs().tz(dayjs.tz.guess()).format("dddd, D MMMM YYYY, H:mm:ss z") + ".")
@@ -871,20 +857,21 @@ function execEnd() {
 
 $(function() {
 
-	$("input")[0].value = (window.location.hash) ? window.location.hash.slice(1) : "Hans5958"
-	window.location.hash = $("input")[0].value
+	const inputEl = document.querySelector("input")
+	inputEl.value = window.location.hash.slice(1) || "Hans5958"
+	window.location.hash = inputEl.value
 	go()
-	$("#username").change(function() {
+	document.querySelector("#username").addEventListener("change", function() {
 		go()
-		window.location.hash = $("input")[0].value
-		$("input")[0].value = window.location.hash.slice(1)
+		window.location.hash = inputEl.value
+		inputEl.value = window.location.hash.slice(1)
 	})
-	window.onhashchange = function() {
+	document.addEventListener("hashchange", function() {
 		go()
-		$("input")[0].value = window.location.hash.slice(1)
-		window.location.hash = $("input")[0].value
-	}
-	$("#mode").change(function() {
+		inputEl.value = window.location.hash.slice(1)
+		window.location.hash = inputEl.value
+	})
+	document.querySelector("#mode").addEventListener("change", function() {
 		go()
 	})
 
@@ -894,9 +881,9 @@ $(function() {
 
 async function go() {
 
-	mode = $("#mode")[0].value
+	mode = document.querySelector("#mode").value
 
-	if ($("#username")[0].disabled === false) {
+	if (document.querySelector("#username").disabled === false) {
 		async function execProfile() {
 			if (mode === "main" || mode === "alt" || mode === "ext") await execProfileMain()
 			else if (mode === "sdb") await execProfileSDB()
