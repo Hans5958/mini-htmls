@@ -2,32 +2,13 @@ dayjs.extend(window.dayjs_plugin_utc)
 var currentCount = 0,
 	diffAvg = 0,
 	diffReal = 0,
-	initTimer = 10 * 10,
+	timerSet = 10 * 1000,
 	timer,
 	diffArray = [],
 	cors,
 	parser = new DOMParser()
 
-const corsDetect = () => new Promise(callback => {
-		$.get("https://teamtrees.org/")
-			.done(function() {
-				callback("")
-			})
-			.fail(function() {
-				$.get("https://cf-cors.hans5958.workers.dev/?url=https://teamtrees.org/")
-					.done(function() {
-						callback("https://cf-cors.hans5958.workers.dev/?url=")
-					})
-					.fail(function() {
-						callback(false)
-					})
-			})
-	})
-
-const getData = async (replied, success, fail) => {
-	const response = await fetch(cors + "https://teamtrees.org").catch(fail)
-	return response
-}
+const getData = async (url) => await fetch(cors + url)
 
 const updateMargin = () => {
 	document.querySelector("#main p").textContent = currentCount
@@ -102,7 +83,7 @@ const afterGet = (response, firstRun = false) => {
 const reload = async () => {
 	// await $("#counter").fadeOut(250)
 	// await reset()
-	let html = await (await getData()).text()
+	let html = await (await getData("https://teamtrees.org")).text()
 	await afterGet(html)
 
 }
@@ -113,13 +94,15 @@ $(async () => {
 	// $clock.countdown(time.toDate(), function (event) {
 	// 	$(this).html(event.strftime('%D:%H:%M:%S'))
 	// })
-	cors = await corsDetect()
-	setInterval(async () => {
-		timer--
-		$("#update").html("Update: " + timer/10 + "s")
-		if (!timer) {
-			timer = initTimer
+	cors = await window.getCorsUrl()
+	reload()
+	let targetTime = Date.now() + timerSet
+	setInterval(() => {
+		let timer = (targetTime - Date.now())/1000
+		document.querySelector("#update").textContent = "Update: " + timer.toFixed(1) + "s"
+		if (timer <= 0) {
+			targetTime += timerSet
 			reload()
 		}
-	}, 100)
+	}, 10)
 })

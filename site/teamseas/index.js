@@ -2,32 +2,13 @@ dayjs.extend(window.dayjs_plugin_utc)
 let currentCount = 0,
 	diffAvg = 0,
 	diffReal = 0,
-	initTimer = () => Math.round((63 - (new Date() % 60000 / 1000) - (Math.random() * 4) + 2) * 10),
+	timerSet = () => Math.round((63 - (new Date() % 60000 / 1000) - (Math.random() * 4) + 2) * 1000),
 	timer,
 	diffArray = [],
 	cors,
 	parser = new DOMParser()
 
-const corsDetect = () => new Promise(callback => {
-		$.get("https://tscache.com/donation_total.json")
-			.done(function() {
-				callback("")
-			})
-			.fail(function() {
-				$.get("https://cf-cors.hans5958.workers.dev/?url=https://tscache.com/donation_total.json")
-					.done(function() {
-						callback("https://cf-cors.hans5958.workers.dev/?url=")
-					})
-					.fail(function() {
-						callback(false)
-					})
-			})
-	})
-
-const getData = async (url, success, fail) => {
-	const response = await fetch(cors + url).catch(fail)
-	return response
-}
+const getData = async (url) => await fetch(cors + url)
 
 const updateMargin = () => {
 	document.querySelector("#main p").textContent = currentCount
@@ -78,18 +59,6 @@ const sumArray = a => {
 	return a.reduce((y, z) => y + z)
 }
 
-// const reset = () => {
-// 	$("p").html("0")
-// 	$("p.diff").html("0")
-// 	$("p.margin").html("0")
-// 	currentCount = 0
-// 	diffAvg = 0
-// 	diffArray = []
-// 	f = false
-// 	$(".1").css("opacity", "1")
-// 	$(".margin").css("opacity", "1")
-// }
-
 const afterGet = (response) => {
 	let countUpdate = response.total.count 
 	if (currentCount) {
@@ -103,27 +72,35 @@ const afterGet = (response) => {
 }
 
 const reload = async () => {
-	let requestLb = await (await getData('https://tscache.com/lb_recent.json')).json()
-	let requestTotal = await (await getData('https://tscache.com/donation_total.json')).json()
+	let requestLb
+	let requestTotal
+	await Promise.all([
+		(async () => {
+			requestLb = await (await getData('https://tscache.com/lb_recent.json')).json()
+		})(),
+		(async () => {
+			requestTotal = await (await getData('https://tscache.com/donation_total.json')).json()
+		})()
+	])
 	afterGet({lb: requestLb, total: requestTotal})
 	// $("#counter").delay(500).fadeIn(500)
 }
 
 $(async () => {
-	let time = dayjs.utc("2022-01-01 00:00")
-	let $clock = $('#countdown')
-	$clock.countdown(time.toDate(), function (event) {
-		$(this).html(event.strftime('%D:%H:%M:%S'))
-	})
-	cors = await corsDetect()
-	// await $("#counter").fadeOut(250)
-	// await reset()
-	setInterval(async () => {
-		timer--
-		$("#update").html("Update: " + timer/10 + "s")
-		if (!timer) {
-			timer = initTimer()
+	// let time = dayjs.utc("2022-01-01 00:00")
+	// let $clock = $('#countdown')
+	// $clock.countdown(time.toDate(), function (event) {
+	// 	$(this).html(event.strftime('%D:%H:%M:%S'))
+	// })
+	cors = await window.getCorsUrl()
+	reload()
+	let targetTime = Date.now() + timerSet()
+	setInterval(() => {
+		let timer = (targetTime - Date.now())/1000
+		document.querySelector("#update").textContent = "Update: " + timer.toFixed(1) + "s"
+		if (timer <= 0) {
+			targetTime += timerSet()
 			reload()
 		}
-	}, 100)
+	}, 10)
 })

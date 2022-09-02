@@ -4,7 +4,7 @@ title: "#TeamSeas Live Counter"
 description: "This is the #TeamSeas (teamseas.org) live counter of the money raised, or ocean trash (planned to be) collected."
 ---
 
-<script src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js"></script>
 <script defer src="index.js"></script>
 <link rel="stylesheet" href="{{ '/assets/css/odometer.css' | relative_url }}">
 <style>
@@ -37,111 +37,11 @@ description: "This is the #TeamSeas (teamseas.org) live counter of the money rai
 		font-size: 1.5rem
 	}
 
-	.odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 2.5s;
-		-moz-transition: -moz-transform 2.5s;
-		-ms-transition: -ms-transform 2.5s;
-		-o-transition: -o-transform 2.5s;
-		transition: transform 2.5s;
+	:root {
+		--odometer-duration: 2.5s;
+		--fadeout-duration: 0.5s
 	}
 
-	.odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
-	.odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
-		-webkit-transition: -webkit-transform 2.s;
-		-moz-transition: -moz-transform 2.5s;
-		-ms-transition: -ms-transform 2.5s;
-		-o-transition: -o-transform 2.5s;
-		transition: transform 2.5s;
-	}
-
-	@keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-moz-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-webkit-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-ms-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	@-o-keyframes fadein {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-	.fadeout {
-		-webkit-animation: fadeout 0.5s;
-		-moz-animation: fadeout 0.5s;
-		-ms-animation: fadeout 0.5s;
-		-o-animation: fadeout 0.5s;
-		animation: fadeout 0.5s;
-	}
-	@keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-moz-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-webkit-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-ms-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
-	@-o-keyframes fadeout {
-		from {
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-		}
-	}
 </style>
 
 <div class="container">
@@ -164,13 +64,13 @@ description: "This is the #TeamSeas (teamseas.org) live counter of the money rai
 					</div>
 				</div>
 				<p class="time text-center text-lg-left" id="update"></p>
-				<div class="alert alert-info">Want to see how the donation trickles? Check out <a href="delay">the delay version</a>.<br />Also check out <a href="../teamtrees">#TeamTrees Live Counter</a>.</div>
 			</div>
 			<div class="col-sm-12 col-lg-6 text-center">
-				<div class="time">
+				<!-- <div class="time">
 					<h2>Time Left</h2>
 					<p id="countdown"></p>
-			</div>
+				</div> -->
+				<div class="alert alert-info">Want to see how the donation trickles? Check out <a href="delay">the delay version</a>.<br />Also check out <a href="../teamtrees">#TeamTrees Live Counter</a>.</div>
 				<h2>Recent</h2>
 				<table class="table table-hover">
 					<thead>

@@ -4,9 +4,42 @@ title: COVID Counter
 description: View the number of cases of COVID-19 from multiple sources.
 ---
 
-<script src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/dayjs@1.8.36,npm/dayjs@1.8.36/plugin/relativeTime.min.js,npm/dayjs@1.8.36/plugin/customParseFormat.min.js"></script>
-<script src="./script.js" defer></script>
-<link rel="stylesheet" href="./style.css">
+<script defer src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/customParseFormat.min.js"></script>
+<script defer src="./script.js"></script>
+<link rel="stylesheet" href="{{ '/assets/css/odometer.css' | relative_url }}">
+<style>
+	.section .counter-main {
+		font-size: 3rem
+	}
+
+	.section .title {
+		font-size: 2rem
+	}
+
+	.section .counter-active {
+		font-size: 1.5rem;
+		color: blue
+	}
+
+	.section .counter-deaths {
+		font-size: 1.5rem;
+		color: red
+	}
+
+	.section .counter-recovered {
+		font-size: 1.5rem;
+		color: green
+	}
+
+	#source p {
+		margin-bottom: 0 !important
+	}
+
+	:root {
+		--odometer-duration: 5s;
+		--fadeout-duration: 0.5s
+	}
+</style>
 
 <div class="container-fluid">
 	<div class="row section mb-4 mb-xl-0" id="johnshopkins">
