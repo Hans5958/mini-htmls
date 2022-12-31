@@ -73,3 +73,7 @@
 - name: GitHub Noreply Address Generator
   desc: Generate GitHub noreply email address based on given username.
   link: /gh-noreply-address
+
+- name: TextureAtlas Extractor
+  desc: A very simple extractor for TextureAtlas spritesheets.
+  link: /textureatlas-extractor
