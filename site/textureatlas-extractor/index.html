@@ -1,0 +1,30 @@
+---
+layout: default
+title: TextureAtlas Extractor
+description: A very simple extractor for TextureAtlas spritesheets.
+pwa: true
+---
+
+<script async src="https://cdn.jsdelivr.net/combine/npm/jszip@3.10.1,npm/file-saver@2.0.5"></script>
+<script defer src="script.js"></script>
+
+<div class="container">
+	<h1>TextureAtlas Extractor</h1>
+	<p>A very simple extractor for TextureAtlas spritesheets. Tested on Friday Night Funkin' spritesheet, but should work on any spritesheet that uses the similar format.</p>
+	<form id="form-main" class="mb-4">
+		<div class="form-group">
+			<label for="inputImage">Image file</label>
+			<input type="file" class="form-control-file" id="inputImage">
+		</div>
+		<div class="form-group">
+			<label for="inputXml">TextureAtlas .xml file</label>
+			<input type="file" class="form-control-file" id="inputXml">
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+	<div id="status" class="d-none">
+		<h2>Status</h2>
+		<p id="status-text"></p>
+		<canvas id="canvas-main" class="w-100 border"></canvas>
+	</div>
+</div>
