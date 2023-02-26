@@ -75,5 +75,5 @@
   link: /gh-noreply-address
 
 - name: TextureAtlas Extractor
-  desc: A very simple extractor for TextureAtlas spritesheets.
+  desc: A very simple extractor/unpacker for texture spritesheets.
   link: /textureatlas-extractor
