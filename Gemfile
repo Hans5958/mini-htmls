@@ -10,6 +10,7 @@ group :jekyll_plugins do
   gem "jekyll-default-layout"
   # gem "jekyll-minifier"
   gem "jekyll-autoprefixer"
+  gem 'jekyll-redirect-from'
   gem "jekyll-git_metadata", git: "https://github.com/ctrlgroup/jekyll-git_metadata.git"
 end
 platforms :mingw, :x64_mingw, :mswin, :jruby do

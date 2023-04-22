@@ -20,6 +20,7 @@ plugins:
   # - jekyll-minifier
   - jekyll-autoprefixer
   - jekyll-git_metadata
+  - jekyll-redirect-from
 
 autoprefixer:
   browsers:
