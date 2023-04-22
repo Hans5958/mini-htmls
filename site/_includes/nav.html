@@ -1,6 +1,9 @@
 <header><nav class="navbar navbar-expand-md bg-dark navbar-dark">
+	<a class="navbar-brand mr-2" href="{{ '/' }}">
+		<img src="https://avatars.githubusercontent.com/u/11584103?v=4" class="rounded-sm d-inline-block align-top" alt="Avatar" decoding="async" width="32" height="32">
+	</a>
 	<a class="navbar-brand" href="{{ '/' | relative_url }}">
-		{{ site.title }}
+		Mini HTMLs
 	</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 		<span class="navbar-toggler-icon"></span>
@@ -22,8 +25,8 @@
 				</ul>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="/">
-					Main Website
+				<a class="nav-link" href="{{ site.repository }}">
+					Repository
 				</a>
 			</li>
 		</ul>
