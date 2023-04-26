@@ -18,7 +18,7 @@ dayjs.extend(dayjs_plugin_timezone)
 dayjs.extend(dayjs_plugin_advancedFormat)
 
 const
-	revision = "02/09/2022",
+	revision = "26/04/2023",
 
 	lists = ["projectsFavorited", "usersFollowing", "usersFollowers", "studiosFollowed", "studiosCurated"]
 listsName = ["Project Favorites", "Followed Users", "Followers", "Followed Studios", "Curated Studios"]
@@ -430,7 +430,7 @@ const execProjectStats = () => new Promise(callback => {
 	})
 	sortLists.id = Array.from(projList)
 	sortLists.id.sort(function(a, b) {
-		return a.stats.id + b.stats.id;
+		return a.id - b.id;
 	})
 	topProjects.id = sortLists.id[0]
 	projList.forEach(function(v2) {
