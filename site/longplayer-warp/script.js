@@ -258,6 +258,7 @@ $(document).ready(() => {
 		let constType = event.target.checked ? "accuracy" : "real"
 		dateStart = interchangeableConstValues.dateStart[constType]
 		segmentIncrements = interchangeableConstValues.segmentIncrements[constType]
+		recalculate()
 
 		// let rangeEl = document.querySelector("#setting-timestamp-range")
 		// rangeEl.min = interchangeableConstValues.dateStart[constType].unix()
