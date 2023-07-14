@@ -300,6 +300,20 @@ addCounter({
 dayjs.extend(dayjs_plugin_relativeTime)
 dayjs.extend(dayjs_plugin_customParseFormat)
 
+const execute = async () => {
+	statusProgressBar = "fetch"
+	document.querySelector("#status .progress-bar").style.width = "0"
+	await Counter.fetchAll()
+	Counter.applyAll()
+}
+
+const executeTick = timer => {
+	if (statusProgressBar === "timer") {
+		document.querySelector("#status p").textContent = `Waiting... (${timer.toFixed(2)}s)`
+		document.querySelector("#status .progress-bar").style.width = `${100 - (timer / 10) * 100}%`
+	}
+}
+
 $(document).ready(async () => {
 	document.querySelector("#status p").textContent = "Testing for cross-origin request ability... (If this text won't disappear, please refresh.)"
 
@@ -311,25 +325,5 @@ $(document).ready(async () => {
 		})
 	}
 
-	// Counter.resetAll()
-	execute()
-	let targetTime = Date.now() + timerSet
-	setInterval(() => {
-		let timer = (targetTime - Date.now())/1000
-		if (statusProgressBar === "timer") {
-			document.querySelector("#status p").textContent = `Waiting... (${timer.toFixed(2)}s)`
-			document.querySelector("#status .progress-bar").style.width = `${100 - (timer / 10) * 100}%`
-		}
-		if (timer <= 0) {
-			statusProgressBar = "fetch"
-			document.querySelector("#status .progress-bar").style.width = "0"
-			targetTime += timerSet
-			execute()
-		}
-	}, 10)
+	window.setIntervalFancy(executeTick, execute, timerSet, true)
 })
-
-const execute = async () => {
-	await Counter.fetchAll()
-	Counter.applyAll()
-}

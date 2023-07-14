@@ -41,7 +41,7 @@ const updateDiff = (number, array) => {
 
 const updateStats = async array => {
 	// document.querySelector("#recentDonations").textContent = ""
-	let recentDonations = array.recent
+	let recentDonations = array.recent.sort((a, b) => a.created_at - b.created_at)
 	for (let i in recentDonations) {
 		let item = recentDonations[i]
 		let name = item.name
@@ -58,28 +58,24 @@ const updateStats = async array => {
 	}
 }
 
+const table = document.querySelector("#recentDonations")
+
 const addRecent = (name, amount, time, hash) => {
 
 	let delayTime = dayjs().subtract('2', 'minutes')
-	if (delayTime > time) return 
 
 	// console.log(dayjs(time).format("D/M/YYYY, H:mm:ss"))
 	// console.log(delayCount)
 	// updateMargin()
 
 	// console.log(delayCount)
-	console.log(queueInfo.includes(hash))
+	// console.log(queueInfo.includes(hash))
 	if (queueInfo.includes(hash)) return
 
-	delayCount -= amount
-	queueInfo.unshift(hash)
-	// console.log('Queue:', name, amount, time + 0)
-	// console.log(delayCount)
-
-	let tr = document.createElement("tr")
-	let td1 = document.createElement("td")
-	let td2 = document.createElement("td")
-	let td3 = document.createElement("td")
+	const tr = document.createElement("tr")
+	const td1 = document.createElement("td")
+	const td2 = document.createElement("td")
+	const td3 = document.createElement("td")
 	td1.innerHTML = name
 	td2.innerHTML = '$' + amount
 	td3.innerHTML = dayjs(time).format("D/M/YYYY, H:mm:ss")
@@ -87,14 +83,24 @@ const addRecent = (name, amount, time, hash) => {
 	tr.appendChild(td1)
 	tr.appendChild(td2)
 	tr.appendChild(td3)
-	let table = document.querySelector("#recentDonations")
+	const timeToLaunch = time - delayTime
+	if (timeToLaunch < 0) {
+		while (table.children.length > 4) table.removeChild(table.lastChild)
+		table.prepend(tr)
+		return
+	}
+
+	delayCount -= amount
+	queueInfo.unshift(hash)
+	// console.log('Queue:', name, amount, time + 0)
+	// console.log(delayCount)
+
 	let timeKey = Math.floor(time / 1000)
 	if (!queueAmount[timeKey]) queueAmount[timeKey] = 0
 	queueAmount[timeKey] += amount
-	let timeToLaunch = time - delayTime
 
 	clearInterval(queueCallback[hash])
-	queueCallback[hash] = setTimeout(() => {
+	const thisQueueCallback = () => {
 		let currentTime = dayjs().subtract('2', 'minutes')
 		// console.log(name, amount, time + 0)
 		while (table.children.length > 4) table.removeChild(table.lastChild)
@@ -112,7 +118,8 @@ const addRecent = (name, amount, time, hash) => {
 			diffdelay -= amount
 			// updateMargin()
 		}, 60000)
-	}, timeToLaunch)
+	}
+	queueCallback[hash] = setTimeout(thisQueueCallback, timeToLaunch)
 }
 
 const sumArray = a => {
@@ -153,25 +160,12 @@ $(async () => {
 	// 	$(this).html(event.strftime('%D:%H:%M:%S'))
 	// })
 	cors = await window.getCorsUrl()
-	reload()
-	updateMargin()
-	let targetTimeReload = Date.now() + timerSet()
-	let targetTimeMargin = (Date.now()/1000 + 1)*1000
-	setInterval(() => {
-		let timerReload = (targetTimeReload - Date.now())/1000
+	
+	window.setIntervalFancy(timerReload => {
 		document.querySelector("#update").textContent = "Update: " + timerReload.toFixed(1) + "s"
-		if (timerReload <= 0) {
-			targetTimeReload += timerSet()
-			reload()
-		}
-
-		let timerMargin = (targetTimeMargin - Date.now())/1000
-		if (timerMargin <= 0) {
-			targetTimeMargin += 1000
-			updateMargin()
-		}
-
 		document.querySelector("#delay-time").textContent = dayjs().subtract(2, 'minutes').format('HH:mm:ss')
-	}, 10)
+	}, reload, timerSet, true)
+	window.setIntervalFancy(() => {}, updateMargin, 1000, true)
+
 	// await $("#counter").fadeOut(250)
 })

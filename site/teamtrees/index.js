@@ -95,14 +95,8 @@ $(async () => {
 	// 	$(this).html(event.strftime('%D:%H:%M:%S'))
 	// })
 	cors = await window.getCorsUrl()
-	reload()
-	let targetTime = Date.now() + timerSet
-	setInterval(() => {
-		let timer = (targetTime - Date.now())/1000
+	const executeTick = timer => {
 		document.querySelector("#update").textContent = "Update: " + timer.toFixed(1) + "s"
-		if (timer <= 0) {
-			targetTime += timerSet
-			reload()
-		}
-	}, 10)
+	}
+	window.setIntervalFancy(executeTick, reload, timerSet, true)
 })
