@@ -1,79 +1,81 @@
-- name: SourceForge Mirror Test
-  link: /sourceforge-mirror-test
+- id: sourceforge-mirror-test
+  name: SourceForge Mirror Test
 
-# - name: Subscriber Battle
-#   link: /subscriber-battle
+# - id: subscriber-battle
+#   name: Subscriber Battle
 
-# - name: Like Battle
-#   link: /like-battle
+# - id: like-battle
+#   name: Like Battle
 
-# - name: Dislike Battle
-#   link: /dislike-battle
+# - id: dislike-battle
+#   name: Dislike Battle
 
-- name: Scratch Stats
+- id: scratch-stats
+  name: Scratch Stats
   desc: See statistics of a Scratcher with this tool. Totally not a clone of ScratchStats.com by @World_Languages. Really.
-  link: /scratch-stats
 
-- name: Scratch Link Shortener
+- id: scratch-link-shortener
+  name: Scratch Link Shortener
   desc: Scratch Link Shortener, created by Raytracing at Scratch, edited by Hans5958.
-  link: /scratch-link-shortener
 
-- name: discordgg.ga Website Snapshots
+- id: discordgg.ga
+  name: discordgg.ga Website Snapshots
   desc: "A page that archives discordgg.ga in forms of snapshot from web.archive.org."
-  link: /discordgg.ga
 
-- name: "#TeamTrees Live Counter"
+- id: teamtrees
+  name: "#TeamTrees Live Counter"
   desc: "The #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
-  link: /teamtrees
 
-- name: MuseScore Downloader
+- id: musescore-downloader
+  name: MuseScore Downloader
   desc: Download MuseScore downloads without login, and free.
-  link: /musescore-downloader
+  hidden: true
 
-- name: TNKB Analyzer
+- id: tnkb-analyzer
+  name: TNKB Analyzer
   desc: A tool to analyze vehicle registration plate number (plate number) from Indonesia.
-  link: /tnkb-analyzer
 
-# - name: "#StopTheFire Live Counter"
-#   desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
-#   link: /stopthefire
+- id: stopthefire
+  name: "#StopTheFire Live Counter"
+  desc: "This is the #StopTheFire (stopthefire.gg) live counter of the money raised."
+  hidden: true
 
-- name: COVID Counter
+- id: covid-counter
+  name: COVID Counter
   desc: View the number of cases of COVID-19 from multiple sources.
-  link: /covid-counter
 
-- name: PreMiD Presence Stats
+- id: premid-presence-stats
+  name: PreMiD Presence Stats
   desc: View all PreMiD-related statistics derived from the PreMiD API in various ways.
-  link: /premid-presence-stats
 
-- name: Longplayer Warp
+- id: longplayer-warp
+  name: Longplayer Warp
   desc: View Longplayer's current score and stats, with time warping abilities (see future score and stats).
-  link: /longplayer-warp
 
-- name: .zrp Encryption Machine
+- id: zrp-encryption-machine
+  name: .zrp Encryption Machine
   desc: A very simple encryptor/decryptor for the .zrp archive format for Zenith.
-  link: /zrp-encryption-machine
 
-- name: The PMD Sprite Repository Stats
+- id: pmd-portrait-repo-stats
+  name: The PMD Sprite Repository Stats
   desc: View all statistics related to The PMD Sprite Repository derived from multiple dataset in various ways.
-  link: /pmd-portrait-repo-stats
 
-- name: "#TeamSeas Live Counter"
+- id: teamseas
+  name: "#TeamSeas Live Counter"
   desc: "This is the #TeamSeas (teamseas.org) live counter of the money raised, or ocean trash (planned to be) collected."
-  link: /teamseas
 
-- name: My Minecraft Skins
+- id: my-minecraft-skins
+  name: My Minecraft Skins
   desc: A page with skins that I use on Minecraft, and my first Vue project. (also interactive!)
-  link: /my-minecraft-skins
 
-- name: Give Internet Things
+- id: give-internet-things
+  name: Give Internet Things
   desc: Those "give things" counters that you put on forum signatures, all in one page.
-  link: /give-internet-things
 
-- name: GitHub Noreply Address Generator
+- id: gh-noreply-address
+  name: GitHub Noreply Address Generator
   desc: Generate GitHub noreply email address based on given username.
-  link: /gh-noreply-address
 
-- name: TextureAtlas Extractor
+- id: textureatlas-extractor
+  name: TextureAtlas Extractor
   desc: A very simple extractor/unpacker for texture spritesheets.
-  link: /textureatlas-extractor

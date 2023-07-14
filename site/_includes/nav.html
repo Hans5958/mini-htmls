@@ -15,20 +15,30 @@
 					Pages
 				</a>
 				<ul class="dropdown-menu" aria-labelledby="navDrop">
-					{% for page in site.data.pages %}
+					{% for page in site.data.projects %}{% unless page.hidden %}
 					<li>
-						<a class="dropdown-item" href="{{ page.link | relative_url }}">
+						<a class="dropdown-item" href="{{ '/' | append: page.id | relative_url }}">
 							{{ page.name }}
 						</a>
 					</li>
-					{% endfor %}
+					{% endunless %}{% endfor %}
 				</ul>
 			</li>
+			{% assign current_id = page.url | split: "/" | find_exp: "i", "i != ''" %}
+			{% assign current_page = site.data.projects | where: "id", current_id %}
+			{% assign current_page = current_page[0] %}
+			{% if current_page %}
 			<li class="nav-item">
-				<a class="nav-link" href="{{ site.repository }}">
-					Repository
+				<span class="navbar-text px-md-2">
+					➤ {{ current_page.name }}
+				</span>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="{{ site.repository }}/tree/master/site/{{ current_page.id }}" target="_blank">
+					Source code
 				</a>
 			</li>
+			{% endif %}
 		</ul>
 		<span class="nav-text ml-auto" style="color: #fff;">
 			<i>Ready or not, here we go!</i>
