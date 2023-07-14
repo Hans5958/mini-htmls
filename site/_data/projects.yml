@@ -56,7 +56,7 @@
   name: .zrp Encryption Machine
   desc: A very simple encryptor/decryptor for the .zrp archive format for Zenith.
 
-- id: pmd-portrait-repo-stats
+- id: pmd-sprite-repo-stats
   name: The PMD Sprite Repository Stats
   desc: View all statistics related to The PMD Sprite Repository derived from multiple dataset in various ways.
 
