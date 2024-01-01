@@ -39,7 +39,7 @@ jobs:
         env:
           JEKYLL_ENV: production
       - name: Upload GH Pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
 
   deploy:
     name: Deployment
