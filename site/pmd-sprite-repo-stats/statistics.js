@@ -53,10 +53,10 @@ let data = {
 
 /**
  * Simple $.getJSON wrapper.
- * @param {string} url 
- * @param {function} done 
- * @param {function} fail 
- * @param {function} replied 
+ * @param {string} url
+ * @param {function} done
+ * @param {function} fail
+ * @param {function} replied
  */
 const getData = (url, done = () => {}, fail = () => {}, replied = () => {}) => {
 	$.getJSON(url)
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // /**
 //  * General color hashing for Chart.js.
-//  * @param {*} ctx 
+//  * @param {*} ctx
 //  */
 // const generalColorHashing = ctx => getColorHash(ctx.chart.data.labels[ctx.dataIndex])
 
@@ -231,10 +231,12 @@ const processData = () => {
 
 	document.querySelectorAll(".viz-scale[data-scale-type=heatmap] .viz-scale-info").forEach(element => {
 		element.querySelector(".viz-scale-left").textContent = data.modifiedDates[0]
-		element.querySelector(".viz-scale-right").textContent = data.modifiedDates[data.modifiedDates.length - 1]        
+		element.querySelector(".viz-scale-right").textContent = data.modifiedDates[data.modifiedDates.length - 1]
 	})
 
-	Object.entries(data.pokemons).forEach(([ indexPokemon, pokemon ]) => {
+	Object.entries(data.pokemons).sort((a, b) => a[0] - b[0]).forEach(([ indexPokemon, pokemon ]) => {
+
+		console.log(pokemon.id)
 
 		const tooltipIdPokemon = indexPokemon
 
@@ -246,12 +248,12 @@ const processData = () => {
 
 		let colorClass
 
-		if (pokemon.complete === 0) { 
+		if (pokemon.complete === 0) {
 			dataPokemon.status = "Missing"
 		} else if (pokemon.complete === 1) {
 			colorClass = "viz-square-incomplete"
 			dataPokemon.status = "Incomplete (Exists)"
-		} else if (pokemon.complete === 2) { 
+		} else if (pokemon.complete === 2) {
 			colorClass = "viz-square-complete"
 			dataPokemon.status = "Complete (Fully Featured)"
 		}
@@ -275,7 +277,7 @@ const processData = () => {
 			}
 
 			data.progress.form[form.complete]++
-			data.progress.form.total++    
+			data.progress.form.total++
 
 			let portraits = form.portraits
 			if (form.preversed) portraits.concat[form.preversed]
@@ -355,7 +357,7 @@ const processData = () => {
 		/**
 		 * Callback for all ``getData()``.
 		 */
-		const getDataCallback = () => { 
+		const getDataCallback = () => {
 			updateProgressBar(`Fetching data... (${step + 1}/${totalSteps + 1})`)
 			if (step === totalSteps) {
 				document.querySelector("#intro .status").textContent = `All data fetched! Fetched on ${(new Date()).toString()}`
