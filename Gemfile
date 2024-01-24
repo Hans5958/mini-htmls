@@ -19,10 +19,10 @@ platforms :mingw, :x64_mingw, :mswin, :jruby do
 end
 gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 
-# Hotfix to avoid using "eventmachine (1.2.7-x64-mingw32)" which makes errors on Windows.
+# Hotfix to avoid using eventmachine using 1.2.7-x64-mingw32 which errors on Windows.
 # https://github.com/eventmachine/eventmachine/issues/820
 gem "eventmachine", "1.2.7", git: "https://github.com/eventmachine/eventmachine.git", tag: "v1.2.7"
 
-# Hotfix to avoid execjs going to 2.8 to make it work on CI (Linux).
+# Hotfix to avoid execjs going 2.8 and up to make it work on CI/Linux (broken on ~> 2.8) and Windows (broken on ~> 2.9).
 # https://github.com/rails/execjs/issues/99
-gem 'execjs', '2.7.0'
+gem 'execjs', '< 2.8'
