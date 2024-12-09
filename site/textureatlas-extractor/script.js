@@ -157,15 +157,15 @@ mainForm.addEventListener('submit', async event => {
 		if (texture.rotated) {
 			canvasTempContext.translate(Math.ceil(canvasTemp.width / 2), Math.ceil(canvasTemp.height / 2))
 			canvasTempContext.rotate(-Math.PI / 2)
-			canvasTempContext.translate(-Math.ceil(canvasTemp.width / 2), -Math.ceil(canvasTemp.height) / 2)	
+			canvasTempContext.translate(-Math.ceil(canvasTemp.height / 2), -Math.ceil(canvasTemp.width / 2))	
 			canvasTempContext.drawImage(
 				textureImage,
 				texture.sourceX,
 				texture.sourceY,
 				texture.sourceWidth,
 				texture.sourceHeight,
-				texture.destinationY || 0,
 				texture.destinationX || 0,
+				texture.destinationY || 0,
 				texture.destinationWidth || texture.sourceWidth,
 				texture.destinationHeight || texture.sourceHeight,
 			)
@@ -185,18 +185,18 @@ mainForm.addEventListener('submit', async event => {
 		
 		const blob = await new Promise(res => canvasTemp.toBlob(res));
 		zip.file(texture.name + '.png', blob)
-		// mainCanvasContext.fillStyle = '#28a74540'
-		// mainCanvasContext.fillRect(
-		// 	texture.sourceX,
-		// 	texture.sourceY,
-		// 	texture.sourceWidth,
-		// 	texture.sourceHeight
-		// )
+		mainCanvasContext.strokeStyle = '#ff0000'
+		mainCanvasContext.lineWidth = 8
+		mainCanvasContext.rect(
+			texture.sourceX,
+			texture.sourceY,
+			texture.sourceWidth,
+			texture.sourceHeight
+		)
+		mainCanvasContext.stroke()
 		textureDone++
 		updateStatus(`Exported texture "${texture.name}". (${textureDone}/${texturesLength})`)
 	}))
-
-
 
 	const content = await zip.generateAsync({ type: "blob" })
 	saveAs(content, textureImageFile.name.split('.png')[0] + ".zip")
@@ -212,7 +212,7 @@ const parser = {
 		
 			return [...textures].map(texture => ({
 				name: texture.attributes.name.value,
-				rotated: false,
+				rotated: texture.attributes.rotated?.value ?? false,
 				sourceX: +texture.attributes.x.value,
 				sourceY: +texture.attributes.y.value,
 				sourceWidth: +texture.attributes.width.value,
