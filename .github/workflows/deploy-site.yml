@@ -26,14 +26,13 @@ jobs:
       - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.5
+          ruby-version: 3.3.6
           bundler-cache: true
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
       - name: Build site
         uses: limjh16/jekyll-action-ts@v2
         with:
-          enable_cache: true
           jekyll_src: site
           custom_opts: --config _config.yml --trace
         env:
