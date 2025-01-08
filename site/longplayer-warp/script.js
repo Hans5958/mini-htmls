@@ -214,7 +214,7 @@ $(document).ready(() => {
 	let canvasTestElement = document.createElement('canvas')
 	isCanvasSupported = !!(canvasTestElement.getContext && canvasTestElement.getContext('2d'))
 
-	picker = datepicker("#datepicker", {
+	datePicker = datepicker("#datepicker", {
 		maxDate: new Date(3000, 0, 1, 0, 0, 0),
 		minDate: new Date(2000, 0, 1, 0, 0, 0),
 		dateSelected: new Date(),
@@ -248,9 +248,9 @@ $(document).ready(() => {
 	document.querySelector("#current-date").addEventListener('click', event => {
 		event.stopPropagation()
 	
-		const isHidden = picker.calendarContainer.classList.contains('qs-hidden')
-		picker[isHidden ? 'show' : 'hide']()
-		picker.setDate(dayjs.unix(Number(document.querySelector("#setting-timestamp-range").value)).utc()["$d"], true)
+		const isHidden = datePicker.calendarContainer.classList.contains('qs-hidden')
+		datePicker[isHidden ? 'show' : 'hide']()
+		datePicker.setDate(dayjs.unix(Number(document.querySelector("#setting-timestamp-range").value)).utc()["$d"], true)
 	})
 
 	document.querySelector("#setting-accuracy").addEventListener("input", event => {
