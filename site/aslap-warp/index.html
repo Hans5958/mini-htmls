@@ -1,0 +1,82 @@
+---
+layout: default
+title: AS Long As Possible Warp
+description: View the rendition of the "AS Long As Possible" GIF, with time warping abilities (see past and future renditions).
+pwa: true
+---
+
+<script>
+	let jsonData = {
+		themeDirectory: ".",
+	}
+</script>
+<script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js,npm/dayjs@1/plugin/arraySupport.min.js,npm/js-datepicker@5.18.0"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/js-datepicker@5.18.0/dist/datepicker.min.css">
+<script src="./script.js" defer></script>
+
+<style>
+	#gif-preview {
+		aspect-ratio: 4/3;
+		background: black;
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: monospace
+	}
+
+</style>
+
+<div class="container">
+	<h1 class="mb-4 d-lg-none">AS Long As Possible Warp</h1>
+	<div class="row">
+		<div class="col-md-5 col-lg-6">
+			<h1 class="mb-4 d-none d-lg-block">AS Long As Possible Warp</h1>
+			<div id="gif-preview" class="mb-2"><span>332567</span></div>
+			<h2>Preview</h2>
+			<p>This is a rendition of the GIF. The font size are different to enhance visibility. The font isn't used to avoid copyright issues.</p>
+		</div>
+
+		<div class="col-md-7 col-lg-6">
+			<div id="current-date" class="text-center">
+				<p class="mb-0" id="current-date-1"></p>
+				<p id="current-date-2"></p>
+			</div>
+			<input type="text" id="datepicker" class="m-0" style="width: 1px; height: 1px; position: absolute; top: 0; left: 0; visibility: hidden">
+			
+			<input type="range" class="slider w-100" step="1" id="setting-timestamp-range" class="">
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" id="setting-real-time" data-setting-key="realTime" checked>
+				<label class="form-check-label" for="setting-real-time">Real time simulation</label>
+			</div>
+
+			<hr />
+			<table class="table table-sm">
+				<tbody>
+					<tr>
+						<th scope="row">Percentage</th>
+						<td id="stats-percentage"></td>
+					</tr>
+					<tr>
+						<th scope="row">Increments</th>
+						<td id="stats-increment"></td>
+					</tr>
+					<tr>
+						<th scope="row">Increment Duration</th>
+						<td id="stats-increment-duration"></td>
+					</tr>
+					<tr>
+						<th scope="row">Increment Percentage</th>
+						<td id="stats-increment-percentage"></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<section class="jumbotron p-4">
+				<h2 class="mb-3">About</h2>
+				<p>This is the page that shows how the "AS Long As Possible" GIF looks like. View the rendition and see how it looks like in the past or future with the time warping abilities.</p>
+				<p>For more information, see <a href="https://en.wikipedia.org/wiki/As_Long_as_Possible" target="_blank" rel="noopener noreferrer">the Wikipedia article</a> and/or <a href="http://www.aslongaspossible.com/" target="_blank" rel="noopener noreferrer">the homepage</a>.</p>
+				<p class="mb-0">This page is made based on <a href="../longplayer-warp/" target="_blank">Longplayer Warp</a>.</p>
+		</div>
+	</div>
+</div>
