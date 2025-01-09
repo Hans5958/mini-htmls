@@ -1,5 +1,6 @@
 // This file serves as the script that makes the page interactive.
 // (basically making the whole page possible)
+
 // Note that the usage of "date" has the same meaning as the Date object in 
 // JavaScript, which also includes the time. If you care only the light,
 // the parts regarding dates can be safetly ignored.
@@ -35,13 +36,22 @@ const execute = async () => {
 	// Resets the animation
 	lightEl.style.setProperty('animation', 'none')
 
+	/**
+	 * The date on which the data is fetched.
+	 */
+	const fetchDate = dayjs()
+
 	// Fetches the API related to Cheerlights. The API can be found on their site.
-	// The fetch() function returns a Promise (an type of asynchronous function), which we need to wait with await.
+	// The fetch() function returns an asynchronous function (with Promise), 
+	// which we need to wait with the `await` keyword.
 	const request = await fetch('https://api.thingspeak.com/channels/1417/field/1/last.json')
 	
 	// Tells that the result is a JSON, in which should be parsed
-	// This, too, returns a Promise, which we need to wait with the same way.
+	// This, too, is asynchronous, which we need to wait with the same way.
 	const data = await request.json()
+
+	// Debug information that displays the fetched data.
+	// In production, this is optional, but you can enable it to fix bugs.
 
 	// Set the color variable for ease of access
 	const color = data.field1
@@ -55,11 +65,6 @@ const execute = async () => {
 	 * The date included on the data.
 	 */
 	const eventDate = dayjs(data.created_at, 'YYYY-MM-DDTHH:mm:ssWIB')
-
-	/**
-	 * The date on which the data is fetched.
-	 */
-	const fetchDate = dayjs()
 	
 	// Updates the dates on the document
 	updateTextContent('.info-event', dayToString1(eventDate))
@@ -69,8 +74,8 @@ const execute = async () => {
 	// Run these next functions only when it is a new event, inferred from the ID.
 	// Ideally we don't want to redo something that has been done because it waste
 	// resources (in this case, negligble), but this also handles the part related
-	// the date on receivedDate.  If you care only the light, this can also be 
-	// safetly ignored.
+	// the date on `receivedDate`.  If you care only the light, this can also be 
+	// safely ignored.
 	if (currentId === data.entry_id) return
 	currentId = data.entry_id
 
@@ -81,6 +86,7 @@ const execute = async () => {
 	// Update the displayed colors
 	lightEl.style.setProperty('--cl-main', color)
 	updateTextContent('.light-text', color)
+
 	// Sets the secondary color, this mainly to handle an edge case when it is
 	// white, otherwise you can see anything. If it is any other color, the
 	// secondary color would be the same as the main one.
@@ -99,13 +105,22 @@ let statusProgressBar = 'fetch'
  * Handles the timer when it is updating
  */
 const executeTimer = async () => {
+	// Adjust the progress bar before running the funciton.
 	statusProgressBar = "fetch"
 	document.querySelector("#status .progress-bar").style.width = "0"
 	document.querySelector("#status .progress-bar").style.transition = "width 0.25s ease"
 	updateTextContent("#status p", `Fetching data...`)
+
+	// Execute the main function. Note that this function is also asynchronous
+	// so, `await` is also used here.
 	await execute()
+
+	// Adjust the progress bar to signify the completion.
 	document.querySelector("#status .progress-bar").style.width = "100%"
 	updateTextContent("#status p", "Data fetched!")
+
+	// Give 1 more second before the display ticks down. 
+	// (it still ticks down on the background)
 	setTimeout(() => {
 		document.querySelector("#status .progress-bar").style.transition = "unset"
 		statusProgressBar = "timer"
