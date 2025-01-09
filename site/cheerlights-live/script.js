@@ -37,7 +37,7 @@ const execute = async () => {
 
 	// Fetches the API related to Cheerlights. The API can be found on their site.
 	// The fetch() function returns a Promise (an type of asynchronous function), which we need to wait with await.
-	const request = await fetch('http://api.thingspeak.com/channels/1417/field/1/last.json')
+	const request = await fetch('https://api.thingspeak.com/channels/1417/field/1/last.json')
 	
 	// Tells that the result is a JSON, in which should be parsed
 	// This, too, returns a Promise, which we need to wait with the same way.
