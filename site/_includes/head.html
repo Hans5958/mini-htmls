@@ -20,6 +20,8 @@
 <meta name="twitter:title" content="{% if page.title and page.title != 'Index' %}{{ page.title }} - {% endif %}{{ site.title }}" />
 <meta name="twitter:description" content="{{ page.description }}" />
 
+<meta name="fediverse:creator" content={{ site.mastodon }}>
+
 <!-- Require Script and Loading Page -->
 
 {% if page.pwa %}
