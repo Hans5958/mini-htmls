@@ -5,8 +5,9 @@ description: A very simple extractor for TextureAtlas spritesheets.
 pwa: true
 ---
 
-<script async src="https://cdn.jsdelivr.net/combine/npm/jszip@3.10.1,npm/file-saver@2.0.5"></script>
-<script defer src="script.js"></script>
+<script async defer src="https://cdn.jsdelivr.net/combine/npm/jszip@3,npm/file-saver@2
+"></script>
+<script async defer type="module" src="script.js"></script>
 
 <div class="container">
 	<h1>TextureAtlas Extractor</h1>
@@ -35,11 +36,18 @@ pwa: true
 			<label for="inputXml">Data file (<code>.xml</code>, <code>.json</code>, etc.)</label>
 			<input type="file" class="form-control-file" id="inputXml">
 		</div>
+		<div class="form-group form-check">
+			<input type="checkbox" class="form-check-input" id="parallel">
+			<label for="parallel">Use parallel processing (if this tool crashes when running, try disabling this)</label>
+		</div>
 		<button type="submit" class="btn btn-primary">Submit</button>
 	</form>
 	<div id="status" class="d-none">
 		<h2>Status</h2>
 		<p id="status-text"></p>
-		<canvas id="canvas-main" class="w-100 border"></canvas>
+		<details>
+			<summary>Canvas preview</summary>
+			<canvas id="canvas-main" class="w-100 border"></canvas>
+		</details>
 	</div>
 </div>

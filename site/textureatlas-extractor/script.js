@@ -1,5 +1,13 @@
+import isMobile from 'https://cdn.jsdelivr.net/npm/ismobilejs@1/+esm'
+
 const mainForm = document.querySelector('#form-main')
 const mainCanvas = document.querySelector('#canvas-main')
+const mainCanvasDetails = document.querySelector('#status > details:nth-child(3)')
+
+const isMobileReal = isMobile(window.navigator).any
+
+mainForm.querySelector('#parallel').checked = !isMobileReal
+mainCanvasDetails.open = !isMobileReal
 
 const timer = {
 	time: 0,
@@ -45,12 +53,16 @@ const xmlDictToObject = el => {
 
 mainForm.addEventListener('submit', async event => {
 	event.preventDefault()
+	console.log(event)
 
 	timer.start()
 	document.querySelector('#status').classList.remove('d-none')
 	
 	const textureImageFile = mainForm.querySelector('#inputImage').files?.[0]
 	const textureSheetFile = mainForm.querySelector('#inputXml').files?.[0]
+	const useParallel = mainForm.querySelector('#parallel').checked
+
+	console.log(useParallel)
 
 	let indexReady = 0
 
@@ -61,41 +73,52 @@ mainForm.addEventListener('submit', async event => {
 
 	const zip = new JSZip()
 
-	updateStatus(`Loading resources... (${indexReady}/2)`)
-	await Promise.all([
-		new Promise(res => {
-			const textureImageReader = new FileReader()
-			textureImageReader.onload = () => {
-				textureImage.onload = () => {
-					indexReady++
-					updateStatus(`Loading resources... (${indexReady}/2)`)
-					res()
-				}
-				textureImage.src = textureImageReader.result
-			}
-			textureImageReader.readAsDataURL(textureImageFile)
-		}),
-		new Promise(res => {
-			const textureSheetReader = new FileReader()
-			textureSheetReader.onload = () => {
-				if (textureSheetFile.type === "text/xml" || textureSheetFile.name.endsWith('.plist')) {
-					textureSheetFormat = "xml"
-					const xmlParser = new DOMParser()
-					textureSheet = xmlParser.parseFromString(textureSheetReader.result, 'text/xml')
-
-				} else if (textureSheetFile.type === "application/json" || textureSheetFile.name.endsWith('.tpsheet') || textureSheetFile.name.endsWith('.tpset') || textureSheetFile.name.endsWith('.paper2dsprites')) {
-					textureSheetFormat = "json"
-					textureSheet = JSON.parse(textureSheetReader.result.replace(/,\s*}/g, '}'))
-				}
+	const loadTextureImage = () => new Promise(res => {
+		const textureImageReader = new FileReader()
+		textureImageReader.onload = () => {
+			textureImage.onload = () => {
 				indexReady++
 				updateStatus(`Loading resources... (${indexReady}/2)`)
 				res()
 			}
-			console.log(textureSheetFile)
-			textureSheetReader.readAsText(textureSheetFile)
-		
-		})
-	])
+			textureImage.src = textureImageReader.result
+		}
+		textureImageReader.readAsDataURL(textureImageFile)
+	})
+
+	const loadTextureSheet = () => new Promise(res => {
+		const textureSheetReader = new FileReader()
+		textureSheetReader.onload = () => {
+			if (textureSheetFile.type === "text/xml" || textureSheetFile.name.endsWith('.plist')) {
+				textureSheetFormat = "xml"
+				const xmlParser = new DOMParser()
+				textureSheet = xmlParser.parseFromString(textureSheetReader.result, 'text/xml')
+
+			} else if (textureSheetFile.type === "application/json" || textureSheetFile.name.endsWith('.tpsheet') || textureSheetFile.name.endsWith('.tpset') || textureSheetFile.name.endsWith('.paper2dsprites')) {
+				textureSheetFormat = "json"
+				textureSheet = JSON.parse(textureSheetReader.result.replace(/,\s*}/g, '}'))
+			}
+			indexReady++
+			updateStatus(`Loading resources... (${indexReady}/2)`)
+			res()
+		}
+		console.log(textureSheetFile)
+		textureSheetReader.readAsText(textureSheetFile)
+	
+	})
+
+	updateStatus(`Loading resources... (${indexReady}/2)`)
+	
+	if (useParallel) {
+		await Promise.all([
+			loadTextureImage(),
+			loadTextureSheet()
+		])
+	} else {
+		await loadTextureImage()
+		await loadTextureSheet()
+	}
+
 
 	if (textureSheetFormat === "xml") {
 		if (textureSheet.querySelector('SubTexture')?.attributes?.name) 
@@ -139,16 +162,16 @@ mainForm.addEventListener('submit', async event => {
 	mainCanvas.width = textureImage.width
 	mainCanvas.height = textureImage.height
 	const mainCanvasContext = mainCanvas.getContext('2d')
-	mainCanvasContext.drawImage(textureImage, 0, 0)
+	if (mainCanvasDetails.open) {
+		mainCanvasContext.drawImage(textureImage, 0, 0)
+	}
 
 	const textures = parser[chosenParser].function(textureSheet)
 	updateStatus("Chosen strategy: " + parser[chosenParser].name)
 	const texturesLength = textures.length
 	let textureDone = 0;
 
-	console.log(JSON.stringify(textures))
-
-	await Promise.all(textures.map(async texture => {
+	const processTexture = async texture => {
 		const canvasTemp = document.createElement('canvas')
 		canvasTemp.width = texture.canvasWidth || texture.destinationWidth || texture.sourceWidth
 		canvasTemp.height = texture.canvasHeight || texture.destinationHeight || texture.sourceHeight
@@ -158,33 +181,24 @@ mainForm.addEventListener('submit', async event => {
 			canvasTempContext.translate(Math.ceil(canvasTemp.width / 2), Math.ceil(canvasTemp.height / 2))
 			canvasTempContext.rotate(-Math.PI / 2)
 			canvasTempContext.translate(-Math.ceil(canvasTemp.height / 2), -Math.ceil(canvasTemp.width / 2))	
-			canvasTempContext.drawImage(
-				textureImage,
-				texture.sourceX,
-				texture.sourceY,
-				texture.sourceWidth,
-				texture.sourceHeight,
-				texture.destinationX || 0,
-				texture.destinationY || 0,
-				texture.destinationWidth || texture.sourceWidth,
-				texture.destinationHeight || texture.sourceHeight,
-			)
-		} else {
-			canvasTempContext.drawImage(
-				textureImage,
-				texture.sourceX,
-				texture.sourceY,
-				texture.sourceWidth,
-				texture.sourceHeight,
-				texture.destinationX || 0,
-				texture.destinationY || 0,
-				texture.destinationWidth || texture.sourceWidth,
-				texture.destinationHeight || texture.sourceHeight,
-			)
 		}
+		canvasTempContext.drawImage(
+			textureImage,
+			texture.sourceX,
+			texture.sourceY,
+			texture.sourceWidth,
+			texture.sourceHeight,
+			texture.destinationX || 0,
+			texture.destinationY || 0,
+			texture.destinationWidth || texture.sourceWidth,
+			texture.destinationHeight || texture.sourceHeight,
+		)
 		
 		const blob = await new Promise(res => canvasTemp.toBlob(res));
 		zip.file(texture.name + '.png', blob)
+		textureDone++
+		updateStatus(`Exported texture "${texture.name}". (${textureDone}/${texturesLength})`)
+		if (!mainCanvasDetails.open) return
 		mainCanvasContext.strokeStyle = '#ff0000'
 		mainCanvasContext.lineWidth = 8
 		mainCanvasContext.rect(
@@ -194,9 +208,15 @@ mainForm.addEventListener('submit', async event => {
 			texture.sourceHeight
 		)
 		mainCanvasContext.stroke()
-		textureDone++
-		updateStatus(`Exported texture "${texture.name}". (${textureDone}/${texturesLength})`)
-	}))
+	}
+
+	if (useParallel) {
+		await Promise.all(textures.map(processTexture))
+	} else {
+		for (const texture of textures) {
+			await processTexture(texture)
+		} 
+	}
 
 	const content = await zip.generateAsync({ type: "blob" })
 	saveAs(content, textureImageFile.name.split('.png')[0] + ".zip")
