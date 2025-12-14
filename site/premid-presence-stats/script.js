@@ -30,10 +30,11 @@ let data = {
 	charts = {},
 	chartData = {},
 	step = 0,
-	totalSteps = 3,
-	locale = {},
+	totalSteps = 4,
 	imgurAllow = false,
 	totalUsers = 0
+
+const langNames = new Intl.DisplayNames(['en'], { type: 'language' });
 
 /**
  * Simple $.getJSON wrapper.
@@ -158,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
  * @param {string} str String that will be hashed
  */
 const getColorHash = str => {
+	if (!str) return "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 	var hash = 0
 	if (str.length === 0) return hash
 	for (var i = 0; i < str.length; i++) {
@@ -193,10 +195,8 @@ const processData = () => {
 		if (presence.name === undefined) {
 			if (presence.name === undefined) console.log(`${name} has no metadata`)
 			delete data.presence[name]
-		}
-		else {
+		} else {
 			if (presence.users === undefined) {
-				console.log(`${name} has no user count`)
 				presence.users = 0
 			}
 			data.presence[name].additional = {}
@@ -354,7 +354,7 @@ const processData = () => {
 	$("#presence-3 div div table").DataTable(miniTableSettings).rows.add(presenceTop.slice(6, 16)).draw()
 
 	initChart("presence", "#presence-4 canvas", "Users")
-	chartData.presence.datasets[0].backgroundColor = ctx => data.presence[ctx.chart.data.labels[ctx.dataIndex]].metadata.color
+	chartData.presence.datasets[0].backgroundColor = ctx => data.presence[ctx.chart.data.labels[ctx.dataIndex]]?.metadata.color || getColorHash(ctx.chart.data.labels[ctx.dataIndex])
 
 	let updatePresenceChart = array => {
 		chartData.presence.labels = presenceTop.slice(...array).map(v => v[0])
@@ -673,7 +673,7 @@ const processData = () => {
 				else langTag = langTagRaw
 				if (data.lang[langTag] === undefined) {
 					data.lang[langTag] = {
-						language: locale[langTag],
+						language: langNames.of(langTag),
 						tag: langTag,
 						presences: []
 					}
@@ -761,84 +761,96 @@ const processData = () => {
 			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
 		}
 	})
-
 }
 
+document.addEventListener("DOMContentLoaded", async () => {
+	updateProgressBar(`Fetching data...`, false)
+	/**
+	 * Callback for all ``getData()``.
+	 */
+	const getDataCallback = () => {
+		updateProgressBar(`Fetching data... (${step + 1}/${totalSteps})`)
+	}
 
-document.addEventListener("DOMContentLoaded", event => {
+	const corsUrl = await getCorsUrl()
+
 	$.fn.dataTable.ext.errMode = 'none';
-	(async () => {
-		await Promise.all([
-			(() => new Promise(callback => {
-				$.get("https://i.imgur.com/removed.png")
-					.done(() => imgurAllow = true)
-					.fail(() => imgurAllow = false)
-					.always(() => {
-						updateProgressBar(`Preparing... (${step + 1}/2)`)
-						callback()
-					})
-			}))(),
-			(() => new Promise(callback => {
-				getData(jsonData.locale, response => {
-					locale = response
-					updateProgressBar(`Preparing... (${step + 1}/2)`)
-					callback()
-				})
-			}))()
-		])
-		await (() => new Promise(callback => {
-			updateProgressBar(`Fetching data...`, false)
-			/**
-			 * Callback for all ``getData()``.
-			 */
-			const getDataCallback = () => {
-				updateProgressBar(`Fetching data... (${step - 1}/1)`)
-				if (step === totalSteps) {
-					document.querySelector("#title .status").textContent = `All data fetched! Fetched on ${(new Date()).toString()}`
-					document.querySelector("#main-stats").removeAttribute("hidden")
-					document.querySelector("#main-tables").removeAttribute("hidden")
-					document.querySelector("#toc").removeAttribute("hidden")
-					if (document.readyState === "complete" || document.readyState === "interactive") processData()
-					else document.addEventListener("DOMContentLoaded", () => processData())
-				}
-				callback()
-			}
 
-			fetch('https://api.premid.app/v3', {
+	await Promise.all([
+		(async () => {
+			const response = await fetch('https://i.imgur.com/removed.png')
+			imgurAllow = response.ok
+			getDataCallback()
+		})(),
+		(async () => {
+			const response = await fetch(corsUrl + 'https://premid.app/api/public/stats')
+			const data = await response.json()
+			totalUsers = data.users
+			getDataCallback()
+		})(),
+		(async () => {
+			const gqlResponse = await fetch('https://api.premid.app/v3', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({query: `{usage{count},presences{metadata{author{id,name},contributors{id,name},altnames,service,description,url,version,logo,thumbnail,color,tags,category,iframe,regExp,iframeRegExp,readLogs,button,warning,settings{id,title,icon,if{propretyNames,patternProprties},placeholder,value,values,multiLanguage}},users},partners{name}}`})
+				body: JSON.stringify({query: `{presences{metadata{author{id,name},contributors{id,name},altnames,service,description,url,version,tags,iframe,regExp,iframeRegExp,button,warning,settings{multiLanguage}}}}`})
 			})
-				.then(res => res.json())
-				.then(res => res.data)
-				.then(apiData => {
-					apiData.presences.forEach(presenceObject => {
-						data.presence[presenceObject.metadata.service] = {}
-						data.presence[presenceObject.metadata.service].users = 
-						data.presence[presenceObject.metadata.service] = {
-							name: presenceObject.metadata.service,
-							metadata: presenceObject.metadata,
-							users: presenceObject.users
-					}
-						// console.log(data.presence[presenceObject.metadata.service])
-					})
-					console.log(data.presence)
-					totalUsers = apiData.usage.count
-					data.partner = apiData.partners.map(partner => partner.name)
-					getDataCallback()
-				})
 
-			// getData(jsonData.staticData, response => {
-			// 	data.presence = response
-			// 	forEveryPresence((presence, name) => {
-			// 		if (presence.name === undefined) delete data.presence[name]
-			// 		if (presence.users === undefined) delete data.presence[name]
-			// 	})
-			// 	step++
-			// 	getDataCallback()
-			// })
-		}))()
-	})()
+			const gqlData = (await gqlResponse.json()).data
+
+			gqlData.presences.forEach(presence => {
+				data.presence[presence.metadata.service] ??= {}
+				presenceData = data.presence[presence.metadata.service]
+				presenceData.metadata ??= {}
+				Object.assign(presenceData['metadata'], presence.metadata)
+				presenceData.name ??= presence.metadata.service
+			})
+
+			getDataCallback()
+		})(),
+		(async () => {
+			let page = 0
+			
+			while (true) {
+				page += 1
+
+				const searchResponse = await fetch(`${corsUrl}https://premid.app/api/activities?search&category&orderBy=name&order=desc&page=${page}&limit=50`)
+			
+				const searchData = await searchResponse.json()
+				
+				if (page === 1) {
+					totalSteps += searchData.pagination.totalPages - 1
+				}
+				searchData.data.forEach(presence => {
+					data.presence[presence.service] ??= {}
+					const presenceData = data.presence[presence.service]
+					presenceData.name ??= presence.service
+					presenceData.users ||= presence.installed
+					presenceData.metadata ??= {}
+					// presenceData.metadata.description = presence.descriptions.reduce((obj, el) => {
+					// 	obj[el.languageCode] = el.description
+					// 	return obj
+					// }, {})
+					presenceData.metadata.logo = presence.logo
+					presenceData.metadata.thumbnail = presence.thumbnail
+					presenceData.metadata.color = presence.color
+					presenceData.metadata.category = presence.category
+					presenceData.metadata.url = presence.url
+				})
+				getDataCallback()
+
+				if (!searchData.pagination.hasNext) break
+			}
+		})()
+	])
+
+	document.querySelector("#title .status").textContent = `All data fetched! Fetched on ${(new Date()).toString()}`
+	document.querySelector("#main-stats").removeAttribute("hidden")
+	document.querySelector("#main-tables").removeAttribute("hidden")
+	document.querySelector("#toc").removeAttribute("hidden")
+
+	if (document.readyState === "complete" || document.readyState === "interactive") processData()
+	else document.addEventListener("DOMContentLoaded", () => processData())
+
 })
