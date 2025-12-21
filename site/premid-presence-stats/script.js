@@ -227,7 +227,7 @@ const processData = () => {
 	================================================================
 	*/
 
-	tableData.presence = new List(["Presence", "Category", "Author", "Users", "Search Tags"], Object.values(data.presence).map(presence => ([presence.name, presence.metadata.category, presence.metadata.author.name, presence.users, presence.metadata.tags.join(" ")])))
+	tableData.presence = new List(["Presence", "Category", "Author", "Users", "Search Tags"], Object.values(data.presence).map(presence => ([presence.name, presence.metadata.category, presence.metadata.author?.name, presence.users, presence.metadata.tags?.join(" ")])))
 	tableData.presence.data.forEach(row => {
 		if (data.presence[row[0]].metadata.altnames) row[4] += ` ${data.presence[row[0]].metadata.altnames.join(" ")}`
 	})
@@ -298,8 +298,8 @@ const processData = () => {
 							</div>
 						</div>
 						<div class="col-md-6">
-							<a href="https://premid.app/store/presences/${presenceName}" target="_blank" class="btn btn-primary" role="button">PreMiD Store</a>
-							<a href="https://github.com/PreMiD/Presences/tree/master/websites/${presenceName.slice(0,1).toUpperCase()}/${presenceName}" target="_blank" class="btn btn-secondary" role="button">Source Code (GitHub)</a>
+							<a href="https://premid.app/library/${presenceName}" target="_blank" class="btn btn-primary" role="button">PreMiD Store</a>
+							<a href="https://github.com/Activities/tree/main/websites/${presenceName.slice(0,1).toUpperCase()}/${presenceName}" target="_blank" class="btn btn-secondary" role="button">Source Code (GitHub)</a>
 							<br />
 							<div class="card text-center" style="margin-top:1rem">
 								<div class="card-header">
@@ -424,7 +424,7 @@ const processData = () => {
 			categoryInfo.push(`<p><strong>User to presence average</strong>: ${data.category[categoryName].average}</p>`)
 			categoryInfo.push(`<a href="https://premid.app/store?category=${categoryName}" target="_blank" class="btn btn-primary" role="button" style="margin-top:1rem">PreMiD Store</a>`)
 
-			const categoryPresences = data.category[categoryName].presences.map(presenceName => `<a href="https://premid.app/store/presences/${presenceName}">${presenceName}</a>`).sort()
+			const categoryPresences = data.category[categoryName].presences.map(presenceName => `<a href="https://premid.app/library/${presenceName}">${presenceName}</a>`).sort()
 
 			return `
 				<div class="child-info">
@@ -496,6 +496,7 @@ const processData = () => {
 	*/
 
 	forEveryPresence(presence => {
+		if (!presence.metadata.author) return
 		if (data.author[presence.metadata.author.id] === undefined) {
 			data.author[presence.metadata.author.id] = {
 				author: presence.metadata.author.name,
@@ -528,7 +529,7 @@ const processData = () => {
 			authorInfo.push(`<p><strong>User to presence average</strong>: ${data.author[authorID].average}</p>`)
 			authorInfo.push(`<a href="https://premid.app/users/${authorID}" target="_blank" class="btn btn-primary" role="button" style="margin-top:1rem">PreMiD Store</a>`)
 
-			const authorPresences = data.author[authorID].presences.map(presenceName => `<a href="https://premid.app/store/presences/${presenceName}">${presenceName}</a>`).sort()
+			const authorPresences = data.author[authorID].presences.map(presenceName => `<a href="https://premid.app/library/${presenceName}">${presenceName}</a>`).sort()
 
 			return `
 				<div class="child-info">
@@ -644,7 +645,7 @@ const processData = () => {
 		if (presence.metadata.iframe) implementation[1]++
 		if (presence.metadata.contributors) implementation[2]++
 		if (presence.metadata.regExp) implementation[4]++
-		if (Object.keys(presence.metadata.description).length !== 1 && typeof presence.metadata.description === "object") implementation[5]++
+		if (typeof presence.metadata.description === "object" && Object.keys(presence.metadata.description).length !== 1) implementation[5]++
 		if (presence.additional.partner) implementation[6]++
 		if (presence.additional.hot) implementation[7]++
 		if (presence.metadata.altnames) implementation[8]++
@@ -732,7 +733,7 @@ const processData = () => {
 
 			const langPresences = []
 			data.lang[langTag].presences.forEach(presenceName => {
-				langPresences.push(`<a href="https://premid.app/store/presences/${presenceName}">${presenceName}</a>`)
+				langPresences.push(`<a href="https://premid.app/library/${presenceName}">${presenceName}</a>`)
 			})
 
 			return `
@@ -788,6 +789,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 			totalUsers = data.users
 			getDataCallback()
 		})(),
+		// (async () => {
+		// 	const response = await fetch(corsUrl + '/mini-htmls/premid-presence-stats/static-data.json')
+		// 	data.presence = await response.json()
+		// 	getDataCallback()
+		// 	getDataCallback()
+		// })(),
 		(async () => {
 			const gqlResponse = await fetch('https://api.premid.app/v3', {
 				method: 'POST',
