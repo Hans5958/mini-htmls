@@ -30,7 +30,7 @@ let data = {
 	charts = {},
 	chartData = {},
 	step = 0,
-	totalSteps = 4,
+	totalSteps = 3,
 	imgurAllow = false,
 	totalUsers = 0
 
@@ -342,44 +342,64 @@ const processData = () => {
 
 	const presenceCount = Object.keys(data.presence).length
 	document.querySelector("#presence-1-1 p").textContent = presenceCount
-	let presence12 = 0
+	let presenceUsers = 0
+	let presenceActive = 0
 	Object.values(data.presence).forEach(value => {
-		presence12 += Number(value.users)
+		presenceUsers += Number(value.users)
+		presenceActive += Number(value.activeNow)
 	})
-	document.querySelector("#presence-1-2 p").textContent = presence12
-	document.querySelector("#presence-1-3 p").textContent = Math.round(presence12 / presenceCount)
+	document.querySelector("#presence-1-2 p").textContent = presenceUsers
+	document.querySelector("#presence-1-3 p").textContent = Math.round(presenceUsers / presenceCount)
+	document.querySelector("#presence-1-2b p").textContent = presenceActive
+	document.querySelector("#presence-1-3b p").textContent = Math.round(presenceActive / presenceCount)
 
-	let presenceTop = Object.values(data.presence).map(v => [v.name, v.users]).sort((a, b) => b[1] - a[1])
+	const presenceTop = Object.values(data.presence).map(v => [v.name, v.users]).sort((a, b) => b[1] - a[1])
 	$("#presence-2 div div table").DataTable(miniTableSettings).rows.add(presenceTop.slice(0, 10)).draw()
-	$("#presence-3 div div table").DataTable(miniTableSettings).rows.add(presenceTop.slice(6, 16)).draw()
+
+	const presenceTopActive = Object.values(data.presence).map(v => [v.name, v.activeNow]).sort((a, b) => b[1] - a[1])
+	$("#presence-2b div div table").DataTable(miniTableSettings).rows.add(presenceTopActive.slice(0, 10)).draw()
 
 	initChart("presence", "#presence-4 canvas", "Users")
 	chartData.presence.datasets[0].backgroundColor = ctx => data.presence[ctx.chart.data.labels[ctx.dataIndex]]?.metadata.color || getColorHash(ctx.chart.data.labels[ctx.dataIndex])
-
-	let updatePresenceChart = array => {
-		chartData.presence.labels = presenceTop.slice(...array).map(v => v[0])
-		chartData.presence.datasets[0].data = presenceTop.slice(...array).map(v => v[1])
-		charts.presence.update()
-	}
-
+	
 	selectChartElement = document.querySelector('#presence-4 select')
-
+	
 	for (let i = 1; i < Math.ceil(presenceCount / 100); i++) {
 		let optionElement = document.createElement('option')
 		optionElement.value = i * 100
 		optionElement.textContent = `${(i - 1) * 100 + 1}-${i * 100}`
+		selectChartElement.insertBefore(optionElement, selectChartElement.querySelector('[value="active:100"]'))
+		optionElement = document.createElement('option')
+		optionElement.value = 'active:' + (i * 100)
+		optionElement.textContent = `Active: ${(i - 1) * 100 + 1}-${i * 100}`
 		selectChartElement.appendChild(optionElement)
 	}
+	
+	let chosenTop = presenceTop
+	let chosenPre = 6
+	
+	let updatePresenceChart = (array) => {
+		chartData.presence.labels = chosenTop.slice(...array).map(v => v[0])
+		chartData.presence.datasets[0].data = chosenTop.slice(...array).map(v => v[1])
+		charts.presence.update()
+	}
 
-	updatePresenceChart([6, 106])
-	document.querySelector("#presence-4 div select").value = "106no6"
+	updatePresenceChart([chosenPre, chosenPre + 100])
+	document.querySelector("#presence-4 div select").value = "nopre"
 
-	document.querySelector("#presence-4 div select").onchange = () => {
-		let chartType = document.querySelector("#presence-4 div select").value
-		if (chartType === '106') updatePresenceChart([0, 106])
-		else if (chartType === '106no6') updatePresenceChart([6, 106])
+	document.querySelector("#presence-4 div select").onchange = (event) => {
+		let chartType = event.target.value
+		if (chartType.startsWith('active:')) {
+			chosenTop = presenceTopActive
+			chosenPre = 1
+		} else {
+			chosenTop = presenceTop
+			chosenPre = 6
+		}
+		chartType = chartType.split(':').slice(-1)[0]
+		if (chartType === 'nopre') updatePresenceChart([chosenPre, chosenPre + 100])
 		else if (chartType === 'all') updatePresenceChart([0, undefined])
-		else if (chartType === 'allno6') updatePresenceChart([6, undefined])
+		else if (chartType === 'allnopre') updatePresenceChart([chosenPre, undefined])
 		else updatePresenceChart([chartType - 100, chartType - 0])
 	}
 
@@ -395,17 +415,21 @@ const processData = () => {
 				category: presence.metadata.category,
 				presences: [],
 				users: 0,
+				activeNow: 0,
 				average: 0,
+				activeNowAverage: 0,
 			}
 		}
 		data.category[presence.metadata.category].presences.push(presence.name)
 		data.category[presence.metadata.category].users += presence.users
+		data.category[presence.metadata.category].activeNow += presence.activeNow
 	})
 	Object.keys(data.category).forEach(key => {
 		data.category[key].average = Math.round(data.category[key].users / data.category[key].presences.length)
+		data.category[key].activeNowAverage = Math.round(data.category[key].activeNow / data.category[key].presences.length)
 	})
 
-	tableData.category = new List(["Category", "Presences", "Users", "Average"], Object.values(data.category).map(value => [value.category, value.presences.length, value.users, value.average]))
+	tableData.category = new List(["Category", "Presences", "Users", "Average", "Active Users", "Average"], Object.values(data.category).map(value => [value.category, value.presences.length, value.users, value.average, value.activeNow, value.activeNowAverage]))
 	tables.category = $("table#category").DataTable(tableSettings).rows.add(tableData.category.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([
 		[2, "des"]
 	]).draw()
@@ -452,42 +476,62 @@ const processData = () => {
 		}
 	})
 
-	let category11 = Object.values(data.category).length
+	let categoryCount = Object.values(data.category).length
 	document.querySelector("#category-1-1 p").textContent = Object.values(data.category).length
-	if (category11 > 6) {
+	if (categoryCount > 6) {
 		holdup = document.createElement("p")
 		holdup.innerHTML = "Hold up. This value should be 6 at all times. Something's wrong here."
 		document.querySelector("#category-1-1").appendChild(holdup)
 	}
-	let category12 = 0, category13 = 0
+	let categoryPresenceCount = 0, categoryUserCount = 0, categoryActiveCount = 0
 	Object.values(data.category).forEach(value => {
-		category12 += Number(value.presences.length)
-		category13 += Number(value.users)
+		categoryPresenceCount += Number(value.presences.length)
+		categoryUserCount += Number(value.users)
+		categoryActiveCount += Number(value.activeNow)
 	})
-	document.querySelector("#category-1-2 p").textContent = Math.round(category12 / category11)
-	document.querySelector("#category-1-3 p").textContent = Math.round(category13 / category11)
+	document.querySelector("#category-1-2 p").textContent = Math.round(categoryPresenceCount / categoryCount)
+	document.querySelector("#category-1-3 p").textContent = Math.round(categoryUserCount / categoryCount)
+	document.querySelector("#category-1-3b p").textContent = Math.round(categoryActiveCount / categoryCount)
 
-	$("#category-2 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.category).map(v => [v.category, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-	$("#category-3 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.category).map(v => [v.category, v.users]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-	$("#category-4 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.category).map(v => [v.category, v.average]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-
+	const category2Data = Object.values(data.category).map(v => [v.category, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#category-2 div div table").DataTable(miniTableSettings).rows.add(category2Data).draw()
 	initChart("category2", "#category-2 canvas", "Presences")
-	chartData.category2.labels = Object.values(data.category).map(v => [v.category, v.presences.length]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(0, 10)
-	chartData.category2.datasets[0].data = Object.values(data.category).map(v => v.presences.length).sort((a, b) => b - a).slice(0, 10)
+	chartData.category2.labels = category2Data.map(v => v[0])
+	chartData.category2.datasets[0].data = category2Data.map(v => v[1])
 	chartData.category2.datasets[0].backgroundColor = generalColorHashing
 	charts.category2.update()
 
+	const category3Data = Object.values(data.category).map(v => [v.category, v.users]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#category-3 div div table").DataTable(miniTableSettings).rows.add(category3Data).draw()
 	initChart("category3", "#category-3 canvas", "Users")
-	chartData.category3.labels = Object.values(data.category).map(v => [v.category, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(0, 10)
-	chartData.category3.datasets[0].data = Object.values(data.category).map(v => v.users).sort((a, b) => b - a).slice(0, 10)
+	chartData.category3.labels = category3Data.map(v => v[0])
+	chartData.category3.datasets[0].data = category3Data.map(v => v[1])
 	chartData.category3.datasets[0].backgroundColor = generalColorHashing
 	charts.category3.update()
 
+	const category4Data = Object.values(data.category).map(v => [v.category, v.average]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#category-4 div div table").DataTable(miniTableSettings).rows.add(category4Data).draw()
 	initChart("category4", "#category-4 canvas", "Average")
-	chartData.category4.labels = Object.values(data.category).map(v => [v.category, v.average]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(0, 10)
-	chartData.category4.datasets[0].data = Object.values(data.category).map(v => v.average).sort((a, b) => b - a).slice(0, 10)
+	chartData.category4.labels = category4Data.map(v => v[0])
+	chartData.category4.datasets[0].data = category4Data.map(v => v[1])
 	chartData.category4.datasets[0].backgroundColor = generalColorHashing
 	charts.category4.update()
+
+	const category3bData = Object.values(data.category).map(v => [v.category, v.activeNow]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#category-3b div div table").DataTable(miniTableSettings).rows.add(category3bData).draw()
+	initChart("category3b", "#category-3b canvas", "Users")
+	chartData.category3b.labels = category3bData.map(v => v[0])
+	chartData.category3b.datasets[0].data = category3bData.map(v => v[1])
+	chartData.category3b.datasets[0].backgroundColor = generalColorHashing
+	charts.category3b.update()
+
+	const category4bData = Object.values(data.category).map(v => [v.category, v.activeNowAverage]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#category-4b div div table").DataTable(miniTableSettings).rows.add(category4bData).draw()
+	initChart("category4b", "#category-4b canvas", "Average")
+	chartData.category4b.labels = category4bData.map(v => v[0])
+	chartData.category4b.datasets[0].data = category4bData.map(v => v[1])
+	chartData.category4b.datasets[0].backgroundColor = generalColorHashing
+	charts.category4b.update()
 
 	/*
 	================================================================
@@ -503,17 +547,21 @@ const processData = () => {
 				id: presence.metadata.author.id,
 				presences: [],
 				users: 0,
-				average: 0
+				average: 0,
+				activeNow: 0,
+				activeNowAverage: 0
 			}
 		}
 		data.author[presence.metadata.author.id].presences.push(presence.name)
 		data.author[presence.metadata.author.id].users += presence.users
+		data.author[presence.metadata.author.id].activeNow += presence.activeNow
 	})
 	Object.keys(data.author).forEach(key => {
 		data.author[key].average = Math.round(data.author[key].users / data.author[key].presences.length)
+		data.author[key].activeNowAverage = Math.round(data.author[key].activeNow / data.author[key].presences.length)
 	})
 
-	tableData.author = new List(["Author", "ID", "Presences", "Users"], Object.values(data.author).map(value => [value.author, value.id, value.presences.length, value.users, value.average]))
+	tableData.author = new List(["Author", "ID", "Presences", "Installs", "Average", "Active Users", "Average"], Object.values(data.author).map(value => [value.author, value.id, value.presences.length, value.users, value.average, value.activeNow, value.activeNowAverage]))
 	tables.author = $("table#author").DataTable(tableSettings).rows.add(tableData.author.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[3, "des"]]).draw()
 
 	$('table#author tbody').on('click', 'td.details-control', (event) => {
@@ -556,37 +604,57 @@ const processData = () => {
 		}
 	})
 
-	let author11 = Object.values(data.author).length
+	let authorCount = Object.values(data.author).length
 	document.querySelector("#author-1-1 p").textContent = Object.values(data.author).length
-	let author12 = 0, author13 = 0
+	let authorPresenceCount = 0, authorUserCount = 0, authorActiveCount = 0
 	Object.values(data.author).forEach(value => {
-		author12 += Number(value.presences.length)
-		author13 += Number(value.users)
+		authorPresenceCount += Number(value.presences.length)
+		authorUserCount += Number(value.users)
+		authorActiveCount += Number(value.activeNow)
 	})
-	document.querySelector("#author-1-2 p").textContent = Math.round(author12 / author11)
-	document.querySelector("#author-1-3 p").textContent = Math.round(author13 / author11)
+	document.querySelector("#author-1-2 p").textContent = Math.round(authorPresenceCount / authorCount)
+	document.querySelector("#author-1-3 p").textContent = Math.round(authorUserCount / authorCount)
+	document.querySelector("#author-1-3b p").textContent = Math.round(authorActiveCount / authorCount)
 
-	$("#author-2 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.author).map(v => [v.author, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-	$("#author-3 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-	$("#author-4 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-
+	const author2Data = Object.values(data.author).map(v => [v.author, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#author-2 div div table").DataTable(miniTableSettings).rows.add(author2Data).draw()
 	initChart("author2", "#author-2 canvas", "Presences")
-	chartData.author2.labels = Object.values(data.author).map(v => [v.author, v.presences.length]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(0, 10)
-	chartData.author2.datasets[0].data = Object.values(data.author).map(v => v.presences.length).sort((a, b) => b - a).slice(0, 10)
+	chartData.author2.labels = author2Data.map(v => v[0])
+	chartData.author2.datasets[0].data = author2Data.map(v => v[1])
 	chartData.author2.datasets[0].backgroundColor = generalColorHashing
 	charts.author2.update()
-
+	
+	const author3Data = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#author-3 div div table").DataTable(miniTableSettings).rows.add(author3Data).draw()
 	initChart("author3", "#author-3 canvas", "Users")
-	chartData.author3.labels = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(0, 10)
-	chartData.author3.datasets[0].data = Object.values(data.author).map(v => v.users).sort((a, b) => b - a).slice(0, 10)
+	chartData.author3.labels = author3Data.map(v => v[0])
+	chartData.author3.datasets[0].data = author3Data.map(v => v[1])
 	chartData.author3.datasets[0].backgroundColor = generalColorHashing
 	charts.author3.update()
 
+	const author4Data = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#author-4 div div table").DataTable(miniTableSettings).rows.add(author4Data).draw()
 	initChart("author4", "#author-4 canvas", "Average")
-	chartData.author4.labels = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(0, 10)
-	chartData.author4.datasets[0].data = Object.values(data.author).map(v => v.average).sort((a, b) => b - a).slice(0, 10)
+	chartData.author4.labels = author4Data.map(v => v[0])
+	chartData.author4.datasets[0].data = author4Data.map(v => v[1])
 	chartData.author4.datasets[0].backgroundColor = generalColorHashing
 	charts.author4.update()
+
+	const author3bData = Object.values(data.author).map(v => [v.author, v.activeNow]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#author-3b div div table").DataTable(miniTableSettings).rows.add(author3bData).draw()
+	initChart("author3b", "#author-3b canvas", "Users")
+	chartData.author3b.labels = author3bData.map(v => v[0])
+	chartData.author3b.datasets[0].data = author3bData.map(v => v[1])
+	chartData.author3b.datasets[0].backgroundColor = generalColorHashing
+	charts.author3b.update()
+
+	const author4bData = Object.values(data.author).map(v => [v.author, v.activeNowAverage]).sort((a, b) => b[1] - a[1]).slice(0, 10)
+	$("#author-4b div div table").DataTable(miniTableSettings).rows.add(author4bData).draw()
+	initChart("author4b", "#author-4b canvas", "Average")
+	chartData.author4b.labels = author4bData.map(v => v[0])
+	chartData.author4b.datasets[0].data = author4bData.map(v => v[1])
+	chartData.author4b.datasets[0].backgroundColor = generalColorHashing
+	charts.author4b.update()
 
 	initChart("author5", "#author-5 canvas", "")
 	chartData.author5.datasets[0].backgroundColor = generalColorHashing
@@ -795,27 +863,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 		// 	getDataCallback()
 		// 	getDataCallback()
 		// })(),
-		(async () => {
-			const gqlResponse = await fetch('https://api.premid.app/v3', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({query: `{presences{metadata{author{id,name},contributors{id,name},altnames,service,description,url,version,tags,iframe,regExp,iframeRegExp,button,warning,settings{multiLanguage}}}}`})
-			})
+		// (async () => {
+		// 	const gqlResponse = await fetch('https://api.premid.app/v3', {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json',
+		// 		},
+		// 		body: JSON.stringify({query: `{presences{metadata{author{id,name},contributors{id,name},altnames,service,description,url,version,tags,iframe,regExp,iframeRegExp,button,warning,settings{multiLanguage}}}}`})
+		// 	})
 
-			const gqlData = (await gqlResponse.json()).data
+		// 	const gqlData = (await gqlResponse.json()).data
 
-			gqlData.presences.forEach(presence => {
-				data.presence[presence.metadata.service] ??= {}
-				presenceData = data.presence[presence.metadata.service]
-				presenceData.metadata ??= {}
-				Object.assign(presenceData['metadata'], presence.metadata)
-				presenceData.name ??= presence.metadata.service
-			})
+		// 	gqlData.presences.forEach(presence => {
+		// 		data.presence[presence.metadata.service] ??= {}
+		// 		presenceData = data.presence[presence.metadata.service]
+		// 		presenceData.metadata ??= {}
+		// 		const previousUsers = presenceData?.users ?? 0
+		// 		Object.assign(presenceData['metadata'], presence.metadata)
+		// 		presenceData.name ??= presence.metadata.service
+		// 		presenceData.users ||= previousUsers || presence.metadata?.users
+		// 	})
 
-			getDataCallback()
-		})(),
+		// 	getDataCallback()
+		// })(),
 		(async () => {
 			let page = 0
 			
@@ -833,7 +903,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 					data.presence[presence.service] ??= {}
 					const presenceData = data.presence[presence.service]
 					presenceData.name ??= presence.service
-					presenceData.users ||= presence.installed
+					presenceData.users ||= Math.max(presenceData.users || 0, presence.installed)
+					presenceData.activeNow ||= presence.activeNow
 					presenceData.metadata ??= {}
 					// presenceData.metadata.description = presence.descriptions.reduce((obj, el) => {
 					// 	obj[el.languageCode] = el.description

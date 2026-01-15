@@ -4,14 +4,8 @@ title: PreMiD Presence Stats
 description: View all PreMiD-related statistics derived from the PreMiD API in various ways.
 ---
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/css/dataTables.bootstrap4.min.css" />
-<script src="https://cdn.jsdelivr.net/combine/npm/tocbot@4/dist/tocbot.min.js,npm/chart.js@3"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.css" />
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" /> -->
+<script src="https://cdn.jsdelivr.net/combine/npm/tocbot@4/dist/tocbot.min.js,npm/chart.js@3,npm/datatables.net@1,npm/datatables.net-bs4@1"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/datatables.net-bs4@1/css/dataTables.bootstrap4.min.css,npm/tocbot@4/dist/tocbot.min.css" />
 <script src="./script.js" defer></script>
 <style>
 	h2,
@@ -112,13 +106,13 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 			<div id="usage-1">
 				<div class="row">
 					<div class="col-md-6" id="usage-1-1">
-						<h4>Total users</h4>
+						<h4>Total installs</h4>
 						<p class="count"></p>
 					</div>
 					<div class="col-md-6" id="usage-1-2">
 						<h4>5% threshold</h4>
 						<p class="count"></p>
-						<p>If the number of users who added a certain presence is above this threshold, it will be counted as a popular presence.</p>
+						<p>If the number of installs who added a certain presence is above this threshold, it will be counted as a popular presence.</p>
 					</div>
 				</div>
 			</div>
@@ -133,17 +127,30 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-4" id="presence-1-1">
+					<div class="col-12" id="presence-1-1">
 						<h4>Total presences</h4>
 						<p class="count"></p>
 					</div>
-					<div class="col-md-4" id="presence-1-2">
-						<h4>Total "users"</h4>
+				</div>
+				<div class="row">
+					<div class="col-md-6" id="presence-1-2">
+						<h4>Total "installs"</h4>
 						<p class="count"></p>
-						<p>Well, not exactly, it's just the sum for all user numbers from all presences.</p>
+						<p>Well, not exactly, it's just the sum for all installs from all presences.</p>
 					</div>
-					<div class="col-md-4" id="presence-1-3">
-						<h4>User to presence average</h4>
+					<div class="col-md-6" id="presence-1-3">
+						<h4>Install to presence average</h4>
+						<p class="count"></p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6" id="presence-1-2b">
+						<h4>Total "active users"</h4>
+						<p class="count"></p>
+						<p>Well, not exactly, it's just the sum for all active users from all presences.</p>
+					</div>
+					<div class="col-md-6" id="presence-1-3b">
+						<h4>Active users to presence average</h4>
 						<p class="count"></p>
 					</div>
 				</div>
@@ -153,7 +160,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					<div id="presence-2">
 						<div class="row">
 							<div class="col-12">
-								<h3>Top 10 presences</h3>
+								<h3>Top presences</h3>
 							</div>
 						</div>
 						<div class="row">
@@ -162,7 +169,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 									<thead>
 										<tr>
 											<th>Presence</th>
-											<th>Users</th>
+											<th>Installs</th>
 										</tr>
 									</thead>
 									<tbody></tbody>
@@ -172,10 +179,10 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					</div>
 				</div>
 				<div class="col-md-6">
-					<div id="presence-3">
+					<div id="presence-2b">
 						<div class="row">
 							<div class="col-12">
-								<h3>Top 10 presences, excluding 6 pre-installed</h3>
+								<h3>Top presences by active users</h3>
 							</div>
 						</div>
 						<div class="row">
@@ -184,7 +191,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 									<thead>
 										<tr>
 											<th>Presence</th>
-											<th>Users</th>
+											<th>Installs</th>
 										</tr>
 									</thead>
 									<tbody></tbody>
@@ -193,17 +200,19 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 						</div>
 					</div>
 				</div>
-			</div>
 			<div id="presence-4">
 				<div class="row">
 					<div class="col-12">
 						<h3>Line graph</h3>
 						<select class="form-control">
 							<option value="100">Top 100</option>
-							<option value="106">Top 106</option>
-							<option value="106no6">6-106</option>
+							<option value="nopre">No preinstalled</option>
 							<option value="all">All</option>
-							<option value="allno6">All except top 6</option>
+							<option value="allnopre">All except preinstalled</option>
+							<option value="active:100">Active: Top 100</option>
+							<!-- <option value="active:nopre">Active: No preinstalled</option> -->
+							<option value="active:all">Active: All</option>
+							<!-- <option value="active:allnopre">Active: All except preinstalled</option> -->
 						</select>
 					</div>
 				</div>
@@ -226,16 +235,22 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-4" id="category-1-1">
+					<div class="col-md-6" id="category-1-1">
 						<h4>Total categories</h4>
 						<p class="count"></p>
 					</div>
-					<div class="col-md-4" id="category-1-2">
+					<div class="col-md-6" id="category-1-2">
 						<h4>Presence to category average</h4>
 						<p class="count"></p>
 					</div>
-					<div class="col-md-4" id="category-1-3">
-						<h4>Users to category average</h4>
+				</div>
+				<div class="row">
+					<div class="col-md-6" id="category-1-3">
+						<h4>Installs to category average</h4>
+						<p class="count"></p>
+					</div>
+					<div class="col-md-6" id="category-1-3b">
+						<h4>Active users to category average</h4>
 						<p class="count"></p>
 					</div>
 				</div>
@@ -266,7 +281,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 			<div id="category-3">
 				<div class="row">
 					<div class="col-12">
-						<h3>Top categories, user count</h3>
+						<h3>Top categories, install count</h3>
 					</div>
 				</div>
 				<div class="row">
@@ -275,7 +290,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 							<thead>
 								<tr>
 									<th>Category</th>
-									<th>Users</th>
+									<th>Installs</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -289,7 +304,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 			<div id="category-4">
 				<div class="row">
 					<div class="col-12">
-						<h3>Top categories, users to presence average</h3>
+						<h3>Top categories, installs to presence average</h3>
 					</div>
 				</div>
 				<div class="row">
@@ -309,35 +324,10 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					</div>
 				</div>
 			</div>
-		</div>
-		<hr />
-		<div id="author">
-			<h2>Developer/Author</h2>
-			<div id="author-1">
+			<div id="category-3b">
 				<div class="row">
 					<div class="col-12">
-						<h3>Overview</h3>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4" id="author-1-1">
-						<h4>Total developers</h4>
-						<p class="count"></p>
-					</div>
-					<div class="col-md-4" id="author-1-2">
-						<h4>Presence to developer average</h4>
-						<p class="count"></p>
-					</div>
-					<div class="col-md-4" id="author-1-3">
-						<h4>Users to developer average</h4>
-						<p class="count"></p>
-					</div>
-				</div>
-			</div>
-			<div id="author-2">
-				<div class="row">
-					<div class="col-12">
-						<h3>Top 10 developers, presence count</h3>
+						<h3>Top categories, active user count</h3>
 					</div>
 				</div>
 				<div class="row">
@@ -345,8 +335,8 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 						<table class="table table-slim">
 							<thead>
 								<tr>
-									<th>Author</th>
-									<th>Presences</th>
+									<th>Category</th>
+									<th>Active Users</th>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -357,10 +347,10 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					</div>
 				</div>
 			</div>
-			<div id="author-3">
+			<div id="category-4b">
 				<div class="row">
 					<div class="col-12">
-						<h3>Top 10 developers, user count</h3>
+						<h3>Top categories, active users to presence average</h3>
 					</div>
 				</div>
 				<div class="row">
@@ -368,30 +358,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 						<table class="table table-slim">
 							<thead>
 								<tr>
-									<th>Author</th>
-									<th>Users</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</div>
-					<div class="col-md-6">
-						<canvas></canvas>
-					</div>
-				</div>
-			</div>
-			<div id="author-4">
-				<div class="row">
-					<div class="col-12">
-						<h3>Top 10 developers, user to presence average</h3>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<table class="table table-slim">
-							<thead>
-								<tr>
-									<th>Author</th>
+									<th>Category</th>
 									<th>Average</th>
 								</tr>
 							</thead>
@@ -401,24 +368,6 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					<div class="col-md-6">
 						<canvas></canvas>
 					</div>
-				</div>
-			</div>
-			<div id="author-5">
-				<div class="row">
-					<div class="col-12">
-						<h3>Line graph</h3>
-						<select class="form-control">
-							<option value="presence">Presence count</option>
-							<option value="presencenotop">Presence count, excluding top 1</option>
-							<option value="user">User count</option>
-							<option value="usernotop">User count, excluding top 3</option>
-							<option value="average">Users to presence average</option>
-							<option value="averagenotop">Users to presence average, excluding top 1</option>
-						</select>
-					</div>
-				</div>
-				<div class="row">
-					<canvas></canvas>
 				</div>
 			</div>
 		</div>
@@ -478,65 +427,6 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 				</div>
 			</div>
 		</div>
-		<hr />
-		<div id="lang">
-			<h2>Description language</h2>
-			<div id="lang-1">
-				<div class="row">
-					<div class="col-12">
-						<h3>Overview</h3>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6" id="lang-1-1">
-						<h4>Multilingual presences</h4>
-						<p class="count"></p>
-					</div>
-					<div class="col-md-6" id="lang-1-2">
-						<h4>Unique languages</h4>
-						<p class="count"></p>
-					</div>
-				</div>
-			</div>
-			<div id="lang-2">
-				<div class="row">
-					<div class="col-12">
-						<h3>Top 10 languages</h3>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<table class="table table-slim">
-							<thead>
-								<tr>
-									<th>Language</th>
-									<th>Presences</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
-					</div>
-					<div class="col-md-6">
-						<canvas></canvas>
-					</div>
-				</div>
-			</div>
-			<div id="lang-3">
-				<div class="row">
-					<div class="col-12">
-						<h3>Line graph</h3>
-					</div>
-				</div>
-				<div class="row">
-					<select class="form-control">
-						<option value="all">All</option>
-						<option value="no1">All, excluding top 1</option>
-						<!-- <option value="no2">All, excluding top 2</option> -->
-					</select>
-					<canvas></canvas>
-				</div>
-			</div>
-		</div>
 	</div>
 	<div id="main-tables" hidden>
 		<h2>List of presences</h2>
@@ -547,7 +437,8 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					<th>Presence</th>
 					<th>Category</th>
 					<th>Author</th>
-					<th>Users</th>
+					<th>Installs</th>
+					<th>Active Users</th>
 					<th>Search Tags</th>
 				</tr>
 			</thead>
@@ -561,39 +452,14 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					<th></th>
 					<th>Category</th>
 					<th>Presences</th>
-					<th>Users</th>
-					<th>Average Users</th>
+					<th>Installs</th>
+					<th>Average Installs</th>
+					<th>Active Users</th>
+					<th>Average Active Users</th>
 				</tr>
 			</thead>
 			<tbody></tbody>
 		</table>
 		<hr />
-		<h2>List of developers</h2>
-		<table class="table" id="author">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Author</th>
-					<th>ID</th>
-					<th>Presences</th>
-					<th>Users</th>
-					<th>Average Users</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-		<hr />
-		<h2>List of description language</h2>
-		<table class="table" id="lang">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Language</th>
-					<th>Tag</th>
-					<th>Presences</th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
 	</div>
 </div>
