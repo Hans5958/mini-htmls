@@ -227,11 +227,8 @@ const processData = () => {
 	================================================================
 	*/
 
-	tableData.presence = new List(["Presence", "Category", "Author", "Users", "Search Tags"], Object.values(data.presence).map(presence => ([presence.name, presence.metadata.category, presence.metadata.author?.name, presence.users, presence.metadata.tags?.join(" ")])))
-	tableData.presence.data.forEach(row => {
-		if (data.presence[row[0]].metadata.altnames) row[4] += ` ${data.presence[row[0]].metadata.altnames.join(" ")}`
-	})
-	tables.presence = $("table#presence").DataTable(tableSettings).column(5).visible(false).rows.add(tableData.presence.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[4, "des"]]).draw()
+	tableData.presence = new List(["Presence", "Category", "Installs", "Active Users", "Color"], Object.values(data.presence).map(presence => ([presence.name, presence.metadata.category, presence.users, presence.activeNow, `<span class="color-preview" style="background:${presence.metadata.color};"></span> ${presence.metadata.color}`])))
+	tables.presence = $("table#presence").DataTable(tableSettings).rows.add(tableData.presence.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[4, "des"]]).draw()
 
 	$('table#presence tbody').on('click', 'td.details-control', (event) => {
 
@@ -244,27 +241,18 @@ const processData = () => {
 
 			let presenceInfo = []
 			presenceInfo.push(`<p><strong>Service</strong>: ${presenceName}</p>`)
-			presenceInfo.push(`<p><strong>Author</strong>: <a href="https://premid.app/users/${data.presence[presenceName].metadata.author.id}">${data.presence[presenceName].metadata.author.name}</a></p>`)
-			if (data.presence[presenceName].metadata.contributors) {
-				presenceInfo.push(`<p><strong>Contributors</strong>: ${data.presence[presenceName].metadata.contributors.map(contributor => `<a href="https://premid.app/users/${contributor.id}">${contributor.name}</a>`).join(", ")}</p>`)
-			}
-			presenceInfo.push(`<p><strong>Version</strong>: ${data.presence[presenceName].metadata.version}</p>`)
-			presenceInfo.push(`<p><strong>Users</strong>: ${data.presence[presenceName].users} (${Math.round(data.presence[presenceName].additional.userPercentage * 100)/100}%${data.presence[presenceName].additional.hot ? ", 🔥" : ""})</p>`)
+			presenceInfo.push(`<p><strong>Installs</strong>: ${data.presence[presenceName].users} (${Math.round(data.presence[presenceName].additional.userPercentage * 100)/100}%${data.presence[presenceName].additional.hot ? ", 🔥" : ""})</p>`)
+			presenceInfo.push(`<p><strong>Active Users</strong>: ${data.presence[presenceName].activeNow}</p>`)
 			presenceInfo.push(`<p><strong>Category</strong>: ${data.presence[presenceName].metadata.category}`)
-			presenceInfo.push(`<p><strong>Tags</strong>: ${data.presence[presenceName].metadata.tags.join(", ")}`)
 			let urlVal = data.presence[presenceName].metadata.url
 			if (typeof urlVal === "string") {
 				presenceInfo.push(`<p><strong>URL</strong>: <a href="https:/${urlVal}">${urlVal}</a></p>`)
 			} else {
 				presenceInfo.push(`<p><strong>URL</strong>: ${urlVal.map(url => `<a href="https:/${url}">${url}</a>`).join(", ")}</p>`)
 			}
-			presenceInfo.push(`<p style="display:inline-block"><strong>Color</strong>: ${data.presence[presenceName].metadata.color}</p>`)
-			presenceInfo.push(`<div class="color-preview" style="background:${data.presence[presenceName].metadata.color};"></div>`)
+			presenceInfo.push(`<p style="display:inline-block"><strong>Color</strong>: <span class="color-preview" style="background:${data.presence[presenceName].metadata.color};"></span> ${data.presence[presenceName].metadata.color}</p>`)
 			presenceInfo.push(`<p><strong>Alternative Name</strong>: ${data.presence[presenceName].metadata.altnames ? data.presence[presenceName].metadata.altnames.join(", ") : "None"}</p>`)
-			presenceInfo.push(`<p><strong>Using regex?</strong>: ${data.presence[presenceName].metadata.regExp ? `Yes (<code>${data.presence[presenceName].metadata.regExp}</code>)` : "No"}</p>`)
-			presenceInfo.push(`<p><strong>Using iFrame?</strong>: ${data.presence[presenceName].metadata.iframe ? "Yes" : "No"}</p>`)
 			presenceInfo.push(`<p><strong>Using settings?</strong>: ${data.presence[presenceName].metadata.settings ? "Yes" : "No"}</p>`)
-			presenceInfo.push(`<p><strong>Partner?</strong>: ${data.presence[presenceName].additional.partner ? "Yes" : "No"}</p>`)
 
 			let langTabs = []
 			let langCards = []
@@ -298,7 +286,7 @@ const processData = () => {
 							</div>
 						</div>
 						<div class="col-md-6">
-							<a href="https://premid.app/library/${presenceName}" target="_blank" class="btn btn-primary" role="button">PreMiD Store</a>
+							<a href="https://premid.app/library/${presenceName}" target="_blank" class="btn btn-primary" role="button">Activity Library</a>
 							<a href="https://github.com/Activities/tree/main/websites/${presenceName.slice(0,1).toUpperCase()}/${presenceName}" target="_blank" class="btn btn-secondary" role="button">Source Code (GitHub)</a>
 							<br />
 							<div class="card text-center" style="margin-top:1rem">
@@ -446,7 +434,7 @@ const processData = () => {
 			categoryInfo.push(`<p><strong>Presence count</strong>: ${data.category[categoryName].presences.length}</p>`)
 			categoryInfo.push(`<p><strong>User count</strong>: ${data.category[categoryName].users}</p>`)
 			categoryInfo.push(`<p><strong>User to presence average</strong>: ${data.category[categoryName].average}</p>`)
-			categoryInfo.push(`<a href="https://premid.app/store?category=${categoryName}" target="_blank" class="btn btn-primary" role="button" style="margin-top:1rem">PreMiD Store</a>`)
+			categoryInfo.push(`<a href="https://premid.app/library?category=${categoryName}" target="_blank" class="btn btn-primary" role="button" style="margin-top:1rem">Activity Library</a>`)
 
 			const categoryPresences = data.category[categoryName].presences.map(presenceName => `<a href="https://premid.app/library/${presenceName}">${presenceName}</a>`).sort()
 
@@ -535,173 +523,6 @@ const processData = () => {
 
 	/*
 	================================================================
-	Statistics for presence developers
-	================================================================
-	*/
-
-	forEveryPresence(presence => {
-		if (!presence.metadata.author) return
-		if (data.author[presence.metadata.author.id] === undefined) {
-			data.author[presence.metadata.author.id] = {
-				author: presence.metadata.author.name,
-				id: presence.metadata.author.id,
-				presences: [],
-				users: 0,
-				average: 0,
-				activeNow: 0,
-				activeNowAverage: 0
-			}
-		}
-		data.author[presence.metadata.author.id].presences.push(presence.name)
-		data.author[presence.metadata.author.id].users += presence.users
-		data.author[presence.metadata.author.id].activeNow += presence.activeNow
-	})
-	Object.keys(data.author).forEach(key => {
-		data.author[key].average = Math.round(data.author[key].users / data.author[key].presences.length)
-		data.author[key].activeNowAverage = Math.round(data.author[key].activeNow / data.author[key].presences.length)
-	})
-
-	tableData.author = new List(["Author", "ID", "Presences", "Installs", "Average", "Active Users", "Average"], Object.values(data.author).map(value => [value.author, value.id, value.presences.length, value.users, value.average, value.activeNow, value.activeNowAverage]))
-	tables.author = $("table#author").DataTable(tableSettings).rows.add(tableData.author.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[3, "des"]]).draw()
-
-	$('table#author tbody').on('click', 'td.details-control', (event) => {
-		const tr = $(event.target).closest('tr')
-		const row = tables.author.row(tr)
-		const format = row => {
-			const authorID = row[2]
-
-			const authorInfo = []
-			authorInfo.push(`<p><strong>Author</strong>: ${data.author[authorID].author} (<code>${authorID}</code>)</p>`)
-			authorInfo.push(`<p><strong>Presence count</strong>: ${data.author[authorID].presences.length}</p>`)
-			authorInfo.push(`<p><strong>User count</strong>: ${data.author[authorID].users}</p>`)
-			authorInfo.push(`<p><strong>User to presence average</strong>: ${data.author[authorID].average}</p>`)
-			authorInfo.push(`<a href="https://premid.app/users/${authorID}" target="_blank" class="btn btn-primary" role="button" style="margin-top:1rem">PreMiD Store</a>`)
-
-			const authorPresences = data.author[authorID].presences.map(presenceName => `<a href="https://premid.app/library/${presenceName}">${presenceName}</a>`).sort()
-
-			return `
-				<div class="child-info">
-					<div class="row">
-						<div class="col-md-6">
-							${authorInfo.join("")}
-						</div>
-						<div class="col-md-6">
-							<p><strong>Presences</strong>:</p>
-							${authorPresences.join(", ")}
-						</div>
-					</div>
-				</div>`
-		}
-
-		if (row.child.isShown()) {
-			row.child.hide();
-			tr.removeClass('shown')
-			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>'
-		} else {
-			row.child(format(row.data())).show()
-			tr.addClass('shown')
-			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
-		}
-	})
-
-	let authorCount = Object.values(data.author).length
-	document.querySelector("#author-1-1 p").textContent = Object.values(data.author).length
-	let authorPresenceCount = 0, authorUserCount = 0, authorActiveCount = 0
-	Object.values(data.author).forEach(value => {
-		authorPresenceCount += Number(value.presences.length)
-		authorUserCount += Number(value.users)
-		authorActiveCount += Number(value.activeNow)
-	})
-	document.querySelector("#author-1-2 p").textContent = Math.round(authorPresenceCount / authorCount)
-	document.querySelector("#author-1-3 p").textContent = Math.round(authorUserCount / authorCount)
-	document.querySelector("#author-1-3b p").textContent = Math.round(authorActiveCount / authorCount)
-
-	const author2Data = Object.values(data.author).map(v => [v.author, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)
-	$("#author-2 div div table").DataTable(miniTableSettings).rows.add(author2Data).draw()
-	initChart("author2", "#author-2 canvas", "Presences")
-	chartData.author2.labels = author2Data.map(v => v[0])
-	chartData.author2.datasets[0].data = author2Data.map(v => v[1])
-	chartData.author2.datasets[0].backgroundColor = generalColorHashing
-	charts.author2.update()
-	
-	const author3Data = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).slice(0, 10)
-	$("#author-3 div div table").DataTable(miniTableSettings).rows.add(author3Data).draw()
-	initChart("author3", "#author-3 canvas", "Users")
-	chartData.author3.labels = author3Data.map(v => v[0])
-	chartData.author3.datasets[0].data = author3Data.map(v => v[1])
-	chartData.author3.datasets[0].backgroundColor = generalColorHashing
-	charts.author3.update()
-
-	const author4Data = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).slice(0, 10)
-	$("#author-4 div div table").DataTable(miniTableSettings).rows.add(author4Data).draw()
-	initChart("author4", "#author-4 canvas", "Average")
-	chartData.author4.labels = author4Data.map(v => v[0])
-	chartData.author4.datasets[0].data = author4Data.map(v => v[1])
-	chartData.author4.datasets[0].backgroundColor = generalColorHashing
-	charts.author4.update()
-
-	const author3bData = Object.values(data.author).map(v => [v.author, v.activeNow]).sort((a, b) => b[1] - a[1]).slice(0, 10)
-	$("#author-3b div div table").DataTable(miniTableSettings).rows.add(author3bData).draw()
-	initChart("author3b", "#author-3b canvas", "Users")
-	chartData.author3b.labels = author3bData.map(v => v[0])
-	chartData.author3b.datasets[0].data = author3bData.map(v => v[1])
-	chartData.author3b.datasets[0].backgroundColor = generalColorHashing
-	charts.author3b.update()
-
-	const author4bData = Object.values(data.author).map(v => [v.author, v.activeNowAverage]).sort((a, b) => b[1] - a[1]).slice(0, 10)
-	$("#author-4b div div table").DataTable(miniTableSettings).rows.add(author4bData).draw()
-	initChart("author4b", "#author-4b canvas", "Average")
-	chartData.author4b.labels = author4bData.map(v => v[0])
-	chartData.author4b.datasets[0].data = author4bData.map(v => v[1])
-	chartData.author4b.datasets[0].backgroundColor = generalColorHashing
-	charts.author4b.update()
-
-	initChart("author5", "#author-5 canvas", "")
-	chartData.author5.datasets[0].backgroundColor = generalColorHashing
-	chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(2)
-	chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.users).sort((a, b) => b - a).slice(2)
-	chartData.author5.datasets[0].label = "Users"
-	charts.author5.update()
-	document.querySelector("#author-5 div select").value = "usernotop"
-
-	document.querySelector("#author-5 div select").onchange = () => {
-		switch (document.querySelector("#author-5 div select").value) {
-			case 'presence':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.presences.length]).sort((a, b) => b[1] - a[1]).map(v => v[0])
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.presences.length).sort((a, b) => b - a)
-				chartData.author5.datasets[0].label = "Presences"
-				break
-			case 'presencenotop':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.presences.length]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(1)
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.presences.length).sort((a, b) => b - a).slice(1)
-				chartData.author5.datasets[0].label = "Presences"
-				break
-			case 'user':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0])
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.users).sort((a, b) => b - a)
-				chartData.author5.datasets[0].label = "Users"
-				break
-			case 'usernotop':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.users]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(3)
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.users).sort((a, b) => b - a).slice(3)
-				chartData.author5.datasets[0].label = "Users"
-				break
-			case 'average':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).map(v => v[0])
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.average).sort((a, b) => b - a)
-				chartData.author5.datasets[0].label = "Average"
-				break
-			case 'averagenotop':
-				chartData.author5.labels = Object.values(data.author).map(v => [v.author, v.average]).sort((a, b) => b[1] - a[1]).map(v => v[0]).slice(1)
-				chartData.author5.datasets[0].data = Object.values(data.author).map(v => v.average).sort((a, b) => b - a).slice(1)
-				chartData.author5.datasets[0].label = "Average"
-				break
-		}
-		charts.author5.update()
-	}
-
-	/*
-	================================================================
 	Statistics for feature implementation
 	================================================================
 	*/
@@ -710,126 +531,16 @@ const processData = () => {
 	let implementation = Array(implementations + 1).fill(0)
 
 	forEveryPresence(presence => {
-		if (presence.metadata.iframe) implementation[1]++
-		if (presence.metadata.contributors) implementation[2]++
-		if (presence.metadata.regExp) implementation[4]++
-		if (typeof presence.metadata.description === "object" && Object.keys(presence.metadata.description).length !== 1) implementation[5]++
-		if (presence.additional.partner) implementation[6]++
 		if (presence.additional.hot) implementation[7]++
-		if (presence.metadata.altnames) implementation[8]++
-		if (presence.metadata.settings) {
-			implementation[3]++
-			if (presence.metadata.settings.filter(setting => setting.multiLanguage).length !== 0) implementation[9]++
-		}
+		if (presence.metadata.settings) implementation[3]++
 	})
 
 	for (var i = 1; i < implementations + 1; i++) {
+		if (!document.querySelector(`#implementation-${i} p`)) continue
 		document.querySelector(`#implementation-${i} p`).textContent = implementation[i]
 		document.querySelectorAll(`#implementation-${i} p`)[1].textContent = `${Math.round((implementation[i] / presenceCount) * 100)}% (${implementation[i]}/${presenceCount})`
 	}
 
-	/*
-	================================================================
-	Statistics for description languages
-	================================================================
-	*/
-
-	forEveryPresence(presence => {
-		if (typeof presence.metadata.description === "object") {
-			Object.keys(presence.metadata.description).forEach(langTagRaw => {
-				let langTag
-				if (langTagRaw.split("_").length === 2) langTag = `${langTagRaw.split("_")[0]}_${langTagRaw.split("_")[1].toUpperCase()}`
-				else langTag = langTagRaw
-				if (data.lang[langTag] === undefined) {
-					data.lang[langTag] = {
-						language: langNames.of(langTag),
-						tag: langTag,
-						presences: []
-					}
-				}
-				data.lang[langTag].presences.push(presence.name)
-			})
-		}
-	})
-
-	document.querySelector("#lang-1-1 p").textContent = implementation[5]
-	document.querySelector("#lang-1-2 p").textContent = Object.keys(data.lang).length
-
-	$("#lang-2 div div table").DataTable(miniTableSettings).rows.add(Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10)).draw()
-	initChart("lang2", "#lang-2 canvas", "Presences")
-	chartData.lang2.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(0, 10).map(v => v[0])
-	chartData.lang2.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a).slice(0, 10)
-	chartData.lang2.datasets[0].backgroundColor = generalColorHashing
-	charts.lang2.update()
-
-	tableData.lang = new List(["Language", "Tag", "Presences"], Object.values(data.lang).map(value => [value.language, value.tag, value.presences.length]))
-	tables.lang = $("table#lang").DataTable(tableSettings).rows.add(tableData.lang.data.map(data => ['<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>', ...data])).order([[3, "des"]]).draw()
-
-	document.querySelector("#lang-3 select").onchange = () => {
-		switch (document.querySelector("#lang-3 select").value) {
-			case 'all':
-				chartData.lang3.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).map(v => v[0])
-				chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a)
-				break
-			case 'no1':
-				chartData.lang3.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(1).map(v => v[0])
-				chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a).slice(1)
-				break
-			// case 'no2':
-				// 	chartData.lang3.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).slice(2).map(v => v[0])
-				// 	chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a).slice(2)
-				// 	break
-		}
-		charts.lang3.update()
-	}
-
-	initChart("lang3", "#lang-3 canvas", "Presences")
-	chartData.lang3.labels = Object.values(data.lang).map(v => [`${v.language} (${v.tag})`, v.presences.length]).sort((a, b) => b[1] - a[1]).map(v => v[0])
-	chartData.lang3.datasets[0].data = Object.values(data.lang).map(v => v.presences.length).sort((a, b) => b - a)
-	chartData.lang3.datasets[0].backgroundColor = generalColorHashing
-	charts.lang3.update()
-
-	$('table#lang tbody').on('click', 'td.details-control', (event) => {
-		const tr = $(event.target).closest('tr')
-		const row = tables.lang.row(tr)
-		const format = row => {
-			const langTag = row[2]
-
-			const langInfo = []
-			langInfo.push(`<p><strong>Language</strong>: ${data.lang[langTag].language} (${langTag})</p>`)
-			langInfo.push(`<p><strong>Presence count</strong>: ${data.lang[langTag].presences.length}`)
-
-			const langPresences = []
-			data.lang[langTag].presences.forEach(presenceName => {
-				langPresences.push(`<a href="https://premid.app/library/${presenceName}">${presenceName}</a>`)
-			})
-
-			return `
-				<div class="child-info">
-					<div class="row">
-						<div class="col-12">
-							${langInfo.join("")}
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-12">
-							<p><strong>Presences</strong>:</p>
-							${langPresences.join(", ")}
-						</div>
-					</div>
-				</div>`
-		}
-
-		if (row.child.isShown()) {
-			row.child.hide();
-			tr.removeClass('shown')
-			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-add-circle-outline"></span>'
-		} else {
-			row.child(format(row.data())).show()
-			tr.addClass('shown')
-			event.target.innerHTML = '<span class="iconify" data-icon="ic:baseline-remove-circle"></span>'
-		}
-	})
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -906,15 +617,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 					presenceData.users ||= Math.max(presenceData.users || 0, presence.installed)
 					presenceData.activeNow ||= presence.activeNow
 					presenceData.metadata ??= {}
-					// presenceData.metadata.description = presence.descriptions.reduce((obj, el) => {
-					// 	obj[el.languageCode] = el.description
-					// 	return obj
-					// }, {})
+					presenceData.metadata.description = presence.descriptions.reduce((obj, el) => {
+						obj[el.languageCode] = el.description
+						return obj
+					}, {})
 					presenceData.metadata.logo = presence.logo
 					presenceData.metadata.thumbnail = presence.thumbnail
 					presenceData.metadata.color = presence.color
 					presenceData.metadata.category = presence.category
 					presenceData.metadata.url = presence.url
+					presenceData.metadata.settings = presence.hasSettings
 				})
 				getDataCallback()
 

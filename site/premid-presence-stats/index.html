@@ -58,11 +58,10 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 	main .iconify {
 		width: 24px;
 		height: 24px;
-	    pointer-events: none
+		pointer-events: none
 	}
 
 	.color-preview {
-		margin-left: 4px;
 		width: .9rem;
 		height: .9rem;
 		border: .1rem solid #bbb;
@@ -76,6 +75,9 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 		<div id="title" class="jumbotron">
 			<h1>PreMiD Presence Stats</h1>
 			<p>Welcome! This page shows all PreMiD-related statistics derived from the PreMiD API in various ways.</p>
+			<div class="alert alert-warning" role="alert">
+				Due to changes on the PreMiD API, some data are not available. This means that some statistics are not available to be displayed and is removed for brevity. A static mirror with all the statistics may be made in the future. Sorry for the inconvenience.
+			</div>
 			<hr />
 			<p class="status">Preparing...</p>
 			<div class="progress" style="width: 100%; background: white;">
@@ -200,6 +202,7 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 						</div>
 					</div>
 				</div>
+			</div>
 			<div id="presence-4">
 				<div class="row">
 					<div class="col-12">
@@ -376,52 +379,13 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 			<h2>Feature implementation</h2>
 			<p>(not sure about the name because it's kind of cheesy)</p>
 			<div class="row">
-				<div id="implementation-1" class="col-md-4">
-					<h3>iframe</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-				<div id="implementation-2" class="col-md-4">
-					<h3>Multiple contributors</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-				<div id="implementation-3" class="col-md-4">
+				<div id="implementation-3" class="col-md-6">
 					<h3>Settings</h3>
 					<p class="count"></p>
 					<p></p>
 				</div>
-			</div>
-			<div class="row">
-				<div id="implementation-4" class="col-md-4">
-					<h3>Regular expression</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-				<div id="implementation-5" class="col-md-4">
-					<h3>Multilingual description</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-				<div id="implementation-6" class="col-md-4">
-					<h3>Partnership</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-			</div>
-			<div class="row">
-				<div id="implementation-7" class="col-md-4">
+				<div id="implementation-7" class="col-md-6">
 					<h3>Popular (> 5% usage)</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-				<div id="implementation-8" class="col-md-4">
-					<h3>Alternative names</h3>
-					<p class="count"></p>
-					<p></p>
-				</div>
-				<div id="implementation-9" class="col-md-4">
-					<h3>Multilingual settings</h3>
 					<p class="count"></p>
 					<p></p>
 				</div>
@@ -436,10 +400,9 @@ description: View all PreMiD-related statistics derived from the PreMiD API in v
 					<th></th>
 					<th>Presence</th>
 					<th>Category</th>
-					<th>Author</th>
 					<th>Installs</th>
 					<th>Active Users</th>
-					<th>Search Tags</th>
+					<th>Color</th>
 				</tr>
 			</thead>
 			<tbody></tbody>
