@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "#TeamTrees Live Counter"
-description: "This is the #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
+description: "The live counter for #TeamTrees (teamtrees.org) of the money raised, or trees (planned to be) planted."
 ---
 
 <script defer src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js"></script>
@@ -41,7 +41,6 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 		--odometer-duration: 2.5s;
 		--fadeout-duration: 0.5s
 	}
-
 </style>
 
 <div class="container">
@@ -66,11 +65,7 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 				<p class="time text-center text-lg-left" id="update"></p>
 			</div>
 			<div class="col-sm-12 col-lg-6 text-center">
-				<div class="alert alert-info">The sequel is now here! Check out <a href="../teamseas">#TeamSeas Live Counter</a>.</div>
-				<!-- <div class="time">
-					<h2>Time Left</h2>
-					<p id="countdown"></p>
-				</div> -->
+				<div class="alert alert-info">Also check out the counters for <a href="../teamseas">#TeamSeas 🌊</a> and <a href="../teamwater">#TeamWater 💧</a>.</div>
 				<h2>Recent</h2>
 				<table class="table table-hover">
 					<thead>
@@ -80,9 +75,7 @@ description: "This is the #TeamTrees (teamtrees.org) live counter of the money r
 							<th>Time</th>
 						</tr>
 					</thead>
-					<tbody id="recentDonations">
-
-					</tbody>
+					<tbody id="recentDonations"></tbody>
 				</table>
 			</div>
 		</div>

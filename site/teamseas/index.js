@@ -2,8 +2,6 @@ dayjs.extend(window.dayjs_plugin_utc)
 let currentCount = 0,
 	diffAvg = 0,
 	diffReal = 0,
-	timerSet = () => Math.round((63 - (new Date() % 60000 / 1000) - (Math.random() * 4) + 2) * 1000),
-	timer,
 	diffArray = [],
 	cors,
 	parser = new DOMParser()
@@ -96,5 +94,5 @@ $(async () => {
 	const executeTick = timer => {
 		document.querySelector("#update").textContent = "Update: " + timer.toFixed(1) + "s"
 	}
-	window.setIntervalFancy(executeTick, reload, timerSet, true)
+	window.setIntervalFancy(executeTick, reload, 5 * 60 * 1000, true)
 })

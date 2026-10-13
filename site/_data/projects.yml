@@ -24,7 +24,7 @@
 
 - id: teamtrees
   name: "#TeamTrees Live Counter"
-  desc: "The #TeamTrees (teamtrees.org) live counter of the money raised, or trees (planned to be) planted."
+  desc: "The live counter for #TeamTrees (teamtrees.org) of the money raised, or trees (planned to be) planted."
 
 - id: musescore-downloader
   name: MuseScore Downloader
@@ -62,7 +62,7 @@
 
 - id: teamseas
   name: "#TeamSeas Live Counter"
-  desc: "This is the #TeamSeas (teamseas.org) live counter of the money raised, or ocean trash (planned to be) collected."
+  desc: "The live counter for #TeamSeas (teamseas.org) the money raised, or ocean trash (planned to be) collected."
 
 - id: my-minecraft-skins
   name: My Minecraft Skins
@@ -87,3 +87,7 @@
 - id: cheerlights-live
   name: CheerLights Live
   desc:  A simple viewer/client for CheerLights with extensive code documentation for educational purposes.
+
+- id: teamwater
+  name: "#TeamWater Live Counter"
+  desc: "The live counter for #TeamWater (teamwater.org) of the money raised, or years of water (planned to be) supplied."

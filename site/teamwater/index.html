@@ -1,0 +1,88 @@
+---
+layout: default
+title: "#TeamWater Live Counter"
+description: "The live counter for #TeamWater (teamwater.org) of the money raised, or years of water (planned to be) supplied."
+---
+
+<script defer src="https://cdn.jsdelivr.net/combine/npm/odometer@0.4.8,npm/jquery-countdown@2,npm/dayjs@1,npm/dayjs@1/plugin/utc.min.js"></script>
+<script defer src="index.js"></script>
+<link rel="stylesheet" href="{{ '/assets/css/odometer.css' | relative_url }}">
+<style>
+	#main p {
+		font-size: 4rem
+	}
+
+	#main h2,
+	.diff p {
+		font-size: 3rem
+	}
+
+	.diff h2 {
+		font-size: 2rem
+	}
+
+	#main h1 {
+		font-size: 2.5rem
+	}
+
+	.time h2 {
+		margin-bottom: 0
+	}
+
+	.time p {
+		font-size: 2.5rem
+	}
+
+	#update {
+		font-size: 1.5rem
+	}
+
+	:root {
+		--odometer-duration: 2.5s;
+		--fadeout-duration: 0.5s
+	}
+</style>
+
+<div class="container">
+	<div id="counter">
+		<div class="row">
+			<div class="col-sm-12 col-lg-6 text-center">
+				<div id="main">
+					<h1 class="name 1">#TeamWater 💧</h1>
+					<h2 class="num 1">Raised</h2>
+					<p class="odometer num 1">0</p>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 col-lg-6 diff" id="diffReal">
+						<h2>Diff <small class="text-muted">(1m)</small></h2>
+						<p class="odometer">0</p>
+					</div>
+					<div class="col-sm-12 col-lg-6 diff" id="diff">
+						<h2>Diff <small class="text-muted">(10m)</small></h2>
+						<p class="odometer">0</p>
+					</div>
+				</div>
+				<p class="time text-center text-lg-left" id="update"></p>
+			</div>
+			<div class="col-sm-12 col-lg-6 text-center">
+				<!-- <div class="time">
+					<h2>Time Left</h2>
+					<p id="countdown"></p>
+				</div> -->
+				<div class="alert alert-info">Also check out the counters for <a href="../teamtrees">#TeamTrees 🌲</a>
+					and <a href="../teamseas">#TeamSeas 🌊</a>.</div>
+				<h2>Recent</h2>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Amount</th>
+							<th>Time</th>
+						</tr>
+					</thead>
+					<tbody id="recentDonations"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
