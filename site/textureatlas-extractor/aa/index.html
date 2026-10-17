@@ -1,0 +1,48 @@
+---
+layout: default
+title: TextureAtlas Extractor (Adobe Animate)
+description: Render and export every frame of an Adobe Animate texture atlas animation.
+---
+
+<script async src="https://cdn.jsdelivr.net/combine/npm/jszip@3,npm/file-saver@2"></script>
+<script defer src="script.js"></script>
+
+<div class="container">
+	<h1>TextureAtlas Extractor <small class="text-secondary">Adobe Animate</small></h1>
+	<p>A variation of <a href="../">TextureAtlas Extractor</a> for <a href="https://helpx.adobe.com/animate/using/create-texture-atlases.html" target="_blank" rel="noopener">Adobe Animate texture atlas</a>, with separate symbols being built/rendered for every frame.</p>
+	<p>This tool is quite experimental. Please report issues on <a href="https://github.com/Hans5958/mini-htmls/issues">the issues tab.</a></p>
+	<p>
+		Supported formats:
+		<span class="formats">
+			<span class="badge badge-primary" data-name="adobeAnimate">Adobe Animate</span>
+			<span class="badge badge-primary" data-name="betterTextureAtlas">BetterTextureAtlas</span>
+		</span>
+	</p>
+	<form id="form-main" class="mb-4">
+		<div class="form-group">
+			<label for="inputImage">Image file (<code>spritemap1.png</code>)</label>
+			<input type="file" class="form-control-file" id="inputImage" accept="image/png,image/*">
+		</div>
+		<div class="form-group">
+			<label for="inputSpriteData">Sprite data file (<code>spritemap1.json</code>)</label>
+			<input type="file" class="form-control-file" id="inputSpriteData" accept="application/json,.json">
+		</div>
+		<div class="form-group">
+			<label for="inputAnimationData">Animation data file (<code>Animation.json</code>)</label>
+			<input type="file" class="form-control-file" id="inputAnimationData" accept="application/json,.json">
+		</div>
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</form>
+	<div id="status" class="d-none">
+		<h2>Status</h2>
+		<p id="status-text"></p>
+		<details open>
+			<summary>Canvas preview</summary>
+			<canvas id="canvas-main" class="w-50 mx-auto img-thumbnail d-block"></canvas>
+			<div class="form-group mt-3 mb-0">
+				<label for="inputFrame">Preview frame: <span id="frame-label">-</span></label>
+				<input type="range" class="form-control-range" id="inputFrame" min="0" max="0" value="0" step="1" disabled>
+			</div>
+		</details>
+	</div>
+</div>

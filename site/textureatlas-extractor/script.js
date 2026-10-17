@@ -3,11 +3,19 @@ import isMobile from 'https://cdn.jsdelivr.net/npm/ismobilejs@1/+esm'
 const mainForm = document.querySelector('#form-main')
 const mainCanvas = document.querySelector('#canvas-main')
 const mainCanvasDetails = document.querySelector('#status > details:nth-child(3)')
+const spriteSlider = document.querySelector('#inputSprite')
+const spriteLabel = document.querySelector('#sprite-label')
 
 const isMobileReal = isMobile(window.navigator).any
 
 mainForm.querySelector('#parallel').checked = !isMobileReal
 mainCanvasDetails.open = !isMobileReal
+
+let showPreviewSprite = null
+
+spriteSlider.addEventListener('input', () => {
+	if (showPreviewSprite) showPreviewSprite(+spriteSlider.value)
+})
 
 const timer = {
 	time: 0,
@@ -54,6 +62,14 @@ const xmlDictToObject = el => {
 mainForm.addEventListener('submit', async event => {
 	event.preventDefault()
 	console.log(event)
+
+	// Reset the preview slider.
+	showPreviewSprite = null
+	spriteSlider.disabled = true
+	spriteSlider.min = 0
+	spriteSlider.max = 0
+	spriteSlider.value = 0
+	spriteLabel.textContent = '-'
 
 	timer.start()
 	document.querySelector('#status').classList.remove('d-none')
@@ -162,14 +178,24 @@ mainForm.addEventListener('submit', async event => {
 	mainCanvas.width = textureImage.width
 	mainCanvas.height = textureImage.height
 	const mainCanvasContext = mainCanvas.getContext('2d')
-	if (mainCanvasDetails.open) {
-		mainCanvasContext.drawImage(textureImage, 0, 0)
-	}
 
 	const textures = parser[chosenParser].function(textureSheet)
 	updateStatus("Chosen strategy: " + parser[chosenParser].name)
 	const texturesLength = textures.length
 	let textureDone = 0;
+
+	const textureFileName = texture => texture.name + '.png'
+
+	showPreviewSprite = index => {
+		const texture = textures[index]
+		if (!texture) return
+		mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
+		mainCanvasContext.drawImage(textureImage, 0, 0)
+		mainCanvasContext.strokeStyle = '#ff0000'
+		mainCanvasContext.lineWidth = 8
+		mainCanvasContext.strokeRect(texture.sourceX, texture.sourceY, texture.sourceWidth, texture.sourceHeight)
+		spriteLabel.textContent = `${textureFileName(texture)} (${index + 1}/${texturesLength})`
+	}
 
 	const processTexture = async texture => {
 		const canvasTemp = document.createElement('canvas')
@@ -195,19 +221,10 @@ mainForm.addEventListener('submit', async event => {
 		)
 		
 		const blob = await new Promise(res => canvasTemp.toBlob(res));
-		zip.file(texture.name + '.png', blob)
+		zip.file(textureFileName(texture), blob)
 		textureDone++
 		updateStatus(`Exported texture "${texture.name}". (${textureDone}/${texturesLength})`)
-		if (!mainCanvasDetails.open) return
-		mainCanvasContext.strokeStyle = '#ff0000'
-		mainCanvasContext.lineWidth = 8
-		mainCanvasContext.rect(
-			texture.sourceX,
-			texture.sourceY,
-			texture.sourceWidth,
-			texture.sourceHeight
-		)
-		mainCanvasContext.stroke()
+		if (mainCanvasDetails.open) showPreviewSprite(textures.indexOf(texture))
 	}
 
 	if (useParallel) {
@@ -221,6 +238,11 @@ mainForm.addEventListener('submit', async event => {
 	const content = await zip.generateAsync({ type: "blob" })
 	saveAs(content, textureImageFile.name.split('.png')[0] + ".zip")
 	updateStatus(`Extracted ${textureDone} textures in ${timer.stop() / 1000} seconds!`)
+
+	spriteSlider.max = texturesLength - 1
+	spriteSlider.value = 0
+	spriteSlider.disabled = false
+	showPreviewSprite(0)
 
 })
 
