@@ -5,6 +5,15 @@
  * - https://github.com/PluieElectrique/texture-atlas-renderer
  */
 
+import JSZip from 'https://cdn.jsdelivr.net/npm/jszip@3/+esm'
+import saveAs from 'https://cdn.jsdelivr.net/npm/file-saver@2/+esm'
+
+import {
+	createTimer, createStatusUpdater, readFileAsText, loadImageSource,
+	sanitizeFileName, createElementCanvas as createCanvas, canvasToBlob,
+	flagFormat, zipToBlob,
+} from '../extractor-core.js'
+
 const mainForm = document.querySelector('#form-main')
 const mainCanvas = document.querySelector('#canvas-main')
 const frameSlider = document.querySelector('#inputFrame')
@@ -16,22 +25,9 @@ frameSlider.addEventListener('input', () => {
 	if (showPreviewFrame) showPreviewFrame(+frameSlider.value)
 })
 
-const timer = {
-	time: 0,
+const timer = createTimer()
 
-	start() {
-		return this.time = Date.now()
-	},
-
-	stop() {
-		return this.time = Date.now() - this.time
-	}
-}
-
-const updateStatus = (info, log = true) => {
-	document.querySelector("#status-text").innerHTML = info
-	if (log) console.info(info)
-}
+const updateStatus = createStatusUpdater('#status-text')
 
 const clampChannel = value => value < 0 ? 0 : value > 255 ? 255 : value | 0
 
@@ -141,14 +137,6 @@ const detectExporter = animationData => {
 	if (/^BTA/i.test(version)) return 'betterTextureAtlas'
 	if (metadata.backgroundColor !== undefined || metadata.BGC !== undefined) return 'betterTextureAtlas'
 	return 'adobeAnimate'
-}
-
-const flagExporter = name => {
-	for (const element of document.querySelectorAll('.formats .badge')) {
-		const detected = element.dataset.name === name
-		element.classList.toggle('badge-primary', detected)
-		element.classList.toggle('badge-secondary', !detected)
-	}
 }
 
 const pick = (object, ...keys) => {
@@ -286,13 +274,6 @@ class ColorEffect {
 	}
 }
 
-const createCanvas = (width, height) => {
-	const canvas = document.createElement('canvas')
-	canvas.width = width
-	canvas.height = height
-	return canvas
-}
-
 const applyMask = (baseCanvas, maskedCanvas, maskCanvas) => {
 	const width = maskedCanvas.width
 	const height = maskedCanvas.height
@@ -332,8 +313,10 @@ class SpriteAtlas {
 			const sprite = pick(entry, 'SPRITE', 'sprite') || entry
 			this.spriteInfo[sprite.name] = sprite
 		}
+		// Cap the cache by pixels, since large frames can pin a lot of memory
 		this.cache = new Map()
-		this.cacheLimit = 1024
+		this.cachePixels = 0
+		this.cachePixelLimit = 64 * 1024 * 1024
 	}
 
 	cropSprite(name) {
@@ -353,11 +336,17 @@ class SpriteAtlas {
 		if (this.cache.has(key)) return this.cache.get(key)
 
 		const result = this.renderSprite(name, m, color, canvasWidth, canvasHeight)
+		const pixels = result ? result.canvas.width * result.canvas.height : 0
 
-		if (this.cache.size >= this.cacheLimit) {
-			this.cache.delete(this.cache.keys().next().value)
+		while (this.cache.size && this.cachePixels + pixels > this.cachePixelLimit) {
+			const oldestKey = this.cache.keys().next().value
+			const oldest = this.cache.get(oldestKey)
+			if (oldest) this.cachePixels -= oldest.canvas.width * oldest.canvas.height
+			this.cache.delete(oldestKey)
 		}
+
 		this.cache.set(key, result)
+		this.cachePixels += pixels
 		return result
 	}
 
@@ -575,28 +564,7 @@ class Renderer {
 	}
 }
 
-const readFileAsText = file => new Promise((resolve, reject) => {
-	const reader = new FileReader()
-	reader.onload = () => resolve(reader.result)
-	reader.onerror = () => reject(new Error(`Could not read "${file.name}".`))
-	reader.readAsText(file)
-})
-
-const readFileAsImage = file => new Promise((resolve, reject) => {
-	const reader = new FileReader()
-	reader.onload = () => {
-		const image = new Image()
-		image.onload = () => resolve(image)
-		image.onerror = () => reject(new Error(`Could not load "${file.name}" as an image.`))
-		image.src = reader.result
-	}
-	reader.onerror = () => reject(new Error(`Could not read "${file.name}".`))
-	reader.readAsDataURL(file)
-})
-
 const parseAnimateJson = text => JSON.parse(text.replace(/^\uFEFF/, '').replace(/,\s*}/g, '}'))
-
-const sanitizeFileName = name => name.replace(/[\\/:*?"<>|]+/g, '_').replace(/^\.+/, '').trim() || 'frame'
 
 mainForm.addEventListener('submit', async event => {
 	event.preventDefault()
@@ -628,7 +596,7 @@ mainForm.addEventListener('submit', async event => {
 	try {
 		updateStatus(`Loading resources... (${indexReady}/3)`)
 		const [textureImage, spriteData, animationData] = await Promise.all([
-			readFileAsImage(imageFile).then(result => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return result }),
+			loadImageSource(imageFile).then(result => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return result }),
 			readFileAsText(spriteDataFile).then(text => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return parseAnimateJson(text) }),
 			readFileAsText(animationDataFile).then(text => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return parseAnimateJson(text) })
 		])
@@ -645,7 +613,7 @@ mainForm.addEventListener('submit', async event => {
 			return
 		}
 
-		flagExporter(detectExporter(animationData))
+		flagFormat(detectExporter(animationData))
 
 		const renderer = new Renderer(animationData, spriteAtlas)
 
@@ -681,13 +649,18 @@ mainForm.addEventListener('submit', async event => {
 			mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
 			mainCanvasContext.drawImage(canvas, 0, 0)
 
-			const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
-			zip.file(frameFileName(i), blob)
+			const blob = await canvasToBlob(canvas)
+			if (blob) zip.file(frameFileName(i), blob)
+			else console.warn(`Frame ${i} could not be encoded and was skipped.`)
+
+			// Release the canvas right away instead of waiting for the GC
+			canvas.width = 0
+			canvas.height = 0
 
 			updateStatus(`Rendered frame ${i + 1}/${frameLength}...`)
 		}
 
-		const content = await zip.generateAsync({ type: 'blob' })
+		const content = await zipToBlob(zip)
 		saveAs(content, imageFile.name.replace(/\.[^./\\]+$/, '') + '.zip')
 
 		updateStatus(`Exported ${frameLength} frames (${renderer.canvasWidth}×${renderer.canvasHeight}, ${frameRate} fps) in ${timer.stop() / 1000} seconds!`)
