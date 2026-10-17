@@ -1,6 +1,6 @@
 ---
 layout: pwa-sw-js
-id: GitHub Noreply Address Generator
+id: gh-noreply-address
 ---
 
 {{ '/gh-noreply-address/' | absolute_url }}

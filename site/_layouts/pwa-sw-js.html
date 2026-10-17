@@ -1,4 +1,15 @@
-const cacheName = "{{ page.id }}@{{ site.time | date: '%y%m%d%H%M%S' }}"
+const cachePrefix = '{{ page.id }}@'
+const cacheName = cachePrefix + '{{ site.time | date: '%y%m%d%H%M%S' }}'
+
+// Ourselves, plus the CDN the pages pull their libraries from.
+const cacheHosts = [
+	'cdn.jsdelivr.net'
+]
+
+const cacheable = url => {
+	const target = new URL(url)
+	return target.origin === self.location.origin || cacheHosts.includes(target.hostname)
+}
 
 const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
 {{ '/assets/js/pwa.js' | absolute_url }}?t={{ site.time | date: '%y%m%d%H%M%S' }}
@@ -6,78 +17,63 @@ const cacheResource = `{{ '/assets/js/base.js' | absolute_url }}
 {{ '/assets/img/placeholder-144.png' | absolute_url }}
 https://cdn.jsdelivr.net/combine/npm/jquery@3.5.1/dist/jquery.min.js,npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js,npm/pace-js@1.2.4,npm/@iconify/iconify@1.0.7
 https://cdn.jsdelivr.net/combine/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css,npm/pace-js@1.2.4/themes/blue/pace-theme-flash.min.css
-{{ content }}
-{{ '/' | append: page.id | append: '/pwa.webmanifest' | absolute_url }}`.trim().split('\n')
+{{ content }}`.trim().split('\n').map(url => url.trim()).filter(Boolean)
 
 self.addEventListener('install', (event) => {
 	logInfo(`Service worker installed.`)
 	self.skipWaiting()
-	event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(cacheResource)))
-	logInfo(`Resources cached.`)
+	event.waitUntil((async () => {
+		const cache = await caches.open(cacheName)
+		// addAll is all-or-nothing, and one dead file should not sink the whole install.
+		await Promise.all(cacheResource.map(url => cache.add(url).catch(() => logInfo(`Skipped`, url))))
+		logInfo(`Resources cached.`)
+	})());
 });
 
 self.addEventListener('activate', (event) => {
 	logInfo(`Service worker activated.`)
-	event.waitUntil(clients.claim())
-})
-
-self.addEventListener("statechange", event => {
-	if (newSW.state == "installed") {
-		logInfo(`Service worker updated.`)
-		// New service worker is installed, but waiting activation
-	}
-});
-
-
-self.addEventListener('fetch', (event) => {
-	// console.log('Fetch intercepted for:', event.request.url);
-	event.respondWith((async () => {
-
-		const networkResponse = await fetch(event.request).catch(() => undefined)
-		if (networkResponse) {
-			// console.log("network", event.request.url)
-			await caches.open(cacheName).then(cache => cache.put(event.request, networkResponse.clone()))
-			return networkResponse
-		}
-
-		const cachedResponse = await caches.match(event.request)
-		if (cachedResponse) {
-			// console.log("cache", event.request.url)
-			return cachedResponse
-		}
-
+	event.waitUntil((async () => {
+		// One cache per build, so sweep the ones this page left behind. Every page
+		// shares the same origin, and the caches of the others are not ours to delete.
+		const keys = await caches.keys()
+		await Promise.all(keys
+			.filter(key => key.startsWith(cachePrefix) && key != cacheName)
+			.map(key => caches.delete(key).then(() => logInfo(`Dropped`, key))))
+		await clients.claim()
 	})());
 });
 
-// self.addEventListener('fetch', (event) => {
-// 	// console.log('Fetch intercepted for:', event.request.url);
-// 	event.respondWith((function () {
+self.addEventListener('fetch', (event) => {
+	// console.log('Fetch intercepted for:', event.request.url);
+	const request = event.request
 
-// 		fetch(event.request)
-// 			.then(networkResponse => {
-// 				// const hosts = [
-// 				// 	'https://cdn.jsdelivr.net'
-// 				// ];
+	// cache.put rejects anything that is not a GET, and only our own files plus the
+	// CDN are worth keeping. The rest goes straight to the network, untouched.
+	if (request.method != 'GET' || !cacheable(request.url)) return
 
-// 				// if (hosts.some((host) => event.request.url.startsWith(host))) {
-// 				// 	const clonedResponse = networkResponse.clone();
+	event.respondWith((async () => {
 
-// 				// 	event.waitUntil((async function () {
-// 				// 		const cache = await caches.open(cacheName);
-// 				// 		await cache.put(event.request, clonedResponse);
-// 				// 	})());
-// 				// }
+		const networkResponse = await fetch(request).catch(() => undefined)
+		if (networkResponse) {
+			// console.log("network", request.url)
+			if (networkResponse.ok) {
+				await caches.open(cacheName)
+					.then(cache => cache.put(request, networkResponse.clone()))
+					.catch(() => logInfo(`Skipped`, request.url))
+			}
+			return networkResponse
+		}
 
-// 				cache.put(event.request, networkResponse.clone())
-// 				return networkResponse;	
-// 			})
-// 			.catch(() => {
-// 				return await caches.match(event.request)
-// 			})
+		const cachedResponse = await caches.match(request)
+		if (cachedResponse) {
+			// console.log("cache", request.url)
+			return cachedResponse
+		}
 
-// 	})());
-// });
+		return Response.error()
 
+	})());
+});
 
 function logInfo(...data) {
 	console.info(`[${cacheName}]`, ...data)

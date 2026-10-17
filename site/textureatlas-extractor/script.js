@@ -59,6 +59,8 @@ const xmlDictToObject = el => {
 	return dict
 }
 
+const frameIsShownSize = (frame, spriteSourceSize) => frame.w === spriteSourceSize.w && frame.h === spriteSourceSize.h
+
 mainForm.addEventListener('submit', async event => {
 	event.preventDefault()
 	console.log(event)
@@ -105,14 +107,16 @@ mainForm.addEventListener('submit', async event => {
 	const loadTextureSheet = () => new Promise(res => {
 		const textureSheetReader = new FileReader()
 		textureSheetReader.onload = () => {
-			if (textureSheetFile.type === "text/xml" || textureSheetFile.name.endsWith('.plist')) {
+			const textureSheetText = (textureSheetReader.result || '').replace(/^\uFEFF/, '')
+			if (textureSheetText.trimStart().startsWith('<')) {
 				textureSheetFormat = "xml"
 				const xmlParser = new DOMParser()
-				textureSheet = xmlParser.parseFromString(textureSheetReader.result, 'text/xml')
-
-			} else if (textureSheetFile.type === "application/json" || textureSheetFile.name.endsWith('.tpsheet') || textureSheetFile.name.endsWith('.tpset') || textureSheetFile.name.endsWith('.paper2dsprites')) {
-				textureSheetFormat = "json"
-				textureSheet = JSON.parse(textureSheetReader.result.replace(/,\s*}/g, '}'))
+				textureSheet = xmlParser.parseFromString(textureSheetText.replace(/^\s*(?:<!--[\s\S]*?-->\s*)+/, ''), 'text/xml')
+			} else {
+				try {
+					textureSheet = JSON.parse(textureSheetText.replace(/,\s*}/g, '}'))
+					textureSheetFormat = "json"
+				} catch { }
 			}
 			indexReady++
 			updateStatus(`Loading resources... (${indexReady}/2)`)
@@ -198,27 +202,50 @@ mainForm.addEventListener('submit', async event => {
 	}
 
 	const processTexture = async texture => {
+		const destinationX = texture.destinationX || 0
+		const destinationY = texture.destinationY || 0
+		const destinationWidth = texture.destinationWidth || texture.sourceWidth
+		const destinationHeight = texture.destinationHeight || texture.sourceHeight
+
+		// Need to expand the frame in case some atlas generators put it too small
+		const placedWidth = texture.rotated ? destinationHeight : destinationWidth
+		const placedHeight = texture.rotated ? destinationWidth : destinationHeight
+		const offsetX = Math.min(0, destinationX)
+		const offsetY = Math.min(0, destinationY)
+
 		const canvasTemp = document.createElement('canvas')
-		canvasTemp.width = texture.canvasWidth || texture.destinationWidth || texture.sourceWidth
-		canvasTemp.height = texture.canvasHeight || texture.destinationHeight || texture.sourceHeight
+		canvasTemp.width = Math.max(texture.canvasWidth || placedWidth, destinationX + placedWidth) - offsetX
+		canvasTemp.height = Math.max(texture.canvasHeight || placedHeight, destinationY + placedHeight) - offsetY
 		const canvasTempContext = canvasTemp.getContext('2d')
-		// TODO: How does rotation work? This still results in a shift.
+		const drawX = destinationX - offsetX
+		const drawY = destinationY - offsetY
 		if (texture.rotated) {
-			canvasTempContext.translate(Math.ceil(canvasTemp.width / 2), Math.ceil(canvasTemp.height / 2))
+			canvasTempContext.translate(drawX, drawY + destinationWidth)
 			canvasTempContext.rotate(-Math.PI / 2)
-			canvasTempContext.translate(-Math.ceil(canvasTemp.height / 2), -Math.ceil(canvasTemp.width / 2))	
+			canvasTempContext.drawImage(
+				textureImage,
+				texture.sourceX,
+				texture.sourceY,
+				texture.sourceWidth,
+				texture.sourceHeight,
+				0,
+				0,
+				destinationWidth,
+				destinationHeight
+			)
+		} else {
+			canvasTempContext.drawImage(
+				textureImage,
+				texture.sourceX,
+				texture.sourceY,
+				texture.sourceWidth,
+				texture.sourceHeight,
+				drawX,
+				drawY,
+				destinationWidth,
+				destinationHeight
+			)
 		}
-		canvasTempContext.drawImage(
-			textureImage,
-			texture.sourceX,
-			texture.sourceY,
-			texture.sourceWidth,
-			texture.sourceHeight,
-			texture.destinationX || 0,
-			texture.destinationY || 0,
-			texture.destinationWidth || texture.sourceWidth,
-			texture.destinationHeight || texture.sourceHeight,
-		)
 		
 		const blob = await new Promise(res => canvasTemp.toBlob(res));
 		zip.file(textureFileName(texture), blob)
@@ -254,7 +281,7 @@ const parser = {
 		
 			return [...textures].map(texture => ({
 				name: texture.attributes.name.value,
-				rotated: texture.attributes.rotated?.value ?? false,
+				rotated: texture.attributes.rotated?.value === 'true',
 				sourceX: +texture.attributes.x.value,
 				sourceY: +texture.attributes.y.value,
 				sourceWidth: +texture.attributes.width.value,
@@ -275,19 +302,21 @@ const parser = {
 		
 			return [...textures].map(texture => {
 				const rotated = texture.attributes.r?.value === "y" || false
+				const sourceWidth = rotated ? +texture.attributes.h.value : +texture.attributes.w.value
+				const sourceHeight = rotated ? +texture.attributes.w.value : +texture.attributes.h.value
 				return {
 					name: texture.attributes.n.value,
 					rotated,
 					sourceX: +texture.attributes.x.value,
 					sourceY: +texture.attributes.y.value,
-					sourceWidth: +texture.attributes.w.value,
-					sourceHeight: +texture.attributes.h.value,
-					destinationX: +texture.attributes.oX?.value, 
-					destinationY: +texture.attributes.oY?.value, 
-					destinationWidth: +texture.attributes.w.value,
-					destinationHeight: +texture.attributes.h.value,
-					canvasWidth: +texture.attributes.oW?.value,
-					canvasHeight: +texture.attributes.oH?.value
+					sourceWidth,
+					sourceHeight,
+					destinationX: +(texture.attributes.oX?.value ?? 0), 
+					destinationY: +(texture.attributes.oY?.value ?? 0), 
+					destinationWidth: rotated ? sourceWidth : +texture.attributes.w.value,
+					destinationHeight: rotated ? sourceHeight : +texture.attributes.h.value,
+					canvasWidth: +(texture.attributes.oW?.value ?? texture.attributes.w.value),
+					canvasHeight: +(texture.attributes.oH?.value ?? texture.attributes.h.value)
 				}
 			})
 		},
@@ -315,34 +344,37 @@ const parser = {
 		name: "cocos2d",
 		function: xmlDocument => {
 			const textures = xmlDocument.querySelectorAll('plist > dict > dict > dict')
-			// console.log(textures)
 		
 			return [...textures].map(texture => {
 				
 				const dict = xmlDictToObject(texture)
 
 				const rotated = dict.rotated
-				// console.log(dict.frame.replaceAll('{', '[').replaceAll('}', ']'))
+				if (!dict.frame || !dict.sourceSize || !dict.sourceColorRect) return null
+
 				const frame = JSON.parse(dict.frame.replaceAll('{', '[').replaceAll('}', ']'))
 				const sourceSize = JSON.parse(dict.sourceSize.replaceAll('{', '[').replaceAll('}', ']'))
 				const sourceColorRect = JSON.parse(dict.sourceColorRect.replaceAll('{', '[').replaceAll('}', ']'))
 
-				// console.log(dict)
-				
+
+				const sourceWidth = rotated ? frame[1][1] : frame[1][0]
+				const sourceHeight = rotated ? frame[1][0] : frame[1][1]
+
 				return {
 					name: texture.previousElementSibling.textContent,
+					rotated,
 					sourceX: frame[0][0],
 					sourceY: frame[0][1],
-					sourceWidth: spriteSize[0],
-					sourceHeight: spriteSize[1],
+					sourceWidth,
+					sourceHeight,
 					destinationX: sourceColorRect[0][0],
 					destinationY: sourceColorRect[0][1],
-					destinationWidth: sourceColorRect[1][0],
-					destinationHeight: sourceColorRect[1][1],
+					destinationWidth: sourceWidth,
+					destinationHeight: sourceHeight,
 					canvasWidth: sourceSize[0],
 					canvasHeight: sourceSize[1]
 				}
-			})
+			}).filter(texture => texture)
 		},
 	},
 	cocos2d2: {
@@ -354,39 +386,32 @@ const parser = {
 			return [...textures].map(texture => {
 				
 				const dict = xmlDictToObject(texture)
-
-				console.log(dict)
+				if (!dict.textureRect || !dict.spriteSourceSize) return null
 
 				const rotated = dict.textureRotated
-				// console.log(dict.frame.replaceAll('{', '[').replaceAll('}', ']'))
 				const spriteSourceSize = JSON.parse(dict.spriteSourceSize.replaceAll('{', '[').replaceAll('}', ']'))
 				const textureRect = JSON.parse(dict.textureRect.replaceAll('{', '[').replaceAll('}', ']'))
 				const spriteOffset = JSON.parse(dict.spriteOffset.replaceAll('{', '[').replaceAll('}', ']'))
 
 				const sourceWidth = rotated ? textureRect[1][1] : textureRect[1][0]
 				const sourceHeight = rotated ? textureRect[1][0] : textureRect[1][1]
-				const canvasWidth = rotated ? spriteSourceSize[1] : spriteSourceSize[0]
-				const canvasHeight = rotated ? spriteSourceSize[0] : spriteSourceSize[1]
 
-				// console.log(dict)
 
-				var destinationX = sourceWidth < canvasWidth ? (Math.min(canvasWidth - sourceWidth) / 2) : 0;
-				var destinationY = sourceHeight < canvasHeight ? (Math.min(canvasHeight - sourceHeight) / 2) : 0;
-				
 				return {
 					name: texture.previousElementSibling.textContent,
+					rotated,
 					sourceX: textureRect[0][0],
 					sourceY: textureRect[0][1],
-					sourceWidth: textureRect[1][0],
-					sourceHeight: textureRect[1][1],
-					destinationX: destinationX + Number(spriteOffset[0]),
-					destinationY: destinationY + Number(spriteOffset[1]),
+					sourceWidth: sourceWidth,
+					sourceHeight: sourceHeight,
+					destinationX: Number(spriteOffset[0]),
+					destinationY: Number(spriteOffset[1]),
 					destinationWidth: sourceWidth,
 					destinationHeight: sourceHeight,
-					canvasWidth: canvasWidth,
-					canvasHeight: canvasHeight
+					canvasWidth: spriteSourceSize[0],
+					canvasHeight: spriteSourceSize[1]
 				}
-			})
+			}).filter(texture => texture)
 		},
 	},
 	godot: {
@@ -414,17 +439,20 @@ const parser = {
 		function: textures => {
 			return [...textures.frames].map(texture => {
 				const rotated = texture.rotated
+				const shown = rotated && frameIsShownSize(texture.frame, texture.spriteSourceSize)
+				const sourceWidth = shown ? texture.frame.h : texture.frame.w
+				const sourceHeight = shown ? texture.frame.w : texture.frame.h
 				return {
 					name: texture.filename,
 					rotated,
 					sourceX: texture.frame.x,
 					sourceY: texture.frame.y,
-					sourceWidth: texture.frame.w,
-					sourceHeight: texture.frame.h,
+					sourceWidth,
+					sourceHeight,
 					destinationX: texture.spriteSourceSize.x,
 					destinationY: texture.spriteSourceSize.y,
-					destinationWidth: texture.spriteSourceSize.w,
-					destinationHeight: texture.spriteSourceSize.h,
+					destinationWidth: rotated ? sourceWidth : texture.spriteSourceSize.w,
+					destinationHeight: rotated ? sourceHeight : texture.spriteSourceSize.h,
 					canvasWidth: texture.sourceSize.w,
 					canvasHeight: texture.sourceSize.h
 				}
@@ -436,17 +464,20 @@ const parser = {
 		function: textures => {
 			return [...Object.entries(textures.frames)].map(([name, texture]) => {
 				const rotated = texture.rotated
+				const shown = rotated && frameIsShownSize(texture.frame, texture.spriteSourceSize)
+				const sourceWidth = shown ? texture.frame.h : texture.frame.w
+				const sourceHeight = shown ? texture.frame.w : texture.frame.h
 				return {
 					name: name,
 					rotated,
 					sourceX: texture.frame.x,
 					sourceY: texture.frame.y,
-					sourceWidth: texture.frame.w,
-					sourceHeight: texture.frame.h,
+					sourceWidth,
+					sourceHeight,
 					destinationX: texture.spriteSourceSize.x,
 					destinationY: texture.spriteSourceSize.y,
-					destinationWidth: texture.spriteSourceSize.w,
-					destinationHeight: texture.spriteSourceSize.h,
+					destinationWidth: rotated ? sourceWidth : texture.spriteSourceSize.w,
+					destinationHeight: rotated ? sourceHeight : texture.spriteSourceSize.h,
 					canvasWidth: texture.sourceSize.w,
 					canvasHeight: texture.sourceSize.h
 					}	
@@ -459,19 +490,22 @@ const parser = {
 			// TODO: Check image name
 			return [...textures.textures[0].frames].map(texture => {
 				const rotated = texture.rotated
+				const shown = rotated && frameIsShownSize(texture.frame, texture.spriteSourceSize)
+				const sourceWidth = shown ? texture.frame.h : texture.frame.w
+				const sourceHeight = shown ? texture.frame.w : texture.frame.h
 				return {
 					name: texture.filename,
 					rotated,
-					sourceX: rotated ? texture.frame.y : texture.frame.x,
-					sourceY: rotated ? texture.frame.x : texture.frame.y,
-					sourceWidth: rotated ? texture.frame.h : texture.frame.w,
-					sourceHeight: rotated ? texture.frame.w : texture.frame.h,
-					destinationX: rotated ? texture.spriteSourceSize.y : texture.spriteSourceSize.x,
-					destinationY: rotated ? texture.spriteSourceSize.x : texture.spriteSourceSize.y,
-					destinationWidth: rotated ? texture.spriteSourceSize.h : texture.spriteSourceSize.w,
-					destinationHeight: rotated ? texture.spriteSourceSize.w : texture.spriteSourceSize.h,
-					canvasWidth: rotated ? texture.sourceSize.h : texture.sourceSize.w,
-					canvasHeight: rotated ? texture.sourceSize.w : texture.sourceSize.h
+					sourceX: texture.frame.x,
+					sourceY: texture.frame.y,
+					sourceWidth,
+					sourceHeight,
+					destinationX: texture.spriteSourceSize.x,
+					destinationY: texture.spriteSourceSize.y,
+					destinationWidth: rotated ? sourceWidth : texture.spriteSourceSize.w,
+					destinationHeight: rotated ? sourceHeight : texture.spriteSourceSize.h,
+					canvasWidth: texture.sourceSize.w,
+					canvasHeight: texture.sourceSize.h
 				}
 			})
 		}
@@ -480,14 +514,12 @@ const parser = {
 		name: "UIKit",
 		function: xmlDocument => {
 			const textures = xmlDocument.querySelectorAll('plist > dict > dict > dict')
-			// console.log(textures)
 		
 			return [...textures].map(texture => {
 				
-				const dict = xmlDictToObject(texture)
+				const dict = xmlDictToObject(texture)		
+				if (dict.w === undefined) return null
 
-				// console.log(dict)
-				
 				return {
 					name: texture.previousElementSibling.textContent,
 					rotated: false,
@@ -502,7 +534,7 @@ const parser = {
 					canvasWidth: dict.oW,
 					canvasHeight: dict.oH
 				}
-			})
+			}).filter(texture => texture)
 		},
 	},
 

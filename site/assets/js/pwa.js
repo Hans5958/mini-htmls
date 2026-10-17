@@ -89,7 +89,7 @@ if ("serviceWorker" in navigator) {
 				documentReadyPwa()
 				// console.log("Service worker registered")
 			})
-		// .catch(err => console.log("Service worker not registered", err))
+			.catch(err => console.warn("Service worker not registered", err))
 		// navigator.serviceWorker.ready
 		// 	.then(res => {
 		// 		res.addEventListener("updatefound", event => {
