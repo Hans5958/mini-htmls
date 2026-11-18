@@ -65,6 +65,62 @@ export const renderPreview = (createCanvas, source, sourceWidth, sourceHeight, m
 	return { canvas, scale, width, height }
 }
 
+// Draw a down-scaled atlas image on a canvas, optionally highlighting rectangles.
+// Each rect is { x, y, w, h } in source-pixel coordinates (will be scaled).
+export const drawAtlasPreview = (canvas, source, rects, highlightColor = '#ff0000', lineWidth = 3) => {
+	if (!canvas || !source) return null
+	const sourceWidth = source.naturalWidth || source.width
+	const sourceHeight = source.naturalHeight || source.height
+	const scale = Math.min(1, PREVIEW_MAX_SIZE / Math.max(sourceWidth, sourceHeight))
+	const width = Math.max(1, Math.round(sourceWidth * scale))
+	const height = Math.max(1, Math.round(sourceHeight * scale))
+
+	canvas.width = width
+	canvas.height = height
+	const ctx = canvas.getContext('2d')
+	ctx.clearRect(0, 0, width, height)
+	ctx.drawImage(source, 0, 0, width, height)
+
+	if (rects && rects.length) {
+		ctx.strokeStyle = highlightColor
+		// Stroke width scales with canvas size so it stays visible on large
+		// atlases and doesn't overwhelm small ones.
+		ctx.lineWidth = Math.max(1, Math.round(width * 0.004))
+		for (const r of rects) {
+			ctx.strokeRect(r.x * scale, r.y * scale, r.w * scale, r.h * scale)
+		}
+	}
+
+	return { width, height, scale }
+}
+
+// Draw an already-rendered frame canvas onto a target preview canvas.
+// Centralizes canvas sizing, clearing, and blitting so both pages behave the same.
+export const drawFrameOnCanvas = (targetCanvas, frameCanvas) => {
+	if (!frameCanvas) return null
+	targetCanvas.width = frameCanvas.width
+	targetCanvas.height = frameCanvas.height
+	const ctx = targetCanvas.getContext('2d')
+	ctx.clearRect(0, 0, targetCanvas.width, targetCanvas.height)
+	ctx.drawImage(frameCanvas, 0, 0)
+	return { width: targetCanvas.width, height: targetCanvas.height }
+}
+
+// Combined helper: draw the frame preview and the atlas preview with highlights in one call.
+// rects are { x, y, w, h } in source-pixel coordinates.
+export const drawPreviewPair = (
+	frameCanvas,
+	frameContentCanvas,
+	atlasCanvas,
+	atlasImage,
+	rects,
+	highlightColor = '#ff0000',
+	lineWidth = 3
+) => {
+	drawFrameOnCanvas(frameCanvas, frameContentCanvas)
+	drawAtlasPreview(atlasCanvas, atlasImage, rects, highlightColor, lineWidth)
+}
+
 // Duplicate names would overwrite each other inside the zip, so make them unique.
 export const createNameAllocator = () => {
 	const used = new Set()

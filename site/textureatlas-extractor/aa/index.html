@@ -35,9 +35,17 @@ description: Render and export every frame of an Adobe Animate texture atlas ani
 	<div id="status" class="d-none">
 		<h2>Status</h2>
 		<p id="status-text"></p>
+		<details>
+			<summary>Atlas preview</summary>
+			<canvas id="canvas-atlas" class="w-50 mx-auto img-thumbnail d-block" style="max-height: 500px;"></canvas>
+		</details>
 		<details open>
-			<summary>Canvas preview</summary>
-			<canvas id="canvas-main" class="w-50 mx-auto img-thumbnail d-block"></canvas>
+			<summary>Frame preview</summary>
+			<canvas id="canvas-frame" class="w-50 mx-auto img-thumbnail d-block" style="max-height: 500px;"></canvas>
+			<div class="form-group mt-3 mb-0 d-none" id="animation-select-group">
+				<label for="selectAnimation">Preview animation</label>
+				<select class="form-control" id="selectAnimation"></select>
+			</div>
 			<div class="form-group mt-3 mb-0">
 				<label for="inputFrame">Preview frame: <span id="frame-label">-</span></label>
 				<input type="range" class="form-control-range" id="inputFrame" min="0" max="0" value="0" step="1" disabled>

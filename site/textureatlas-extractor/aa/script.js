@@ -11,19 +11,93 @@ import saveAs from 'https://cdn.jsdelivr.net/npm/file-saver@2/+esm'
 import {
 	createTimer, createStatusUpdater, readFileAsText, loadImageSource,
 	sanitizeFileName, createElementCanvas as createCanvas, canvasToBlob,
-	flagFormat, zipToBlob,
+	flagFormat, zipToBlob, drawAtlasPreview, drawFrameOnCanvas, drawPreviewPair,
 } from '../extractor-core.js'
 
 const mainForm = document.querySelector('#form-main')
-const mainCanvas = document.querySelector('#canvas-main')
+const frameCanvas = document.querySelector('#canvas-frame')
+const atlasCanvas = document.querySelector('#canvas-atlas')
+const animationSelect = document.querySelector('#selectAnimation')
+const animationSelectGroup = document.querySelector('#animation-select-group')
 const frameSlider = document.querySelector('#inputFrame')
 const frameLabel = document.querySelector('#frame-label')
 
 let showPreviewFrame = null
+let previewJobs = []
+let previewRenderer = null
+let previewJobIndex = 0
+let textureImage = null
+let spriteAtlas = null
 
 frameSlider.addEventListener('input', () => {
 	if (showPreviewFrame) showPreviewFrame(+frameSlider.value)
 })
+
+// Redraw both previews when the atlas details element is opened
+const atlasCanvasDetails = document.querySelector('#canvas-atlas').closest('details')
+if (atlasCanvasDetails) {
+	atlasCanvasDetails.addEventListener('toggle', () => {
+		if (atlasCanvasDetails.open && showPreviewFrame) {
+			showPreviewFrame(+frameSlider.value)
+		}
+	})
+	// Force initial draw if details is already open (e.g. after export)
+	if (atlasCanvasDetails.open && showPreviewFrame) {
+		showPreviewFrame(+frameSlider.value)
+	}
+}
+
+const showPreviewAnimation = index => {
+	const job = previewJobs[index]
+	if (!job || !previewRenderer) return
+
+	previewJobIndex = index
+	previewRenderer.canvasWidth = job.width
+	previewRenderer.canvasHeight = job.height
+	previewRenderer.baseTransform = job.baseTransform
+
+	frameCanvas.width = job.width
+	frameCanvas.height = job.height
+	frameSlider.max = job.length - 1
+
+	const current = Math.min(Math.max(+frameSlider.value || 0, 0), job.length - 1)
+	frameSlider.value = current
+	if (showPreviewFrame) showPreviewFrame(current)
+}
+
+animationSelect.addEventListener('change', () => {
+	showPreviewAnimation(+animationSelect.value)
+})
+
+// Collect the sprite names actually drawn on one frame of an animation key.
+// Walks the same timeline path as renderInto(), so it matches what the user
+// sees rather than every sprite used anywhere in the animation.
+const collectUsedSpriteRects = (renderer, key, frameIdx, spriteAtlas) => {
+	const used = new Set()
+	const walk = (symbolName, age) => {
+		for (const layer of renderer.timelines.get(symbolName) || []) {
+			const frame = renderer.frameAt(layer, age)
+			if (!frame) continue
+			for (const element of frame.elements || []) {
+				if (element.symbolInstance) {
+					const instance = element.symbolInstance
+					if (!renderer.timelines.has(instance.symbolName) && instance.bitmap) {
+						used.add(instance.bitmap.name)
+					} else if (renderer.timelines.has(instance.symbolName)) {
+						walk(instance.symbolName, renderer.getChildFrame(instance, age - frame.index))
+					}
+				} else if (element.atlasSpriteInstance) {
+					used.add(element.atlasSpriteInstance.name)
+				}
+			}
+		}
+	}
+	walk(key, frameIdx)
+	return [...used].map(name => {
+		const sprite = spriteAtlas.spriteInfo[name]
+		return sprite ? { x: sprite.x, y: sprite.y, w: sprite.w, h: sprite.h } : null
+	}).filter(Boolean)
+}
 
 const timer = createTimer()
 
@@ -202,17 +276,17 @@ class ColorEffect {
 	static parse(effect) {
 		if (!effect) return new ColorEffect()
 
-		const mode = effect.mode
-		if (mode === 'AD') {
+		const mode = String(effect.mode || '').toUpperCase()
+		if (mode === 'AD' || mode === 'ADVANCED') {
 			// Advanced
 			return new ColorEffect(
 				[effect.redMultiplier, effect.greenMultiplier, effect.blueMultiplier, effect.alphaMultiplier],
 				[effect.redOffset, effect.greenOffset, effect.blueOffset, effect.alphaOffset]
 			)
-		} else if (mode === 'CA') {
+		} else if (mode === 'CA' || mode === 'ALPHA') {
 			// Alpha
 			return new ColorEffect([1, 1, 1, effect.alphaMultiplier], [0, 0, 0, 0])
-		} else if (mode === 'CBRT') {
+		} else if (mode === 'CBRT' || mode === 'BRIGHTNESS') {
 			// Brightness
 			const brightness = effect.brightness
 			if (brightness < 0) {
@@ -222,7 +296,7 @@ class ColorEffect {
 				[1 - brightness, 1 - brightness, 1 - brightness, 1],
 				[brightness * 255, brightness * 255, brightness * 255, 0]
 			)
-		} else if (mode === 'T') {
+		} else if (mode === 'T' || mode === 'TINT') {
 			// Tint
 			const tint = hexToRgb(effect.tintColor)
 			const amount = effect.tintMultiplier
@@ -412,6 +486,37 @@ class Renderer {
 		return length
 	}
 
+	// Some exporters keep every animation as a symbol on a single root frame,
+	// so the root timeline only has one frame. In that case the symbols are the
+	// animations, and exporting the root would just stack them all together.
+	getAnimations() {
+		const rootLength = this.getLength(null)
+		if (rootLength > 1) return [{ key: null, name: null, length: rootLength }]
+
+		const layers = this.timelines.get(null) || []
+		const singleRootFrame = layers.every(layer => (layer.frames?.length || 0) <= 1)
+
+		const symbols = new Map()
+		if (singleRootFrame) {
+			for (const layer of layers) {
+				for (const element of layer.frames?.[0]?.elements || []) {
+					const instance = element.symbolInstance
+					if (!instance?.symbolName || symbols.has(instance.symbolName)) continue
+
+					const length = this.getLength(instance.symbolName)
+					if (length > 1) symbols.set(instance.symbolName, length)
+				}
+			}
+		}
+
+		if (symbols.size >= 2) return [...symbols].map(([name, length]) => ({ key: name, name, length }))
+		if (symbols.size === 1) {
+			const [name, length] = symbols.entries().next().value
+			return [{ key: name, name, length }]
+		}
+		return rootLength > 0 ? [{ key: null, name: null, length: rootLength }] : []
+	}
+
 	frameAt(layer, frameIdx) {
 		const frames = layer.frames
 		if (!frames || !frames.length) return null
@@ -446,6 +551,19 @@ class Renderer {
 			matrix.f += position.y || 0
 		}
 		return matrix
+	}
+
+	getBitmapMatrix(instance, m) {
+		const elementMatrix = m.multiply(this.getElementMatrix(instance))
+		const position = instance.bitmap.position || instance.bitmap.decomposedMatrix?.position
+		return position
+			? elementMatrix.multiply(TransformMatrix.translate(position.x || 0, position.y || 0))
+			: elementMatrix
+	}
+
+	drawSprite(ctx, canvas, name, matrix, color) {
+		const sprite = this.spriteAtlas.getSprite(name, matrix, color, canvas.width, canvas.height)
+		if (sprite) ctx.drawImage(sprite.canvas, sprite.x, sprite.y)
 	}
 
 	getChildFrame(instance, frameAge) {
@@ -488,11 +606,20 @@ class Renderer {
 			for (const element of frame.elements || []) {
 				if (element.symbolInstance) {
 					const instance = element.symbolInstance
+					const elementColor = instance.color ? color.combine(ColorEffect.parse(instance.color)) : color
+
+					// Older Animate exports inline bitmaps in symbol instances instead
+					// of using a symbol dictionary or ATLAS_SPRITE_instance entries.
+					if (!this.timelines.has(instance.symbolName) && instance.bitmap) {
+						this.drawSprite(ctx, canvas, instance.bitmap.name, this.getBitmapMatrix(instance, m), elementColor)
+						continue
+					}
+
 					if (!this.timelines.has(instance.symbolName)) {
 						this.warnOnce('Symbol not found in the animation data: ' + instance.symbolName)
 						continue
 					}
-					const elementColor = instance.color ? color.combine(ColorEffect.parse(instance.color)) : color
+
 					this.renderInto(
 						canvas,
 						instance.symbolName,
@@ -502,14 +629,8 @@ class Renderer {
 					)
 				} else if (element.atlasSpriteInstance) {
 					const instance = element.atlasSpriteInstance
-					const sprite = this.spriteAtlas.getSprite(
-						instance.name,
-						m.multiply(this.getElementMatrix(instance)),
-						color,
-						canvas.width,
-						canvas.height
-					)
-					if (sprite) ctx.drawImage(sprite.canvas, sprite.x, sprite.y)
+					const elementColor = instance.color ? color.combine(ColorEffect.parse(instance.color)) : color
+					this.drawSprite(ctx, canvas, instance.name, m.multiply(this.getElementMatrix(instance)), elementColor)
 				} else {
 					this.warnOnce('Unsupported element type: ' + Object.keys(element).join(', '))
 				}
@@ -528,6 +649,16 @@ class Renderer {
 	getBounds(name = null) {
 		let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
 
+		const addSpriteBounds = (sprite, matrix) => {
+			const width = sprite.rotated ? sprite.h : sprite.w
+			const height = sprite.rotated ? sprite.w : sprite.h
+			for (const [x, y] of [[0, 0], [width, 0], [0, height], [width, height]]) {
+				const [px, py] = matrix.apply(x, y)
+				minX = Math.min(minX, px); maxX = Math.max(maxX, px)
+				minY = Math.min(minY, py); maxY = Math.max(maxY, py)
+			}
+		}
+
 		const visit = (symbolName, frameIdx, m) => {
 			for (const layer of this.timelines.get(symbolName) || []) {
 				const frame = this.frameAt(layer, frameIdx)
@@ -535,6 +666,13 @@ class Renderer {
 				for (const element of frame.elements || []) {
 					if (element.symbolInstance) {
 						const instance = element.symbolInstance
+
+						if (!this.timelines.has(instance.symbolName) && instance.bitmap) {
+							const sprite = this.spriteAtlas.spriteInfo[instance.bitmap.name]
+							if (sprite) addSpriteBounds(sprite, this.getBitmapMatrix(instance, m))
+							continue
+						}
+
 						visit(
 							instance.symbolName,
 							this.getChildFrame(instance, frameIdx - frame.index),
@@ -543,15 +681,7 @@ class Renderer {
 					} else if (element.atlasSpriteInstance) {
 						const instance = element.atlasSpriteInstance
 						const sprite = this.spriteAtlas.spriteInfo[instance.name]
-						if (!sprite) continue
-						const width = sprite.rotated ? sprite.h : sprite.w
-						const height = sprite.rotated ? sprite.w : sprite.h
-						const elementMatrix = m.multiply(this.getElementMatrix(instance))
-						for (const [x, y] of [[0, 0], [width, 0], [0, height], [width, height]]) {
-							const [px, py] = elementMatrix.apply(x, y)
-							minX = Math.min(minX, px); maxX = Math.max(maxX, px)
-							minY = Math.min(minY, py); maxY = Math.max(maxY, py)
-						}
+						if (sprite) addSpriteBounds(sprite, m.multiply(this.getElementMatrix(instance)))
 					}
 				}
 			}
@@ -569,8 +699,14 @@ const parseAnimateJson = text => JSON.parse(text.replace(/^\uFEFF/, '').replace(
 mainForm.addEventListener('submit', async event => {
 	event.preventDefault()
 
-	// Reset the preview slider
+	// Reset the preview slider and animation selector
 	showPreviewFrame = null
+	previewJobs = []
+	previewRenderer = null
+	previewJobIndex = 0
+	animationSelect.innerHTML = ''
+	animationSelectGroup.classList.add('d-none')
+	if (atlasCanvas) { atlasCanvas.width = 0; atlasCanvas.height = 0 }
 	frameSlider.disabled = true
 	frameSlider.min = 0
 	frameSlider.max = 0
@@ -592,10 +728,12 @@ mainForm.addEventListener('submit', async event => {
 	let indexReady = 0
 
 	const zip = new JSZip()
+	const zipFileName = imageFile.name.replace(/\.[^./\\]+$/, '') + '.zip'
 
 	try {
 		updateStatus(`Loading resources... (${indexReady}/3)`)
-		const [textureImage, spriteData, animationData] = await Promise.all([
+		let spriteData, animationData
+		;[textureImage, spriteData, animationData] = await Promise.all([
 			loadImageSource(imageFile).then(result => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return result }),
 			readFileAsText(spriteDataFile).then(text => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return parseAnimateJson(text) }),
 			readFileAsText(animationDataFile).then(text => { indexReady++; updateStatus(`Loading resources... (${indexReady}/3)`); return parseAnimateJson(text) })
@@ -603,7 +741,7 @@ mainForm.addEventListener('submit', async event => {
 
 		normalizeKeys(animationData)
 
-		const spriteAtlas = new SpriteAtlas(spriteData, textureImage)
+		spriteAtlas = new SpriteAtlas(spriteData, textureImage)
 		if (!Object.keys(spriteAtlas.spriteInfo).length) {
 			updateStatus('No sprites found in the sprite data file. Make sure it is an Adobe Animate <code>spritemap1.json</code>.')
 			return
@@ -613,69 +751,166 @@ mainForm.addEventListener('submit', async event => {
 			return
 		}
 
-		flagFormat(detectExporter(animationData))
+		const exporter = detectExporter(animationData)
+		flagFormat(exporter)
 
 		const renderer = new Renderer(animationData, spriteAtlas)
 
-		const bounds = renderer.getBounds(null)
-		if (!isFinite(bounds.minX)) {
+		const animations = renderer.getAnimations()
+		if (!animations.length) {
 			updateStatus('No frames detected. Is there any animation?')
 			return
 		}
-		renderer.canvasWidth = Math.max(1, Math.ceil(bounds.maxX) - Math.floor(bounds.minX))
-		renderer.canvasHeight = Math.max(1, Math.ceil(bounds.maxY) - Math.floor(bounds.minY))
-		renderer.baseTransform = TransformMatrix.translate(-Math.floor(bounds.minX), -Math.floor(bounds.minY))
-
-		mainCanvas.width = renderer.canvasWidth
-		mainCanvas.height = renderer.canvasHeight
-		const mainCanvasContext = mainCanvas.getContext('2d')
-
-		const frameLength = renderer.getLength(null)
-		if (frameLength <= 0) {
-			updateStatus('No frames detected. Is there any animation?')
-			return
-		}
-
-		const frameRate = +animationData?.metadata?.frameRate || 24
 
 		const animationName = String(animationData?.animation?.name || '').trim()
 		const filePrefix = sanitizeFileName(animationName || imageFile.name.replace(/\.[^./\\]+$/, '') || 'frame')
-		const padding = Math.max(4, String(frameLength - 1).length)
-		const frameFileName = index => filePrefix + '_' + String(index).padStart(padding, '0') + '.png'
+		const usedPrefixes = new Set()
 
-		for (let i = 0; i < frameLength; i++) {
-			const canvas = renderer.renderSymbol(null, i)
+		const jobs = []
+		const skippedAnimations = []
+		for (const animation of animations) {
+			const bounds = renderer.getBounds(animation.key)
+			if (!isFinite(bounds.minX)) {
+				skippedAnimations.push({
+					name: animation.name,
+					frames: animation.length,
+					reason: 'no visible bounds',
+				})
+				continue
+			}
 
-			mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
-			mainCanvasContext.drawImage(canvas, 0, 0)
+			const requested = animation.name ? sanitizeFileName(animation.name) : filePrefix
+			let prefix = requested
+			let suffix = 2
+			while (usedPrefixes.has(prefix)) prefix = requested + '_' + suffix++
+			usedPrefixes.add(prefix)
 
-			const blob = await canvasToBlob(canvas)
-			if (blob) zip.file(frameFileName(i), blob)
-			else console.warn(`Frame ${i} could not be encoded and was skipped.`)
+			jobs.push({
+				key: animation.key,
+				length: animation.length,
+				width: Math.max(1, Math.ceil(bounds.maxX) - Math.floor(bounds.minX)),
+				height: Math.max(1, Math.ceil(bounds.maxY) - Math.floor(bounds.minY)),
+				baseTransform: TransformMatrix.translate(-Math.floor(bounds.minX), -Math.floor(bounds.minY)),
+				prefix,
+				padding: Math.max(4, String(animation.length - 1).length),
+			})
+		}
 
-			// Release the canvas right away instead of waiting for the GC
-			canvas.width = 0
-			canvas.height = 0
+		if (!jobs.length) {
+			updateStatus('No frames detected. Is there any animation?')
+			return
+		}
 
-			updateStatus(`Rendered frame ${i + 1}/${frameLength}...`)
+		const multipleJobs = jobs.length > 1
+		for (const job of jobs) {
+			job.fileName = index => {
+				const fileName = job.prefix + '_' + String(index).padStart(job.padding, '0') + '.png'
+				return multipleJobs ? job.prefix + '/' + fileName : fileName
+			}
+		}
+
+		const frameRate = +animationData?.metadata?.frameRate || 24
+		const totalFrames = jobs.reduce((total, job) => total + job.length, 0)
+		let renderedFrames = 0
+
+		frameCanvas.width = jobs[0].width
+		frameCanvas.height = jobs[0].height
+		const frameCanvasContext = frameCanvas.getContext('2d')
+
+		for (const job of jobs) {
+			renderer.canvasWidth = job.width
+			renderer.canvasHeight = job.height
+			renderer.baseTransform = job.baseTransform
+
+			frameCanvas.width = job.width
+			frameCanvas.height = job.height
+
+			// Precompute which atlas sprites each frame uses, so we don't walk
+			// the entire timeline on every single frame during render.
+			const frameRects = new Map()
+			for (let i = 0; i < job.length; i++) {
+				frameRects.set(i, collectUsedSpriteRects(renderer, job.key, i, spriteAtlas))
+			}
+
+			for (let i = 0; i < job.length; i++) {
+				const canvas = renderer.renderSymbol(job.key, i)
+
+				frameCanvasContext.clearRect(0, 0, job.width, job.height)
+				frameCanvasContext.drawImage(canvas, 0, 0)
+
+				// Only redraw the atlas preview if its panel is visible; skip
+				// entirely when collapsed to avoid re-drawing the whole atlas
+				// for every frame while hidden.
+				if (atlasCanvas && textureImage && atlasCanvasDetails.open) {
+					drawAtlasPreview(atlasCanvas, textureImage, frameRects.get(i), 'rgba(255, 0, 0, 0.7)', 3)
+				}
+
+				// Yield to the browser so the live canvas preview repaints mid-render
+				await new Promise(resolve => requestAnimationFrame(resolve))
+
+				const blob = await canvasToBlob(canvas)
+				if (blob) zip.file(job.fileName(i), blob)
+				else console.warn(`Frame ${job.fileName(i)} could not be encoded and was skipped.`)
+
+				// Release the canvas right away instead of waiting for the GC
+				canvas.width = 0
+				canvas.height = 0
+
+				updateStatus(`Rendered frame ${job.fileName(i)} (${++renderedFrames}/${totalFrames})...`)
+			}
 		}
 
 		const content = await zipToBlob(zip)
 		saveAs(content, imageFile.name.replace(/\.[^./\\]+$/, '') + '.zip')
 
-		updateStatus(`Exported ${frameLength} frames (${renderer.canvasWidth}×${renderer.canvasHeight}, ${frameRate} fps) in ${timer.stop() / 1000} seconds!`)
-
-		showPreviewFrame = index => {
-			const canvas = renderer.renderSymbol(null, index)
-			mainCanvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
-			mainCanvasContext.drawImage(canvas, 0, 0)
-			frameLabel.textContent = `${frameFileName(index)} (${index + 1}/${frameLength})`
+		const elapsed = timer.stop() / 1000
+		if (multipleJobs) {
+			updateStatus(`Exported ${jobs.length} animations (${totalFrames} frames) in ${elapsed} seconds!`)
+		} else {
+			const job = jobs[0]
+			updateStatus(`Exported ${job.length} frames (${job.width}×${job.height}, ${frameRate} fps) in ${elapsed} seconds!`)
 		}
 
-		frameSlider.max = frameLength - 1
+		previewJobs = jobs
+		previewRenderer = renderer
+		previewJobIndex = 0
+		for (const [index, job] of jobs.entries()) {
+			const option = document.createElement('option')
+			option.value = String(index)
+			option.textContent = `${job.prefix} (${job.length} frames)`
+			animationSelect.append(option)
+		}
+		animationSelectGroup.classList.toggle('d-none', !multipleJobs)
+		animationSelect.value = '0'
+
+		showPreviewFrame = index => {
+			const job = previewJobs[previewJobIndex]
+			if (!job) return
+
+			const canvas = previewRenderer.renderSymbol(job.key, index)
+			const rects = collectUsedSpriteRects(previewRenderer, job.key, index, spriteAtlas)
+
+			drawPreviewPair(
+				frameCanvas,
+				canvas,
+				atlasCanvas,
+				textureImage,
+				rects,
+				'rgba(255, 0, 0, 0.7)',
+				3
+			)
+
+			canvas.width = 0
+			canvas.height = 0
+
+			frameLabel.textContent = previewJobs.length > 1
+				? `${job.fileName(index)} (animation ${previewJobIndex + 1}/${previewJobs.length}, frame ${index + 1}/${job.length})`
+				: `${job.fileName(index)} (${index + 1}/${job.length})`
+		}
+
 		frameSlider.value = 0
 		frameSlider.disabled = false
-		showPreviewFrame(0)
+		showPreviewAnimation(0)
 	} catch (error) {
 		updateStatus('Error: ' + error.message)
 		console.error(error)

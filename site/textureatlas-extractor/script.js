@@ -2,22 +2,23 @@ import JSZip from 'https://cdn.jsdelivr.net/npm/jszip@3/+esm'
 import saveAs from 'https://cdn.jsdelivr.net/npm/file-saver@2/+esm'
 import isMobile from 'https://cdn.jsdelivr.net/npm/ismobilejs@1/+esm'
 import {
-	processTextures, renderPreview, PREVIEW_MAX_SIZE,
+	processTextures, renderPreview, drawAtlasPreview, drawTexture, drawFrameOnCanvas, PREVIEW_MAX_SIZE,
 	createTimer, createStatusUpdater, readFileAsText, loadImageSource,
 	createElementCanvas as createMainCanvas, canvasToBlob as mainCanvasToBlob,
 	flagFormat, zipToBlob,
 } from './extractor-core.js'
 
 const mainForm = document.querySelector('#form-main')
-const mainCanvas = document.querySelector('#canvas-main')
-const mainCanvasDetails = document.querySelector('#status > details:nth-child(3)')
+const atlasCanvas = document.querySelector('#canvas-atlas')
+const frameCanvas = document.querySelector('#canvas-frame')
+const atlasCanvasDetails = atlasCanvas.closest('details')
 const spriteSlider = document.querySelector('#inputSprite')
 const spriteLabel = document.querySelector('#sprite-label')
 
 const isMobileReal = isMobile(window.navigator).any
 
 mainForm.querySelector('#parallel').checked = !isMobileReal
-mainCanvasDetails.open = !isMobileReal
+atlasCanvasDetails.open = !isMobileReal
 
 // Prefer the worker, which needs OffscreenCanvas and createImageBitmap
 const supportsWorker = typeof Worker !== 'undefined'
@@ -29,10 +30,30 @@ const supportsWorker = typeof Worker !== 'undefined'
 let showPreviewSprite = null
 let preview = null
 let activeTextures = []
+let textureImageForPreview = null
 
 spriteSlider.addEventListener('input', () => {
-	if (showPreviewSprite) showPreviewSprite(+spriteSlider.value)
+	if (showPreviewSprite) showPreviewSprite(+spriteSlider.value, textureImageForPreview)
 })
+
+// Redraw frame preview when the details element is opened
+const frameCanvasDetails = frameCanvas.closest('details')
+if (frameCanvasDetails) {
+	frameCanvasDetails.addEventListener('toggle', () => {
+		if (frameCanvasDetails.open && showPreviewSprite) {
+			showPreviewSprite(+spriteSlider.value, textureImageForPreview)
+		}
+	})
+}
+
+// Redraw atlas preview when the details element is opened
+if (atlasCanvasDetails) {
+	atlasCanvasDetails.addEventListener('toggle', () => {
+		if (atlasCanvasDetails.open && textureImageForPreview) {
+			drawPreview(+spriteSlider.value, textureImageForPreview)
+		}
+	})
+}
 
 const timer = createTimer()
 
@@ -154,44 +175,70 @@ const runInMainThread = async (file, textures, concurrency, handlers) => {
 	source.close?.()
 
 	const blob = await zipToBlob(zip)
-	return { blob, count }
+	return { blob, count, textures }
 }
 
-const drawPreview = index => {
+const drawPreview = (index, textureImage) => {
 	const texture = activeTextures[index]
-	if (!preview || !texture) return
+	if (!texture) return
 
-	mainCanvas.width = preview.width
-	mainCanvas.height = preview.height
-	const context = mainCanvas.getContext('2d')
-	context.clearRect(0, 0, mainCanvas.width, mainCanvas.height)
-	context.drawImage(preview.source, 0, 0, preview.width, preview.height)
-	context.strokeStyle = '#ff0000'
-	context.lineWidth = Math.max(1, 8 * preview.scale)
-	context.strokeRect(
-		texture.sourceX * preview.scale,
-		texture.sourceY * preview.scale,
-		texture.sourceWidth * preview.scale,
-		texture.sourceHeight * preview.scale
-	)
+	let frameContentCanvas
+	try {
+		frameContentCanvas = drawTexture(createMainCanvas, textureImage, texture)
+		if (!frameContentCanvas || frameContentCanvas.width === 0 || frameContentCanvas.height === 0) throw new Error('Invalid frame')
+	} catch (e) {
+		frameContentCanvas = null
+	}
+
+	if (frameContentCanvas) {
+		drawFrameOnCanvas(frameCanvas, frameContentCanvas)
+	} else if (preview) {
+		// Fallback: down-scaled atlas with red box
+		frameCanvas.width = preview.width
+		frameCanvas.height = preview.height
+		const ctx = frameCanvas.getContext('2d')
+		ctx.clearRect(0, 0, frameCanvas.width, frameCanvas.height)
+		ctx.drawImage(preview.source, 0, 0, preview.width, preview.height)
+		ctx.strokeStyle = '#ff0000'
+		ctx.lineWidth = Math.max(1, 8 * preview.scale)
+		ctx.strokeRect(
+			texture.sourceX * preview.scale,
+			texture.sourceY * preview.scale,
+			texture.sourceWidth * preview.scale,
+			texture.sourceHeight * preview.scale
+		)
+	}
+
 	spriteLabel.textContent = `${texture.name}.png (${index + 1}/${activeTextures.length})`
-}
 
-// The worker can report thousands of frames, so coalesce the updates
+	// Only draw the atlas preview if its panel is visible; skip when collapsed
+	// to avoid re-drawing the whole atlas for every progress tick while hidden.
+	if (atlasCanvas && textureImage && atlasCanvasDetails.open) {
+		drawAtlasPreview(atlasCanvas, textureImage, [{ x: texture.sourceX, y: texture.sourceY, w: texture.sourceWidth, h: texture.sourceHeight }], '#ff0000', 3)
+	}
+}
 let pendingProgress = null
 let progressScheduled = false
+let progressFrame = 0
 const scheduleProgress = data => {
 	pendingProgress = data
 	if (progressScheduled) return
 	progressScheduled = true
-	requestAnimationFrame(() => {
+	progressFrame = requestAnimationFrame(() => {
+		progressFrame = 0
 		progressScheduled = false
 		const latest = pendingProgress
 		pendingProgress = null
 		if (!latest) return
 		updateStatus(`Exported ${latest.count}/${latest.total} textures...`, false)
-		if (mainCanvasDetails.open) drawPreview(latest.index)
+		if (frameCanvasDetails.open) drawPreview(latest.index, textureImageForPreview)
 	})
+}
+const finishProgress = () => {
+	pendingProgress = null
+	progressScheduled = false
+	if (progressFrame) cancelAnimationFrame(progressFrame)
+	progressFrame = 0
 }
 
 mainForm.addEventListener('submit', async event => {
@@ -220,10 +267,12 @@ mainForm.addEventListener('submit', async event => {
 	}
 
 	try {
-		updateStatus('Loading resources... (1/2)')
+		updateStatus('Loading resources... (1/3)')
 		const textureSheetText = (await readFileAsText(textureSheetFile)).replace(/^\uFEFF/, '')
 		const { textureSheet, textureSheetFormat } = parseTextureSheet(textureSheetText)
-		updateStatus('Loading resources... (2/2)')
+		updateStatus('Loading resources... (2/3)')
+		textureImageForPreview = await loadImageSource(textureImageFile)
+		updateStatus('Loading resources... (3/3)')
 
 		// First parser that detects the sheet wins
 		const chosenParser = Object.keys(parser).find(name =>
@@ -278,15 +327,17 @@ mainForm.addEventListener('submit', async event => {
 
 		saveAs(result.blob, textureImageFile.name.replace(/\.[^./\\]+$/, '') + '.zip')
 
+		finishProgress()
 		const skippedNote = skipped.length ? ` (${skipped.length} frame${skipped.length === 1 ? '' : 's'} skipped)` : ''
 		updateStatus(`Extracted ${result.count} textures in ${timer.stop() / 1000} seconds!${skippedNote}`)
 
 		showPreviewSprite = drawPreview
-		spriteSlider.max = texturesLength - 1
+		spriteSlider.max = activeTextures.length - 1
 		spriteSlider.value = 0
 		spriteSlider.disabled = false
-		drawPreview(0)
+		drawPreview(0, textureImageForPreview)
 	} catch (error) {
+		finishProgress()
 		updateStatus('Error: ' + (error?.message || error))
 		console.error(error)
 	}
@@ -300,20 +351,27 @@ const parser = {
 		function: xmlDocument => {
 			const textures = xmlDocument.querySelectorAll('SubTexture')
 		
-			return [...textures].map(texture => ({
-				name: texture.attributes.name.value,
-				rotated: texture.attributes.rotated?.value === 'true',
-				sourceX: +texture.attributes.x.value,
-				sourceY: +texture.attributes.y.value,
-				sourceWidth: +texture.attributes.width.value,
-				sourceHeight: +texture.attributes.height.value,
-				destinationX: -(texture.attributes.frameX?.value ?? 0), 
-				destinationY: -(texture.attributes.frameY?.value ?? 0), 
-				destinationWidth: +texture.attributes.width.value,
-				destinationHeight: +texture.attributes.height.value,
-				canvasWidth: +(texture.attributes.frameWidth?.value ?? texture.attributes.width.value),
-				canvasHeight: +(texture.attributes.frameHeight?.value ?? texture.attributes.height.value)
-			}))
+			return [...textures].map(texture => {
+				const rotated = texture.attributes.rotated?.value === 'true'
+				const sourceWidth = +texture.attributes.width.value
+				const sourceHeight = +texture.attributes.height.value
+				return {
+					name: texture.attributes.name.value,
+					rotated,
+					sourceX: +texture.attributes.x.value,
+					sourceY: +texture.attributes.y.value,
+					sourceWidth,
+					sourceHeight,
+					destinationX: -(texture.attributes.frameX?.value ?? 0),
+					destinationY: -(texture.attributes.frameY?.value ?? 0),
+					destinationWidth: sourceWidth,
+					destinationHeight: sourceHeight,
+					// Rotated regions swap dimensions when the exporter omits
+					// frameWidth/frameHeight.
+					canvasWidth: +(texture.attributes.frameWidth?.value ?? (rotated ? sourceHeight : sourceWidth)),
+					canvasHeight: +(texture.attributes.frameHeight?.value ?? (rotated ? sourceWidth : sourceHeight))
+				}
+			})
 		}
 	},
 	ftpXml: {
@@ -324,22 +382,25 @@ const parser = {
 			const textures = xmlDocument.querySelectorAll('sprite')
 		
 			return [...textures].map(texture => {
-				const rotated = texture.attributes.r?.value === "y" || false
-				const sourceWidth = rotated ? +texture.attributes.h.value : +texture.attributes.w.value
-				const sourceHeight = rotated ? +texture.attributes.w.value : +texture.attributes.h.value
+				const rotated = texture.attributes.r?.value === 'y'
+				const storedWidth = +texture.attributes.w.value
+				const storedHeight = +texture.attributes.h.value
+				// TexturePacker's generic XML stores w/h in atlas orientation.
+				const outputWidth = rotated ? storedHeight : storedWidth
+				const outputHeight = rotated ? storedWidth : storedHeight
 				return {
 					name: texture.attributes.n.value,
 					rotated,
 					sourceX: +texture.attributes.x.value,
 					sourceY: +texture.attributes.y.value,
-					sourceWidth,
-					sourceHeight,
-					destinationX: +(texture.attributes.oX?.value ?? 0), 
-					destinationY: +(texture.attributes.oY?.value ?? 0), 
-					destinationWidth: rotated ? sourceWidth : +texture.attributes.w.value,
-					destinationHeight: rotated ? sourceHeight : +texture.attributes.h.value,
-					canvasWidth: +(texture.attributes.oW?.value ?? texture.attributes.w.value),
-					canvasHeight: +(texture.attributes.oH?.value ?? texture.attributes.h.value)
+					sourceWidth: storedWidth,
+					sourceHeight: storedHeight,
+					destinationX: +(texture.attributes.oX?.value ?? 0),
+					destinationY: +(texture.attributes.oY?.value ?? 0),
+					destinationWidth: storedWidth,
+					destinationHeight: storedHeight,
+					canvasWidth: +(texture.attributes.oW?.value ?? outputWidth),
+					canvasHeight: +(texture.attributes.oH?.value ?? outputHeight)
 				}
 			})
 		},
@@ -349,20 +410,27 @@ const parser = {
 		format: 'json',
 		detect: data => data.frames && Object.values(data.frames)?.[0]?.w,
 		function: textures => {
-			return [...Object.entries(textures.frames)].map(([name, texture]) => ({
-				name: name,
-				rotated: false,
-				sourceX: +texture.x,
-				sourceY: +texture.y,
-				sourceWidth: +texture.w,
-				sourceHeight: +texture.h,
-				destinationX: 0, 
-				destinationY: 0, 
-				destinationWidth: +texture.w,
-				destinationHeight: +texture.h,
-				canvasWidth: +texture.w,
-				canvasHeight: +texture.h
-			}))
+			return [...Object.entries(textures.frames)].map(([name, texture]) => {
+				const sourceWidth = +texture.w
+				const sourceHeight = +texture.h
+				const offsetX = +(texture.offX ?? 0)
+				const offsetY = +(texture.offY ?? 0)
+				return {
+					name,
+					rotated: false,
+					sourceX: +texture.x,
+					sourceY: +texture.y,
+					sourceWidth,
+					sourceHeight,
+					destinationX: offsetX,
+					destinationY: offsetY,
+					destinationWidth: sourceWidth,
+					destinationHeight: sourceHeight,
+					// Egret defaults the source canvas to offset + crop size.
+					canvasWidth: +(texture.sourceW ?? (offsetX + sourceWidth)),
+					canvasHeight: +(texture.sourceH ?? (offsetY + sourceHeight))
+				}
+			})
 		}
 	},
 	cocos2d: {
@@ -382,10 +450,26 @@ const parser = {
 				const frame = JSON.parse(dict.frame.replaceAll('{', '[').replaceAll('}', ']'))
 				const sourceSize = JSON.parse(dict.sourceSize.replaceAll('{', '[').replaceAll('}', ']'))
 				const sourceColorRect = JSON.parse(dict.sourceColorRect.replaceAll('{', '[').replaceAll('}', ']'))
-
+				const offset = dict.offset
+					? JSON.parse(dict.offset.replaceAll('{', '[').replaceAll('}', ']'))
+					: null
 
 				const sourceWidth = rotated ? frame[1][1] : frame[1][0]
 				const sourceHeight = rotated ? frame[1][0] : frame[1][1]
+				const frameWidth = frame[1][0]
+				const frameHeight = frame[1][1]
+
+				// Older cocos2d exports put the untrimmed size in sourceColorRect.
+				// TexturePacker's variant uses a nested sourceColorRect rect and a
+				// separate offset. cocos2d treats offset as a centre offset; its
+				// engine adds half of the trimmed-away margin to get the top-left.
+				const nestedColorRect = Array.isArray(sourceColorRect[0])
+				const destinationX = nestedColorRect
+					? sourceColorRect[0][0]
+					: Number(offset?.[0] ?? 0) + (sourceSize[0] - frameWidth) / 2
+				const destinationY = nestedColorRect
+					? sourceColorRect[0][1]
+					: Number(offset?.[1] ?? 0) + (sourceSize[1] - frameHeight) / 2
 
 				return {
 					name: texture.previousElementSibling.textContent,
@@ -394,8 +478,8 @@ const parser = {
 					sourceY: frame[0][1],
 					sourceWidth,
 					sourceHeight,
-					destinationX: sourceColorRect[0][0],
-					destinationY: sourceColorRect[0][1],
+					destinationX,
+					destinationY,
 					destinationWidth: sourceWidth,
 					destinationHeight: sourceHeight,
 					canvasWidth: sourceSize[0],
@@ -420,21 +504,31 @@ const parser = {
 				const rotated = dict.textureRotated
 				const spriteSourceSize = JSON.parse(dict.spriteSourceSize.replaceAll('{', '[').replaceAll('}', ']'))
 				const textureRect = JSON.parse(dict.textureRect.replaceAll('{', '[').replaceAll('}', ']'))
-				const spriteOffset = JSON.parse(dict.spriteOffset.replaceAll('{', '[').replaceAll('}', ']'))
+				const spriteOffset = dict.spriteOffset
+					? JSON.parse(dict.spriteOffset.replaceAll('{', '[').replaceAll('}', ']'))
+					: [0, 0]
+				const spriteSize = dict.spriteSize
+					? JSON.parse(dict.spriteSize.replaceAll('{', '[').replaceAll('}', ']'))
+					: [textureRect[1][0], textureRect[1][1]]
 
-				const sourceWidth = rotated ? textureRect[1][1] : textureRect[1][0]
-				const sourceHeight = rotated ? textureRect[1][0] : textureRect[1][1]
+				// textureRect is the stored atlas region. TexturePacker writes
+				// rotated regions with swapped width/height.
+				const sourceWidth = textureRect[1][0]
+				const sourceHeight = textureRect[1][1]
 
+				// TexturePacker's cocos2d 2 format uses centre offset + trimmed size.
+				const destinationX = Number(spriteOffset[0]) + (spriteSourceSize[0] - spriteSize[0]) / 2
+				const destinationY = Number(spriteOffset[1]) + (spriteSourceSize[1] - spriteSize[1]) / 2
 
 				return {
 					name: texture.previousElementSibling.textContent,
 					rotated,
 					sourceX: textureRect[0][0],
 					sourceY: textureRect[0][1],
-					sourceWidth: sourceWidth,
-					sourceHeight: sourceHeight,
-					destinationX: Number(spriteOffset[0]),
-					destinationY: Number(spriteOffset[1]),
+					sourceWidth,
+					sourceHeight,
+					destinationX,
+					destinationY,
 					destinationWidth: sourceWidth,
 					destinationHeight: sourceHeight,
 					canvasWidth: spriteSourceSize[0],

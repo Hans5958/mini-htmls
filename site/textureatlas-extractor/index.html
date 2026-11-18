@@ -49,12 +49,16 @@ pwa: true
 		<h2>Status</h2>
 		<p id="status-text"></p>
 		<details>
-			<summary>Canvas preview</summary>
-			<canvas id="canvas-main" class="w-50 mx-auto img-thumbnail d-block"></canvas>
-			<div class="form-group mt-3 mb-0">
-				<label for="inputSprite">Preview sprite: <span id="sprite-label">-</span></label>
-				<input type="range" class="form-control-range" id="inputSprite" min="0" max="0" value="0" step="1" disabled>
-			</div>
+			<summary>Atlas preview</summary>
+			<canvas id="canvas-atlas" class="w-50 mx-auto img-thumbnail d-block"></canvas>
 		</details>
+		<details open>
+			<summary>Frame preview</summary>
+			<canvas id="canvas-frame" class="w-50 mx-auto img-thumbnail d-block"></canvas>
+		</details>
+		<div class="form-group mt-3 mb-0">
+			<label for="inputSprite">Preview sprite: <span id="sprite-label">-</span></label>
+			<input type="range" class="form-control-range" id="inputSprite" min="0" max="0" value="0" step="1" disabled>
+		</div>
 	</div>
 </div>
